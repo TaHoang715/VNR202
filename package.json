@@ -1,0 +1,17 @@
+{
+  "name": "vnr202-workspace",
+  "private": true,
+  "description": "VNR202 - Duong loi khang chien toan quoc (1946-1950) Website & Game 'Giu vung can cu'",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=server && npm run build --workspace=client",
+    "typecheck": "npm run typecheck --workspace=server && npm run typecheck --workspace=client",
+    "test": "npm run test --workspace=server",
+    "start": "npm run start --workspace=server",
+    "dev:server": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client"
+  }
+}

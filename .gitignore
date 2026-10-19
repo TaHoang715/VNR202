@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build artifacts
+dist/
+**/dist/
+testbuild/
+**/testbuild/
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+
+# Logs and temporary files
+logs/
+*.log
+temp/
+tmp/
+
+# Agent and internal tooling metadata
+.agent/
+.codebase-memory/

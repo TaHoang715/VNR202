@@ -1,0 +1,27 @@
+{
+  "name": "giu-vung-can-cu-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Authoritative Socket.IO backend for cooperative classroom game 'Giu vung can cu'",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --detectOpenHandles",
+    "test:verbose": "jest --detectOpenHandles --verbose"
+  },
+  "dependencies": {
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.0",
+    "jest": "^29.7.0",
+    "socket.io-client": "^4.7.5",
+    "ts-jest": "^29.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
