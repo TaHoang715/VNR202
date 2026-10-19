@@ -315,6 +315,15 @@ export const command = mutation({
             finishedSummary: null,
           });
 
+          // Insert initial host presence record
+          await ctx.db.insert("presence", {
+            roomCode,
+            token,
+            connectionId: connectionId.trim(),
+            lastHeartbeat: now,
+            isHost: true,
+          });
+
           // Schedule persistent room pulse chain
           await ctx.scheduler.runAfter(
             30 * 1000,
@@ -422,6 +431,15 @@ export const command = mutation({
             hasInteracted: false,
           });
 
+          // Insert player presence record
+          await ctx.db.insert("presence", {
+            roomCode,
+            token,
+            connectionId: connectionId.trim(),
+            lastHeartbeat: now,
+            isHost: false,
+          });
+
           await ctx.db.patch(room._id, { lastActivity: now });
 
           const updatedPlayers = await ctx.db
@@ -477,6 +495,29 @@ export const command = mutation({
             connected: true,
             lastHeartbeat: now,
           });
+
+          // Update player presence record
+          const playerPresence = await ctx.db
+            .query("presence")
+            .withIndex("by_room_token", (q) =>
+              q.eq("roomCode", roomCode).eq("token", playerToken.trim())
+            )
+            .first();
+
+          if (playerPresence) {
+            await ctx.db.patch(playerPresence._id, {
+              connectionId: connectionId.trim(),
+              lastHeartbeat: now,
+            });
+          } else {
+            await ctx.db.insert("presence", {
+              roomCode,
+              token: playerToken.trim(),
+              connectionId: connectionId.trim(),
+              lastHeartbeat: now,
+              isHost: false,
+            });
+          }
 
           await ctx.db.patch(room._id, { lastActivity: now });
 
@@ -562,6 +603,29 @@ export const command = mutation({
             hostLastHeartbeat: now,
             lastActivity: now,
           });
+
+          // Update host presence record
+          const hostPresence = await ctx.db
+            .query("presence")
+            .withIndex("by_room_token", (q) =>
+              q.eq("roomCode", roomCode).eq("token", hostToken.trim())
+            )
+            .first();
+
+          if (hostPresence) {
+            await ctx.db.patch(hostPresence._id, {
+              connectionId: connectionId.trim(),
+              lastHeartbeat: now,
+            });
+          } else {
+            await ctx.db.insert("presence", {
+              roomCode,
+              token: hostToken.trim(),
+              connectionId: connectionId.trim(),
+              lastHeartbeat: now,
+              isHost: true,
+            });
+          }
 
           const players = await ctx.db
             .query("players")
@@ -1381,13 +1445,34 @@ export const command = mutation({
           const cleanConn = connectionId.trim();
 
           if (room.hostToken === cleanToken) {
-            if (room.hostConnectionId === cleanConn) {
-              await ctx.db.patch(room._id, {
-                hostLastHeartbeat: now,
-              });
-              return { ok: true };
+            if (room.hostConnectionId !== cleanConn) {
+              return { ok: false, error: "Phiên kết nối của chủ phòng không khớp" };
             }
-            return { ok: false, error: "Phiên kết nối của chủ phòng không khớp" };
+
+            // Update ONLY presence record! Do NOT write to rooms doc (preserves reactive query cache)
+            const hostPresence = await ctx.db
+              .query("presence")
+              .withIndex("by_room_token", (q) =>
+                q.eq("roomCode", roomCode).eq("token", cleanToken)
+              )
+              .first();
+
+            if (hostPresence) {
+              await ctx.db.patch(hostPresence._id, {
+                connectionId: cleanConn,
+                lastHeartbeat: now,
+              });
+            } else {
+              await ctx.db.insert("presence", {
+                roomCode,
+                token: cleanToken,
+                connectionId: cleanConn,
+                lastHeartbeat: now,
+                isHost: true,
+              });
+            }
+
+            return { ok: true };
           }
 
           const player = await ctx.db
@@ -1398,14 +1483,41 @@ export const command = mutation({
             .first();
 
           if (player) {
-            if (player.connectionId === cleanConn) {
-              await ctx.db.patch(player._id, {
+            if (player.connectionId !== cleanConn) {
+              return { ok: false, error: "Phiên kết nối của người chơi không khớp" };
+            }
+
+            // Update ONLY presence record!
+            const playerPresence = await ctx.db
+              .query("presence")
+              .withIndex("by_room_token", (q) =>
+                q.eq("roomCode", roomCode).eq("token", cleanToken)
+              )
+              .first();
+
+            if (playerPresence) {
+              await ctx.db.patch(playerPresence._id, {
+                connectionId: cleanConn,
                 lastHeartbeat: now,
+              });
+            } else {
+              await ctx.db.insert("presence", {
+                roomCode,
+                token: cleanToken,
+                connectionId: cleanConn,
+                lastHeartbeat: now,
+                isHost: false,
+              });
+            }
+
+            // Only patch player doc if state actually changes (was disconnected)
+            if (!player.connected) {
+              await ctx.db.patch(player._id, {
                 connected: true,
               });
-              return { ok: true };
             }
-            return { ok: false, error: "Phiên kết nối của người chơi không khớp" };
+
+            return { ok: true };
           }
 
           return { ok: false, error: "Mã định danh không hợp lệ" };
@@ -1449,6 +1561,18 @@ export const command = mutation({
           if (player && player.connectionId === cleanConn) {
             // Disconnect only own connection; do not kick new reconnect!
             await ctx.db.patch(player._id, { connected: false });
+
+            // Mark player presence stale
+            const playerPresence = await ctx.db
+              .query("presence")
+              .withIndex("by_room_token", (q) =>
+                q.eq("roomCode", roomCode).eq("token", cleanToken)
+              )
+              .first();
+
+            if (playerPresence) {
+              await ctx.db.patch(playerPresence._id, { lastHeartbeat: 0 });
+            }
           }
 
           return { ok: true };

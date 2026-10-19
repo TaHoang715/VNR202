@@ -166,4 +166,14 @@ export default defineSchema({
     .index("by_room", ["roomCode"])
     .index("by_poll", ["pollId"])
     .index("by_poll_player", ["pollId", "playerToken"]),
+
+  presence: defineTable({
+    roomCode: v.string(),
+    token: v.string(),
+    connectionId: v.string(),
+    lastHeartbeat: v.number(),
+    isHost: v.boolean(),
+  })
+    .index("by_room", ["roomCode"])
+    .index("by_room_token", ["roomCode", "token"]),
 });

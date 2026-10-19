@@ -289,13 +289,18 @@ describe('Convex Schedulers, Timers, Lifecycle & Presence Acceptance', () => {
       payload: { roomCode, nickname: 'Absentee', team: 0, playerToken: pToken, connectionId: 'c1' },
     });
 
-    // Set player lastHeartbeat to 65s ago
+    // Set player presence heartbeat to 65s ago
     await t.run(async (ctx) => {
+      const pr = await ctx.db
+        .query('presence')
+        .withIndex('by_room_token', (q) => q.eq('roomCode', roomCode).eq('token', pToken))
+        .first();
+      if (pr) await ctx.db.patch(pr._id, { lastHeartbeat: Date.now() - 65 * 1000 });
       const p = await ctx.db
         .query('players')
         .withIndex('by_room_token', (q) => q.eq('roomCode', roomCode).eq('playerToken', pToken))
         .first();
-      await ctx.db.patch(p!._id, { lastHeartbeat: Date.now() - 65 * 1000 });
+      if (p) await ctx.db.patch(p._id, { lastHeartbeat: Date.now() - 65 * 1000 });
     });
 
     // Run roomPulse mutation directly
@@ -312,10 +317,14 @@ describe('Convex Schedulers, Timers, Lifecycle & Presence Acceptance', () => {
     });
     expect(env!.snapshot.players[0].connected).toBe(false);
 
-    // Set room lastActivity to 31 min ago (expired TTL)
+    // Set room lastActivity AND all presence to 31 min ago (expired TTL)
     await t.run(async (ctx) => {
       const r = await ctx.db.query('rooms').withIndex('by_code', (q) => q.eq('code', roomCode)).first();
       await ctx.db.patch(r!._id, { lastActivity: Date.now() - 31 * 60 * 1000 });
+      const presences = await ctx.db.query('presence').withIndex('by_room', (q) => q.eq('roomCode', roomCode)).collect();
+      for (const pr of presences) {
+        await ctx.db.patch(pr._id, { lastHeartbeat: Date.now() - 31 * 60 * 1000 });
+      }
     });
 
     // Run roomPulse again

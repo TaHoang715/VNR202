@@ -165,9 +165,22 @@ export const roomPulse = internalMutation({
     }
 
     const now = Date.now();
+
+    const presenceList = await ctx.db
+      .query("presence")
+      .withIndex("by_room", (q) => q.eq("roomCode", args.roomCode))
+      .collect();
+
+    let latestActivityOrPresence = room.lastActivity;
+    for (const pr of presenceList) {
+      if (pr.lastHeartbeat > latestActivityOrPresence) {
+        latestActivityOrPresence = pr.lastHeartbeat;
+      }
+    }
+
     const isExpired =
-      now - room.lastActivity > GAME_CONSTANTS.ROOM_TTL_MS ||
-      (room.phase === "closed" && now - room.lastActivity > 5 * 60 * 1000);
+      now - latestActivityOrPresence > GAME_CONSTANTS.ROOM_TTL_MS ||
+      (room.phase === "closed" && now - latestActivityOrPresence > 5 * 60 * 1000);
 
     if (isExpired) {
       // Bounded cleanup: delete associated documents and room doc
@@ -195,6 +208,8 @@ export const roomPulse = internalMutation({
         .collect();
       for (const pv of pollVotes) await ctx.db.delete(pv._id);
 
+      for (const pr of presenceList) await ctx.db.delete(pr._id);
+
       await ctx.db.delete(room._id);
       return; // chain ends
     }
@@ -206,8 +221,14 @@ export const roomPulse = internalMutation({
       .collect();
 
     for (const player of players) {
-      if (player.connected && now - player.lastHeartbeat > 60_000) {
-        await ctx.db.patch(player._id, { connected: false });
+      if (player.connected) {
+        const playerPresence = presenceList.find(
+          (pr) => !pr.isHost && pr.token === player.playerToken
+        );
+        const lastHb = playerPresence?.lastHeartbeat ?? player.lastHeartbeat;
+        if (now - lastHb > 60_000) {
+          await ctx.db.patch(player._id, { connected: false });
+        }
       }
     }
 
