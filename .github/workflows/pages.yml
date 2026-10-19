@@ -1,0 +1,49 @@
+name: Publish VNR202
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vnr202-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VITE_CONVEX_URL: ${{ vars.VITE_CONVEX_URL }}
+      VITE_BASE_PATH: /VNR202/
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Verify isolated backend target
+        run: test "$VITE_CONVEX_URL" = "https://terrific-labrador-176.convex.cloud"
+      - run: npm ci
+      - run: npm run build --workspace=client
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: client/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: publish
+        uses: actions/deploy-pages@v4
+
