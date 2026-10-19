@@ -55,7 +55,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#193b32] text-white text-sm font-semibold shadow-md hover:bg-[#122b24] hover:shadow-lg transition-all"
             >
               <Gamepad2 className="w-4 h-4" />
-              <span>Chơi Giữ vững căn cứ</span>
+              <span>Chơi Giải mã kháng chiến</span>
             </button>
 
             <button
@@ -73,8 +73,8 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               <div className="text-[#6e6761] mt-0.5">Bài học tư liệu lịch sử</div>
             </div>
             <div>
-              <div className="font-serif font-bold text-xl text-[#193b32]">4 lượt</div>
-              <div className="text-[#6e6761] mt-0.5">Mô phỏng cân bằng nguồn lực</div>
+              <div className="font-serif font-bold text-xl text-[#193b32]">10 câu</div>
+              <div className="text-[#6e6761] mt-0.5">Trắc nghiệm cá nhân & tốc độ</div>
             </div>
             <div>
               <div className="font-serif font-bold text-xl text-[#c99738]">Tư liệu</div>
@@ -188,33 +188,33 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-[#e8f0ec] text-[#193b32] font-mono font-bold text-xs">
-                  Phần 2: Trò chơi mô phỏng
+                  Phần 2: Thử thách trắc nghiệm
                 </span>
                 <Gamepad2 className="w-5 h-5 text-[#193b32]" />
               </div>
 
               <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#171513]">
-                Mô phỏng hợp tác: "Giữ vững căn cứ"
+                Thử thách cá nhân: "Giải mã kháng chiến"
               </h3>
 
               <p className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
-                Trò chơi giáo dục chiến lược mô phỏng việc duy trì An toàn khu (ATK) Việt Bắc: 4–6 đội
-                cùng tham gia bỏ phiếu qua điện thoại trong 4 lượt (mỗi lượt 90 giây), cân bằng 3 nguồn lực
-                sống còn gồm Lương thực – Lực lượng – Lòng dân và tương trợ nhau qua cơ chế viện trợ.
+                Trò chơi trắc nghiệm cá nhân 10 câu hỏi bao gồm trắc nghiệm chọn đáp án, ảnh tư liệu thật và sắp xếp
+                mốc thời gian bằng nút bấm tiếp cận. Điểm số chuẩn xác 1.000 điểm + 250 điểm thưởng tốc độ, thi đấu trực
+                tuyến toàn lớp hoặc chơi thử ngay lập tức.
               </p>
 
               <div className="space-y-2 pt-2 text-xs text-[#3a3530]">
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-                  <span>Giao diện người chơi trên điện thoại kết nối nhanh qua mã QR.</span>
+                  <span>Chế độ "Chơi thử ngay" hoạt động tức thì trên trình duyệt không cần máy chủ.</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-                  <span>Màn hình chủ phòng hiển thị biểu đồ thời gian thực và kết quả các đội.</span>
+                  <span>Màn hình chủ phòng và người chơi kết nối nhanh qua mã QR (đến 200 người).</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-                  <span>Cảm nhận áp lực đánh đổi và tương trợ nguồn lực trong thời chiến.</span>
+                  <span>Bảng vàng vinh danh trực tiếp các cá nhân có điểm số và tốc độ xuất sắc nhất.</span>
                 </div>
               </div>
             </div>
@@ -224,7 +224,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
                 onClick={() => onSelectView('game')}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#193b32] text-white text-xs font-semibold hover:bg-[#122b24] transition-colors"
               >
-                <span>Chơi Giữ vững căn cứ</span>
+                <span>Tham gia Giải mã kháng chiến</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -386,7 +386,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
             <span className="font-mono font-bold text-xs text-[#193b32] block">03. Thực hành</span>
             <h4 className="font-serif font-bold text-sm text-[#171513]">Mô phỏng quyết định</h4>
             <p className="leading-relaxed">
-              Mô phỏng việc đánh đổi và tương trợ nguồn lực trong trò chơi "Giữ vững căn cứ" cùng tập thể lớp.
+              Thử thách kiến thức và tốc độ phản xạ trong trò chơi "Giải mã kháng chiến" cùng tập thể lớp.
             </p>
           </div>
 

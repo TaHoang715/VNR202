@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SLIDES, SlideData } from '../data/slides';
 import { SOURCES } from '../data/sources';
 import { getSocket } from '../socket';
+import { createOnlineQuizPoll, isQuizConvexAvailable } from '../quizConvex';
 import { AIUsageRecord } from '../components/AIUsageRecord';
 import { PollSnapshot } from '../types';
 import { ViewType } from '../components/Navbar';
@@ -124,17 +125,9 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
     }, 300);
   };
 
-  const handleLaunchPoll = (slideId: number) => {
-    const socket = getSocket();
-    const hostToken = localStorage.getItem('vnr202_host_token');
-    const roomCode = localStorage.getItem('vnr202_host_room');
-
-    if (!roomCode || !hostToken) {
-      setPollMessage('Vui lòng tạo phòng game trước (tại thẻ Game) để nhận mã phòng và mã chủ phòng trước khi kích hoạt thăm dò.');
-      return;
-    }
-
+  const handleLaunchPoll = async (slideId: number) => {
     const isSlide7 = slideId === 7;
+    const pollName = isSlide7 ? 'Khảo sát 2: Trường kỳ' : 'Khảo sát 1: Toàn dân';
     const question = isSlide7
       ? 'Theo bạn, yếu tố quyết định nhất để thực hiện thắng lợi "Trường kỳ kháng chiến" là gì?'
       : 'Theo bạn, yếu tố nào là cội nguồn sức mạnh lớn nhất trong kháng chiến toàn dân?';
@@ -152,22 +145,57 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
           'Nền kinh tế tự cấp tự túc tại chỗ',
         ];
 
-    socket.emit(
-      'poll:create',
-      {
-        roomCode,
-        hostToken,
-        question,
-        options,
-      },
-      (resp: any) => {
+    // Priority 1: Check active online quiz room (Giải mã kháng chiến)
+    const quizRoomCode = localStorage.getItem('vnr202_quiz_host_room');
+    const quizHostToken = localStorage.getItem('vnr202_quiz_host_token');
+
+    if (quizRoomCode && quizHostToken && isQuizConvexAvailable()) {
+      try {
+        const resp = await createOnlineQuizPoll({
+          roomCode: quizRoomCode,
+          hostToken: quizHostToken,
+          question,
+          options,
+        });
         if (resp.ok) {
-          setPollMessage(`Đã kích hoạt cuộc thăm dò ý kiến (${isSlide7 ? 'Khảo sát 2: Trường kỳ' : 'Khảo sát 1: Toàn dân'}) trên điện thoại của lớp học!`);
+          setPollMessage(`Đã kích hoạt cuộc thăm dò ý kiến (${pollName}) tới toàn bộ người chơi trong phòng ${quizRoomCode}!`);
+          return;
         } else {
-          setPollMessage('Lỗi kích hoạt khảo sát: ' + (resp.error || 'Vui lòng kiểm tra mã chủ phòng'));
+          setPollMessage('Lỗi kích hoạt khảo sát: ' + (resp.error || 'Vui lòng kiểm tra phòng'));
+          return;
         }
+      } catch (err: any) {
+        setPollMessage('Lỗi kết nối khảo sát: ' + (err.message || String(err)));
+        return;
       }
-    );
+    }
+
+    // Priority 2: Fallback to socket legacy room if present
+    const legacyRoomCode = localStorage.getItem('vnr202_host_room');
+    const legacyHostToken = localStorage.getItem('vnr202_host_token');
+
+    if (legacyRoomCode && legacyHostToken) {
+      const socket = getSocket();
+      socket.emit(
+        'poll:create',
+        {
+          roomCode: legacyRoomCode,
+          hostToken: legacyHostToken,
+          question,
+          options,
+        },
+        (resp: any) => {
+          if (resp.ok) {
+            setPollMessage(`Đã kích hoạt cuộc thăm dò ý kiến (${pollName}) trên điện thoại của lớp học!`);
+          } else {
+            setPollMessage('Lỗi kích hoạt khảo sát: ' + (resp.error || 'Vui lòng kiểm tra mã chủ phòng'));
+          }
+        }
+      );
+      return;
+    }
+
+    setPollMessage('Vui lòng tạo phòng thi trước (tại thẻ Game -> Chủ phòng) để nhận mã phòng trước khi kích hoạt khảo sát lớp học.');
   };
 
   // Printable whole article output
@@ -417,7 +445,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-full bg-[#193b32] text-white text-xs font-semibold hover:bg-[#122b24] transition-colors shadow-sm"
                     >
                       <Gamepad2 className="w-3.5 h-3.5" />
-                      <span>Chơi Giữ vững căn cứ</span>
+                      <span>Thử thách Giải mã kháng chiến</span>
                     </button>
                   )}
                 </div>
@@ -747,25 +775,25 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
 
             <div className="space-y-2">
               <h3 className="font-serif font-bold text-2xl sm:text-3xl lg:text-4xl text-white">
-                Trò chơi mô phỏng: Giữ vững căn cứ
+                Thử thách trắc nghiệm: Giải mã kháng chiến
               </h3>
               <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-2xl font-light">
-                Cùng tham gia trò chơi mô phỏng hợp tác để tìm hiểu cách ra quyết định và cân bằng các nguồn lực trong thời chiến.
+                Cùng tham gia thử thách 10 câu hỏi độc lập về lịch sử Đường lối kháng chiến toàn quốc (1946–1950), so tài kiến thức và tốc độ phản xạ trên điện thoại hoặc màn chiếu.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs text-white/90">
               <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
                 <span className="font-mono font-bold text-[#c99738]">01. Tham gia</span>
-                <p>Quét mã QR trên màn hình bằng điện thoại để gia nhập 4–6 đội căn cứ.</p>
+                <p>Nhập mã phòng 6 ký tự hoặc quét mã QR bằng điện thoại để vào phòng thi đấu.</p>
               </div>
               <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
-                <span className="font-mono font-bold text-[#c99738]">02. Cân bằng</span>
-                <p>Bỏ phiếu 4 lượt (90s/lượt) giữ Lương thực, Lực lượng, Lòng dân trên 40.</p>
+                <span className="font-mono font-bold text-[#c99738]">02. Đua tốc độ</span>
+                <p>10 câu hỏi độc lập (25s/câu): 1.000 điểm chuẩn + 250 điểm thưởng tốc độ.</p>
               </div>
               <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
-                <span className="font-mono font-bold text-[#c99738]">03. Viện trợ</span>
-                <p>Tương trợ tối đa 20 đơn vị/lượt để cùng toàn lớp vượt qua thử thách.</p>
+                <span className="font-mono font-bold text-[#c99738]">03. Vinh danh</span>
+                <p>Bảng vàng trực tiếp vinh danh các cá nhân có điểm số và tốc độ xuất sắc nhất.</p>
               </div>
             </div>
 
@@ -776,7 +804,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                   className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#9d242b] text-white text-sm font-semibold hover:bg-[#7a171d] shadow-lg transition-all"
                 >
                   <Gamepad2 className="w-4 h-4" />
-                  <span>Chơi Giữ vững căn cứ</span>
+                  <span>Tham gia Giải mã kháng chiến</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               )}

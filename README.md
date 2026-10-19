@@ -1,11 +1,11 @@
 # VNR202 — Đường lối kháng chiến toàn quốc (1946–1950)
 
-Website bài học môn Lịch sử Đảng Cộng sản Việt Nam, Chương 2, Mục I.2, kèm game hợp tác **Giữ vững căn cứ** cho cả lớp.
+Website bài học môn Lịch sử Đảng Cộng sản Việt Nam, Chương 2, Mục I.2, kèm thử thách trắc nghiệm cá nhân **Giải mã kháng chiến** cho cả lớp.
 
 - Bài học cuộn dọc gồm 12 mục, ảnh tư liệu có nguồn, ghi chú và bản in.
-- Hai khảo sát lồng ghép trong bài học.
-- Game 4 lượt, mỗi lượt tối đa 90 giây; 4–6 đội biểu quyết, cân bằng tài nguyên và viện trợ.
-- Demo 10 máy chia đội 1/2/4/3, chạy từng bước hoặc xem nhanh cả ván.
+- Hai khảo sát lồng ghép trong bài học kết nối trực tiếp với phòng thi.
+- Thử thách "Giải mã kháng chiến": 10 câu hỏi độc lập (25s/câu), tính điểm chuẩn xác 1.000 điểm + tối đa 250 điểm thưởng tốc độ; hỗ trợ chơi thử ngay (solo) không cần backend/tài khoản và thi đấu trực tuyến (online) phòng 6 ký tự / QR đến 200 người.
+- Ba dạng câu hỏi chuẩn nguồn 1946–1950: trắc nghiệm chọn đáp án, câu hỏi ảnh tư liệu lịch sử thật và sắp xếp mốc thời gian bằng nút bấm tiếp cận.
 - Phụ lục AI Usage và tài liệu tham khảo. Nhóm cần đối chiếu giáo trình bản in trước khi nộp.
 
 ## Chạy

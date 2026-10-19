@@ -246,7 +246,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
             ) : (
               <div className="py-4 space-y-4">
                 <p className="text-xs text-[#3a3530] leading-relaxed">
-                  Máy chủ Socket.IO quản lý phòng chơi <strong>"Giữ vững căn cứ"</strong> và khảo sát lớp học.
+                  Máy chủ Socket.IO quản lý khảo sát lớp học và phòng chơi dự phòng cục bộ.
                   Khi kết nối nhiều điện thoại trong cùng mạng LAN, nhập địa chỉ IP LAN của máy chủ (ví dụ:{' '}
                   <code className="bg-[#ede7dc] px-1.5 py-0.5 rounded text-[#9d242b] font-mono">
                     http://192.168.1.15:3001

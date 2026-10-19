@@ -297,15 +297,15 @@ export const SLIDES: SlideData[] = [
   {
     id: 12,
     title: 'KẾT LUẬN & CHUYỂN TIẾP HOẠT ĐỘNG LỚP HỌC',
-    subtitle: 'Tóm lược báo cáo, minh bạch AI và giới thiệu mô phỏng "Giữ vững căn cứ"',
+    subtitle: 'Tóm lược báo cáo, minh bạch AI và giới thiệu thử thách "Giải mã kháng chiến"',
     section: 'Kết luận & Hoạt động',
     suggestedDurationSeconds: 60,
     content: {
-      heading: 'Khép lại 15 phút báo cáo & Bước vào 10 phút mô phỏng',
+      heading: 'Khép lại 15 phút báo cáo & Bước vào thử thách trắc nghiệm',
       points: [
         'Đường lối kháng chiến 1946–1950 khẳng định nghệ thuật chiến tranh nhân dân sáng tạo của Đảng.',
         'Minh bạch học thuật: Nội dung là bản thảo hỗ trợ bởi Codex Coordinator và OpenCode Worker (Gemini fallback), chờ nhóm đối chiếu giáo trình in.',
-        'Mời cả lớp tham gia mô phỏng giáo dục "Giữ vững căn cứ" (10 phút) trên điện thoại qua mã QR!',
+        'Mời cả lớp tham gia thử thách trắc nghiệm "Giải mã kháng chiến" (10 câu hỏi) trên điện thoại qua mã QR!',
       ],
     },
     sources: [
@@ -315,6 +315,6 @@ export const SLIDES: SlideData[] = [
       },
     ],
     speakerNotes:
-      'Xin chân thành cảm ơn thầy cô và các bạn đã lắng nghe. Sau đây, nhóm trân trọng mời cả lớp bước vào hoạt động mô phỏng hợp tác 10 phút để cùng trải nghiệm những quyết định đánh đổi nguồn lực trong duy trì căn cứ địa kháng chiến!',
+      'Xin chân thành cảm ơn thầy cô và các bạn đã lắng nghe. Sau đây, nhóm trân trọng mời cả lớp bước vào hoạt động thử thách trắc nghiệm cá nhân 10 câu hỏi để cùng ôn tập và thi đấu tốc độ về Đường lối kháng chiến toàn quốc 1946–1950!',
   },
 ];

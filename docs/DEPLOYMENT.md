@@ -35,8 +35,8 @@ Workflow không có khóa deploy Convex và không tự thay đổi backend. Sau
 
 ## Test trước buổi học
 
-- Mở link trên điện thoại, tạo phòng, quét QR và chọn đội.
-- Để trống sĩ số khi chưa biết; ứng dụng ghi nhận số người vào thực tế.
-- Thử hai khảo sát trong Bài học, mất mạng/vào lại, tạm dừng/tiếp tục và bốn lượt.
-- Xem demo dùng người chơi máy có nhãn rõ ràng; không tính máy thành số sinh viên tham gia thật.
+- Mở link trên điện thoại hoặc máy chiếu, tạo phòng trong "Chủ phòng", quét QR hoặc nhập mã 6 ký tự tại "Người chơi".
+- Để trống sĩ số khi chưa biết; ứng dụng ghi nhận số người vào thực tế (sức chứa đến 200 người).
+- Thử hai khảo sát trong Bài học, chuyển tiếp câu hỏi 10 câu, tính điểm chuẩn xác 1000 + tốc độ 250, kiểm tra mất mạng / vào lại khôi phục trạng thái.
+- Thử chế độ "Chơi thử ngay" độc lập không cần backend.
 - Mỗi trình duyệt giữ mã phiên riêng. Không chia sẻ khóa chủ phòng hoặc thông tin đăng nhập Convex.
