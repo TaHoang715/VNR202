@@ -339,26 +339,29 @@ describe('HTTP production static handler', () => {
       });
     });
 
-    // When client is built, default resolution serves client/dist/index.html
-    const res = await new Promise<{ status: number; headers: http.IncomingHttpHeaders; body: string }>(
-      (resolve, reject) => {
-        const req = http.request(
-          { host: '127.0.0.1', port: prodPort, path: '/?room=TEST12', method: 'GET' },
-          (r) => {
-            let b = '';
-            r.setEncoding('utf-8');
-            r.on('data', (c) => (b += c));
-            r.on('end', () => resolve({ status: r.statusCode ?? 0, headers: r.headers, body: b }));
-          }
-        );
-        req.on('error', reject);
-        req.end();
-      }
-    );
+    try {
+      // When client is built, default resolution serves client/dist/index.html
+      const res = await new Promise<{ status: number; headers: http.IncomingHttpHeaders; body: string }>(
+        (resolve, reject) => {
+          const req = http.request(
+            { host: '127.0.0.1', port: prodPort, path: '/?room=TEST12', method: 'GET' },
+            (r) => {
+              let b = '';
+              r.setEncoding('utf-8');
+              r.on('data', (c) => (b += c));
+              r.on('end', () => resolve({ status: r.statusCode ?? 0, headers: r.headers, body: b }));
+            }
+          );
+          req.on('error', reject);
+          req.end();
+        }
+      );
 
-    expect(res.status).toBe(200);
-    expect(res.headers['content-type']).toContain('text/html');
+      expect(res.status).toBe(200);
+      expect(res.headers['content-type']).toContain('text/html');
 
-    await new Promise<void>((resolve) => prodServer.close(() => resolve()));
+    } finally {
+      await new Promise<void>((resolve) => prodServer.close(() => resolve()));
+    }
   });
 });
