@@ -118,26 +118,71 @@ export const subscribe = query({
       ? players.find((p) => p.playerToken === token)
       : null;
 
-    // Build deterministic leaderboard:
-    // 1. Total score desc
-    // 2. Total time spent asc (faster is better)
-    // 3. Nickname asc
-    const sortedPlayers = [...players].sort((a, b) => {
-      if (b.totalScore !== a.totalScore) {
-        return b.totalScore - a.totalScore;
+    // Answers for current question in this epoch
+    let answeredCount = 0;
+    let myAnswerRecord: Doc<"quizAnswers"> | undefined;
+    const currentQuestionAnswersByToken = new Map<string, Doc<"quizAnswers">>();
+
+    if (room.currentQuestionIndex >= 1) {
+      const answersForQuestion = await ctx.db
+        .query("quizAnswers")
+        .withIndex("by_room_epoch_q", (q) =>
+          q
+            .eq("roomCode", roomCode)
+            .eq("epoch", room.epoch)
+            .eq("questionIndex", room.currentQuestionIndex)
+        )
+        .collect();
+
+      answeredCount = answersForQuestion.length;
+      for (const a of answersForQuestion) {
+        currentQuestionAnswersByToken.set(a.playerToken, a);
       }
-      if (a.totalTimeSpentMs !== b.totalTimeSpentMs) {
-        return a.totalTimeSpentMs - b.totalTimeSpentMs;
+      if (callingPlayer) {
+        myAnswerRecord = currentQuestionAnswersByToken.get(callingPlayer.playerToken);
       }
-      return a.nickname.localeCompare(b.nickname);
+    }
+
+    // Mask current-question score/correctCount/time contribution in snapshots until revealing/finished
+    const isPreReveal = room.phase === "question";
+
+    interface PlayerVisibleStats {
+      player: Doc<"quizPlayers">;
+      visibleScore: number;
+      visibleTimeSpentMs: number;
+      visibleCorrectCount: number;
+    }
+
+    const playerStats: PlayerVisibleStats[] = players.map((p) => {
+      const a = isPreReveal ? currentQuestionAnswersByToken.get(p.playerToken) : undefined;
+      return {
+        player: p,
+        visibleScore: a ? p.totalScore - a.pointsAwarded : p.totalScore,
+        visibleTimeSpentMs: a ? p.totalTimeSpentMs - a.timeTakenMs : p.totalTimeSpentMs,
+        visibleCorrectCount: a ? p.correctCount - (a.isCorrect ? 1 : 0) : p.correctCount,
+      };
     });
 
-    const leaderboard: QuizLeaderboardEntry[] = sortedPlayers.map((p, idx) => ({
-      id: p.playerId,
-      nickname: p.nickname,
-      totalScore: p.totalScore,
-      totalTimeSpentMs: p.totalTimeSpentMs,
-      correctCount: p.correctCount,
+    // Build deterministic leaderboard:
+    // 1. visibleScore desc
+    // 2. visibleTimeSpentMs asc (faster is better)
+    // 3. Nickname asc
+    const sortedStats = [...playerStats].sort((a, b) => {
+      if (b.visibleScore !== a.visibleScore) {
+        return b.visibleScore - a.visibleScore;
+      }
+      if (a.visibleTimeSpentMs !== b.visibleTimeSpentMs) {
+        return a.visibleTimeSpentMs - b.visibleTimeSpentMs;
+      }
+      return a.player.nickname.localeCompare(b.player.nickname);
+    });
+
+    const leaderboard: QuizLeaderboardEntry[] = sortedStats.map((st, idx) => ({
+      id: st.player.playerId,
+      nickname: st.player.nickname,
+      totalScore: st.visibleScore,
+      totalTimeSpentMs: st.visibleTimeSpentMs,
+      correctCount: st.visibleCorrectCount,
       rank: idx + 1,
     }));
 
@@ -158,27 +203,6 @@ export const subscribe = query({
       }
     }
 
-    // Answers for current question in this epoch
-    let answeredCount = 0;
-    let myAnswerRecord: Doc<"quizAnswers"> | undefined;
-
-    if (room.currentQuestionIndex >= 1) {
-      const answersForQuestion = await ctx.db
-        .query("quizAnswers")
-        .withIndex("by_room_epoch_q", (q) =>
-          q
-            .eq("roomCode", roomCode)
-            .eq("epoch", room.epoch)
-            .eq("questionIndex", room.currentQuestionIndex)
-        )
-        .collect();
-
-      answeredCount = answersForQuestion.length;
-      if (callingPlayer) {
-        myAnswerRecord = answersForQuestion.find((a) => a.playerToken === callingPlayer.playerToken);
-      }
-    }
-
     // Player personal state
     let myState = null;
     if (isHost) {
@@ -189,7 +213,10 @@ export const subscribe = query({
         myRank: 0,
       };
     } else if (callingPlayer) {
+      const myStat = playerStats.find((st) => st.player.playerId === callingPlayer.playerId);
       const myRank = leaderboard.findIndex((l) => l.id === callingPlayer.playerId) + 1;
+      const visibleMyScore = myStat ? myStat.visibleScore : callingPlayer.totalScore;
+
       myState = {
         isHost: false,
         hasAnsweredCurrent: Boolean(myAnswerRecord),
@@ -198,7 +225,7 @@ export const subscribe = query({
           room.phase === "revealing" || room.phase === "finished"
             ? myAnswerRecord?.pointsAwarded
             : undefined,
-        myScore: callingPlayer.totalScore,
+        myScore: visibleMyScore,
         myRank: myRank > 0 ? myRank : leaderboard.length + 1,
       };
     }
@@ -562,6 +589,15 @@ export const command = mutation({
       const playerToken = String(payload?.playerToken || "").trim();
       const questionIndex = Number(payload?.questionIndex);
       const answer = payload?.answer;
+      const epoch = payload?.epoch;
+
+      if (typeof epoch !== "number" || !Number.isInteger(epoch) || !Number.isFinite(epoch)) {
+        return { ok: false, error: "Yêu cầu mã phiên (epoch) hợp lệ" };
+      }
+
+      if (!Number.isInteger(questionIndex) || questionIndex < 1 || questionIndex > QUIZ_CONSTANTS.TOTAL_QUESTIONS) {
+        return { ok: false, error: "Chỉ số câu hỏi không hợp lệ" };
+      }
 
       const room = await ctx.db
         .query("quizRooms")
@@ -570,6 +606,10 @@ export const command = mutation({
 
       if (!room || room.phase !== "question") {
         return { ok: false, error: "Câu hỏi hiện tại không ở trạng thái nhận câu trả lời" };
+      }
+
+      if (room.epoch !== epoch) {
+        return { ok: false, error: "Phiên thi đấu (epoch) không khớp hoặc đã cũ" };
       }
 
       if (room.currentQuestionIndex !== questionIndex) {
@@ -685,8 +725,7 @@ export const command = mutation({
 
       return {
         ok: true,
-        isCorrect,
-        pointsAwarded: scoreResult.points,
+        acknowledged: true,
       };
     }
 

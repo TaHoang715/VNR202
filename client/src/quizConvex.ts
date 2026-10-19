@@ -78,6 +78,7 @@ export async function startOnlineQuiz(args: {
 
 export async function submitOnlineQuizAnswer(args: {
   roomCode: string;
+  epoch: number;
   playerToken: string;
   questionIndex: number;
   answer: unknown;
@@ -89,6 +90,7 @@ export async function submitOnlineQuizAnswer(args: {
     event: 'quiz:answer',
     payload: {
       roomCode: args.roomCode.trim().toUpperCase(),
+      epoch: args.epoch,
       playerToken: args.playerToken,
       questionIndex: args.questionIndex,
       answer: args.answer,

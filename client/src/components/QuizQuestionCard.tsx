@@ -221,7 +221,7 @@ export const QuizQuestionCard: React.FC<QuizQuestionCardProps> = ({
             {hasSubmitted ? (
               <span className="text-emerald-700 font-semibold flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                Đã ghi nhận câu trả lời. Đang chờ hết thời gian hoặc cả phòng nộp đủ...
+                Đã ghi nhận câu trả lời. Đang chờ công bố đáp án...
               </span>
             ) : (
               <span>Chọn hoặc sắp xếp câu trả lời rồi nhấn xác nhận.</span>

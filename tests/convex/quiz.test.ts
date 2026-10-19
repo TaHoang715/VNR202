@@ -179,25 +179,28 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
       payload: { roomCode, hostToken },
     });
 
-    // 1st submission from player A: succeeds
+    // 1st submission from player A: succeeds with acknowledgment only
     const ans1 = await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
       payload: {
         roomCode,
+        epoch: 1,
         playerToken: playerTokenA,
         questionIndex: 1,
         answer: 'b', // correct answer for Q1
       },
     });
     expect(ans1.ok).toBe(true);
-    expect(ans1.isCorrect).toBe(true);
-    expect(ans1.pointsAwarded).toBeGreaterThanOrEqual(1000);
+    expect(ans1.acknowledged).toBe(true);
+    expect((ans1 as any).isCorrect).toBeUndefined();
+    expect((ans1 as any).pointsAwarded).toBeUndefined();
 
     // 2nd submission from player A for same question: rejected
     const ansDup = await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
       payload: {
         roomCode,
+        epoch: 1,
         playerToken: playerTokenA,
         questionIndex: 1,
         answer: 'b',
@@ -211,6 +214,7 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
       event: 'quiz:answer',
       payload: {
         roomCode,
+        epoch: 1,
         playerToken: playerTokenB,
         questionIndex: 2,
         answer: ['vk-1', 'vk-2', 'vk-3'],
@@ -232,9 +236,14 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
     });
     const roomCode = createRes.roomCode;
 
+    // Join 2 players so Tran Thi B answering keeps room in 'question' phase
     await t.mutation(anyApi.quiz.command, {
       event: 'room:join',
       payload: { roomCode, nickname: 'Tran Thi B', playerToken, connectionId: 'c1' },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Hoc Vien 2', playerToken: make64Hex('3'), connectionId: 'c_other' },
     });
 
     await t.mutation(anyApi.quiz.command, {
@@ -244,7 +253,7 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
 
     await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
-      payload: { roomCode, playerToken, questionIndex: 1, answer: 'b' },
+      payload: { roomCode, epoch: 1, playerToken, questionIndex: 1, answer: 'b' },
     });
 
     // Reconnect with same playerToken and new connectionId
@@ -257,16 +266,36 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
     expect(reconnectRes.isReconnect).toBe(true);
     expect(reconnectRes.nickname).toBe('Tran Thi B');
 
-    // Query state
-    const sub = await t.query(anyApi.quiz.subscribe, {
+    // Query state while still in question phase: answered is restored, score masked
+    const subQ = await t.query(anyApi.quiz.subscribe, {
       roomCode,
       token: playerToken,
       connectionId: 'c2',
     });
 
-    expect(sub!.myState!.hasAnsweredCurrent).toBe(true);
-    expect(sub!.myState!.myAnswer).toBe('b');
-    expect(sub!.myState!.myScore).toBeGreaterThanOrEqual(1000);
+    expect(subQ!.myState!.hasAnsweredCurrent).toBe(true);
+    expect(subQ!.myState!.myAnswer).toBe('b');
+    expect(subQ!.myState!.myPointsAwarded).toBeUndefined();
+    expect(subQ!.myState!.myScore).toBe(0);
+
+    // Resolve question timer into reveal phase
+    await t.mutation(anyApi.quizScheduler.resolveQuestionTimer, {
+      roomCode,
+      epoch: 1,
+      questionIndex: 1,
+      generation: 2,
+    });
+
+    // Query state in reveal phase: points and score are now unmasked
+    const subReveal = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: playerToken,
+      connectionId: 'c2',
+    });
+
+    expect(subReveal!.room.phase).toBe('revealing');
+    expect(subReveal!.myState!.myPointsAwarded).toBeGreaterThanOrEqual(1000);
+    expect(subReveal!.myState!.myScore).toBeGreaterThanOrEqual(1000);
   });
 
   // ─── 6. Timers, Schedulers & Lifecycle (25s question -> 8s reveal) ────
@@ -368,7 +397,7 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
 
     await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
-      payload: { roomCode, playerToken: p1, questionIndex: 1, answer: 'b' },
+      payload: { roomCode, epoch: 1, playerToken: p1, questionIndex: 1, answer: 'b' },
     });
 
     // Replay
@@ -439,15 +468,15 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
     // All 3 answer question 1 correctly, but at different times
     await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
-      payload: { roomCode, playerToken: pA, questionIndex: 1, answer: 'b' },
+      payload: { roomCode, epoch: 1, playerToken: pA, questionIndex: 1, answer: 'b' },
     });
     await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
-      payload: { roomCode, playerToken: pB, questionIndex: 1, answer: 'b' },
+      payload: { roomCode, epoch: 1, playerToken: pB, questionIndex: 1, answer: 'b' },
     });
     await t.mutation(anyApi.quiz.command, {
       event: 'quiz:answer',
-      payload: { roomCode, playerToken: pC, questionIndex: 1, answer: 'b' },
+      payload: { roomCode, epoch: 1, playerToken: pC, questionIndex: 1, answer: 'b' },
     });
 
     const sub = await t.query(anyApi.quiz.subscribe, {
@@ -581,6 +610,7 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
         event: 'quiz:answer',
         payload: {
           roomCode,
+          epoch: 1,
           playerToken: token,
           questionIndex: 1,
           answer: idx % 2 === 0 ? 'b' : 'a', // alternating correct and incorrect
@@ -603,5 +633,260 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
     expect(sub!.room.phase).toBe('revealing');
     expect(sub!.room.answeredCount).toBe(NUM_PLAYERS);
     expect(sub!.leaderboard).toHaveLength(NUM_PLAYERS);
+  });
+
+  // ─── 11. Stale Replay Epoch Regression ─────────────────────────────────
+  it('rejects stale answers from previous replay epoch and missing/invalid epoch', async () => {
+    const t = convexTest(schema, modules);
+    const hostToken = make64Hex('1');
+    const p1 = make64Hex('2');
+
+    const createRes = await t.mutation(anyApi.quiz.command, {
+      event: 'room:create',
+      payload: { hostToken },
+    });
+    const roomCode = createRes.roomCode;
+
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Nguoi Choi 1', playerToken: p1 },
+    });
+
+    // Start quiz in epoch 1
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:start',
+      payload: { roomCode, hostToken },
+    });
+
+    // Host replays quiz -> epoch increments to 2
+    const replayRes = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:replay',
+      payload: { roomCode, hostToken },
+    });
+    expect(replayRes.ok).toBe(true);
+    expect(replayRes.epoch).toBe(2);
+
+    // Host starts quiz in epoch 2 (question 1)
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:start',
+      payload: { roomCode, hostToken },
+    });
+
+    // 1. Missing epoch -> rejected
+    const ansMissingEpoch = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        playerToken: p1,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(ansMissingEpoch.ok).toBe(false);
+    expect(ansMissingEpoch.error).toContain('epoch');
+
+    // 2. Invalid epoch (string, NaN, float) -> rejected
+    const ansInvalidEpoch = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: '2' as any,
+        playerToken: p1,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(ansInvalidEpoch.ok).toBe(false);
+    expect(ansInvalidEpoch.error).toContain('epoch');
+
+    // 3. Stale epoch: 1 (from previous replay) -> rejected
+    const ansStaleEpoch = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: p1,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(ansStaleEpoch.ok).toBe(false);
+    expect(ansStaleEpoch.error).toContain('Phiên thi đấu (epoch) không khớp hoặc đã cũ');
+
+    // Verify NO answers recorded in epoch 2 yet
+    const subDuring = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: p1,
+      connectionId: 'c1',
+    });
+    expect(subDuring!.myState!.hasAnsweredCurrent).toBe(false);
+    expect(subDuring!.room.answeredCount).toBe(0);
+
+    // 4. Valid matching epoch: 2 -> accepted!
+    const ansValid = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 2,
+        playerToken: p1,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(ansValid.ok).toBe(true);
+    expect(ansValid.acknowledged).toBe(true);
+  });
+
+  // ─── 12. Pre-Reveal Security & Leak Prevention ─────────────────────────
+  it('strictly prevents pre-reveal leaks in mutation responses and public snapshots', async () => {
+    const t = convexTest(schema, modules);
+    const hostToken = make64Hex('1');
+    const pRight = make64Hex('2');
+    const pWrong = make64Hex('3');
+    const pPending = make64Hex('4');
+
+    const createRes = await t.mutation(anyApi.quiz.command, {
+      event: 'room:create',
+      payload: { hostToken },
+    });
+    const roomCode = createRes.roomCode;
+
+    // Join 3 players: 2 will answer, 1 remains pending so room stays in 'question' phase
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Nguoi Dung', playerToken: pRight },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Nguoi Sai', playerToken: pWrong },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Nguoi Cho', playerToken: pPending },
+    });
+
+    // Start Question 1 (epoch 1)
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:start',
+      payload: { roomCode, hostToken },
+    });
+
+    // 1. Player Right answers correctly
+    const resRight = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: pRight,
+        questionIndex: 1,
+        answer: 'b', // correct
+      },
+    });
+    expect(resRight.ok).toBe(true);
+    expect(resRight.acknowledged).toBe(true);
+    // CRITICAL: Mutation must NOT return isCorrect or pointsAwarded!
+    expect((resRight as any).isCorrect).toBeUndefined();
+    expect((resRight as any).pointsAwarded).toBeUndefined();
+
+    // 2. Player Wrong answers incorrectly
+    const resWrong = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: pWrong,
+        questionIndex: 1,
+        answer: 'a', // incorrect
+      },
+    });
+    expect(resWrong.ok).toBe(true);
+    expect(resWrong.acknowledged).toBe(true);
+    expect((resWrong as any).isCorrect).toBeUndefined();
+    expect((resWrong as any).pointsAwarded).toBeUndefined();
+
+    // 3. Inspect public snapshot as Host (on projector) during 'question' phase
+    const subHost = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: hostToken,
+      connectionId: 'conn_h',
+    });
+    expect(subHost!.room.phase).toBe('question');
+    expect(subHost!.revealData).toBeNull();
+    expect(subHost!.currentQuestion).not.toBeNull();
+    expect((subHost!.currentQuestion as any).correctOptionId).toBeUndefined();
+
+    // CRITICAL: Public leaderboard must NOT leak points before reveal!
+    // Every player must display totalScore 0 and correctCount 0
+    for (const entry of subHost!.leaderboard) {
+      expect(entry.totalScore).toBe(0);
+      expect(entry.correctCount).toBe(0);
+      expect(entry.totalTimeSpentMs).toBe(0);
+    }
+
+    // 4. Inspect private snapshot as Player Right (who answered correctly)
+    const subRight = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: pRight,
+      connectionId: 'conn_r',
+    });
+    expect(subRight!.myState!.hasAnsweredCurrent).toBe(true);
+    expect(subRight!.myState!.myAnswer).toBe('b');
+    expect(subRight!.myState!.myPointsAwarded).toBeUndefined();
+    expect(subRight!.myState!.myScore).toBe(0); // Masked to previous total (0)!
+    expect(subRight!.revealData).toBeNull();
+
+    // 5. Inspect private snapshot as Player Wrong (who answered incorrectly)
+    const subWrong = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: pWrong,
+      connectionId: 'conn_w',
+    });
+    expect(subWrong!.myState!.hasAnsweredCurrent).toBe(true);
+    expect(subWrong!.myState!.myAnswer).toBe('a');
+    expect(subWrong!.myState!.myPointsAwarded).toBeUndefined();
+    expect(subWrong!.myState!.myScore).toBe(0);
+    expect(subWrong!.revealData).toBeNull();
+
+    // 6. Transition to reveal phase (time expires)
+    await t.mutation(anyApi.quizScheduler.resolveQuestionTimer, {
+      roomCode,
+      epoch: 1,
+      questionIndex: 1,
+      generation: 2,
+    });
+
+    // 7. Post-reveal inspection: Scores, ranks, and explanation now unmasked!
+    const subHostRevealed = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: hostToken,
+      connectionId: 'conn_h',
+    });
+    expect(subHostRevealed!.room.phase).toBe('revealing');
+    expect(subHostRevealed!.revealData).not.toBeNull();
+    expect(subHostRevealed!.revealData!.correctOptionId).toBe('b');
+
+    const rightEntry = subHostRevealed!.leaderboard.find((l) => l.nickname === 'Nguoi Dung')!;
+    const wrongEntry = subHostRevealed!.leaderboard.find((l) => l.nickname === 'Nguoi Sai')!;
+
+    expect(rightEntry.totalScore).toBeGreaterThanOrEqual(1000);
+    expect(rightEntry.correctCount).toBe(1);
+    expect(wrongEntry.totalScore).toBe(0);
+    expect(wrongEntry.correctCount).toBe(0);
+
+    const subRightRevealed = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: pRight,
+      connectionId: 'conn_r',
+    });
+    expect(subRightRevealed!.myState!.myPointsAwarded).toBeGreaterThanOrEqual(1000);
+    expect(subRightRevealed!.myState!.myScore).toBeGreaterThanOrEqual(1000);
+
+    const subWrongRevealed = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: pWrong,
+      connectionId: 'conn_w',
+    });
+    expect(subWrongRevealed!.myState!.myPointsAwarded).toBe(0);
+    expect(subWrongRevealed!.myState!.myScore).toBe(0);
   });
 });

@@ -149,6 +149,7 @@ export const QuizPlayerView: React.FC = () => {
 
   const handleSubmitAnswer = async () => {
     if (!joinedRoomCode || !playerToken || !data?.currentQuestion || isSubmitting) return;
+    if (typeof data?.epoch !== 'number') return;
 
     const answer =
       data.currentQuestion.type === 'order' ? orderSelection : selectedChoice;
@@ -158,6 +159,7 @@ export const QuizPlayerView: React.FC = () => {
     try {
       const res = await submitOnlineQuizAnswer({
         roomCode: joinedRoomCode,
+        epoch: data.epoch,
         playerToken,
         questionIndex: data.currentQuestion.id,
         answer,
