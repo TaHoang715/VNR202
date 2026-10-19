@@ -8,10 +8,20 @@
   ],
   "scripts": {
     "build": "npm run build --workspace=server && npm run build --workspace=client",
-    "typecheck": "npm run typecheck --workspace=server && npm run typecheck --workspace=client",
+    "typecheck": "npm run typecheck --workspace=server && npm run typecheck --workspace=client && npm run typecheck:convex",
     "test": "npm run test --workspace=server",
+    "test:convex": "vitest run",
+    "test:all": "npm run test --workspace=server && npm run test:convex",
+    "typecheck:convex": "tsc -p convex/tsconfig.json --noEmit",
     "start": "npm run start --workspace=server",
     "dev:server": "npm run dev --workspace=server",
     "dev:client": "npm run dev --workspace=client"
+  },
+  "dependencies": {
+    "convex": "^1.47.0"
+  },
+  "devDependencies": {
+    "convex-test": "^0.0.62",
+    "vitest": "^1.6.1"
   }
 }
