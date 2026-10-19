@@ -335,31 +335,47 @@ export const QuizPlayerView: React.FC = () => {
             Vui lòng nhìn lên màn chiếu của chủ phòng. Trò chơi sẽ tự động bắt đầu ngay khi chủ phòng bấm lệnh xuất phát.
           </div>
 
-          {/* Embedded Lesson Poll (if active during lobby) */}
-          {poll && poll.active && (
+          {/* Embedded Lesson Poll (Active or results of closed poll) */}
+          {poll && (
             <div className="p-4 rounded-xl border-2 border-[#c99738] bg-[#fdfcf9] text-left space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#c99738]">
-                <Vote className="w-4 h-4" />
-                <span>Khảo sát ý kiến lớp học (Bắt đầu sớm):</span>
+              <div className="flex items-center justify-between text-xs font-bold text-[#c99738]">
+                <div className="flex items-center gap-2">
+                  <Vote className="w-4 h-4" />
+                  <span>
+                    {poll.active ? 'Khảo sát ý kiến lớp học (Bắt đầu sớm):' : 'Kết quả khảo sát lớp học (Đã đóng):'}
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-[#6e6761]">
+                  {poll.totalVotes} phản hồi
+                </span>
               </div>
               <p className="text-xs font-semibold text-[#171513]">{poll.question}</p>
               <div className="space-y-1.5">
                 {poll.options.map((opt, oIdx) => {
                   const isVoted = poll.userVoteIndex === oIdx;
+                  const count = poll.voteCounts[oIdx] || 0;
+                  const pct = poll.totalVotes > 0 ? Math.round((count / poll.totalVotes) * 100) : 0;
                   return (
                     <button
                       key={oIdx}
                       type="button"
                       onClick={() => handleVotePoll(oIdx)}
-                      disabled={isVotingPoll}
+                      disabled={isVotingPoll || !poll.active}
                       className={`w-full p-2.5 rounded-lg text-xs text-left font-medium border transition-all flex items-center justify-between ${
                         isVoted
                           ? 'bg-[#193b32] text-white border-[#193b32]'
                           : 'bg-white text-[#171513] border-[#dfd6c6] hover:bg-[#ede7dc]'
-                      }`}
+                      } ${!poll.active ? 'cursor-default' : ''}`}
                     >
                       <span>{opt}</span>
-                      {isVoted && <CheckCircle2 className="w-4 h-4 text-white" />}
+                      <div className="flex items-center gap-2">
+                        {!poll.active && (
+                          <span className="text-[11px] font-mono font-semibold opacity-80">
+                            {count} ({pct}%)
+                          </span>
+                        )}
+                        {isVoted && <CheckCircle2 className="w-4 h-4 text-white" />}
+                      </div>
                     </button>
                   );
                 })}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SLIDES, SlideData } from '../data/slides';
 import { SOURCES } from '../data/sources';
 import { getSocket } from '../socket';
-import { createOnlineQuizPoll, isQuizConvexAvailable } from '../quizConvex';
+import { createOnlineQuizPoll, closeOnlineQuizPoll, isQuizConvexAvailable } from '../quizConvex';
 import { AIUsageRecord } from '../components/AIUsageRecord';
 import { PollSnapshot } from '../types';
 import { ViewType } from '../components/Navbar';
@@ -558,13 +558,23 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
               </div>
               <div className="text-right pt-1">
                 <button
-                  onClick={() =>
-                    getSocket().emit('poll:close', {
-                      roomCode: localStorage.getItem('vnr202_host_room'),
-                      hostToken: localStorage.getItem('vnr202_host_token'),
-                      pollId: poll.id,
-                    }, () => {})
-                  }
+                  onClick={async () => {
+                    const quizRoomCode = localStorage.getItem('vnr202_quiz_host_room');
+                    const quizHostToken = localStorage.getItem('vnr202_quiz_host_token');
+                    if (quizRoomCode && quizHostToken && isQuizConvexAvailable()) {
+                      await closeOnlineQuizPoll({
+                        roomCode: quizRoomCode,
+                        hostToken: quizHostToken,
+                        pollId: poll.id,
+                      });
+                    } else {
+                      getSocket().emit('poll:close', {
+                        roomCode: localStorage.getItem('vnr202_host_room'),
+                        hostToken: localStorage.getItem('vnr202_host_token'),
+                        pollId: poll.id,
+                      }, () => {});
+                    }
+                  }}
                   className="px-3 py-1 rounded-full text-xs font-semibold bg-[#9d242b] text-white hover:bg-[#7a171d]"
                 >
                   Đóng cuộc khảo sát

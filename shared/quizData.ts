@@ -73,6 +73,10 @@ export const QUIZ_CONSTANTS = {
   MAX_PLAYERS: 200,
   MAX_NICKNAME_LENGTH: 24,
   MAX_ROOMS: 50,
+  MAX_POLL_QUESTION_LENGTH: 300,
+  MAX_POLL_OPTIONS: 6,
+  MAX_POLL_OPTION_LENGTH: 150,
+  MAX_POLLS_PER_ROOM: 5,
 } as const;
 
 export function calculateQuestionScore(

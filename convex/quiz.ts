@@ -230,21 +230,21 @@ export const subscribe = query({
       };
     }
 
-    // Active poll for room
-    const activePoll = await ctx.db
+    // Active or last closed poll for room (preserves results after poll is closed)
+    const latestPoll = await ctx.db
       .query("quizPolls")
       .withIndex("by_room_created", (q) => q.eq("roomCode", roomCode))
       .order("desc")
       .first();
 
     let pollSnapshot = null;
-    if (activePoll && activePoll.active) {
+    if (latestPoll) {
       const pollVotes = await ctx.db
         .query("quizPollVotes")
-        .withIndex("by_poll", (q) => q.eq("pollId", activePoll.pollId))
+        .withIndex("by_poll", (q) => q.eq("pollId", latestPoll.pollId))
         .collect();
 
-      const voteCounts = new Array(activePoll.options.length).fill(0);
+      const voteCounts = new Array(latestPoll.options.length).fill(0);
       let userVoteIndex: number | null = null;
 
       for (const v of pollVotes) {
@@ -257,12 +257,12 @@ export const subscribe = query({
       }
 
       pollSnapshot = {
-        id: activePoll.pollId,
-        question: activePoll.question,
-        options: activePoll.options,
+        id: latestPoll.pollId,
+        question: latestPoll.question,
+        options: latestPoll.options,
         voteCounts,
         totalVotes: pollVotes.length,
-        active: activePoll.active,
+        active: latestPoll.active,
         userVoteIndex,
       };
     }
@@ -324,25 +324,52 @@ export const command = mutation({
         return { ok: false, error: "hostToken không hợp lệ (phải là chuỗi hex 64 ký tự)" };
       }
 
-      // Check max rooms cap
-      const activeRooms = await ctx.db
+      // Check max rooms cap across all active phases
+      const lobbyRooms = await ctx.db
         .query("quizRooms")
         .withIndex("by_phase", (q) => q.eq("phase", "lobby"))
         .collect();
+      const questionRooms = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_phase", (q) => q.eq("phase", "question"))
+        .collect();
+      const revealingRooms = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_phase", (q) => q.eq("phase", "revealing"))
+        .collect();
+      const finishedRooms = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_phase", (q) => q.eq("phase", "finished"))
+        .collect();
 
-      if (activeRooms.length >= QUIZ_CONSTANTS.MAX_ROOMS) {
-        return { ok: false, error: "Hệ thống đang quá tải phòng chờ. Vui lòng thử lại sau." };
+      const totalActiveRooms =
+        lobbyRooms.length + questionRooms.length + revealingRooms.length + finishedRooms.length;
+
+      if (totalActiveRooms >= QUIZ_CONSTANTS.MAX_ROOMS) {
+        return { ok: false, error: "Hệ thống đang quá tải phòng thi đấu. Vui lòng thử lại sau." };
       }
 
-      // Generate unique room code
-      let roomCode = generateRoomCode();
+      // Generate unique room code with at most 5 attempts
+      let roomCode = "";
+      let uniqueFound = false;
       for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = generateRoomCode();
         const existing = await ctx.db
           .query("quizRooms")
-          .withIndex("by_code", (q) => q.eq("code", roomCode))
+          .withIndex("by_code", (q) => q.eq("code", candidate))
           .first();
-        if (!existing) break;
-        roomCode = generateRoomCode();
+        if (!existing) {
+          roomCode = candidate;
+          uniqueFound = true;
+          break;
+        }
+      }
+
+      if (!uniqueFound) {
+        return {
+          ok: false,
+          error: "Không thể tạo mã phòng duy nhất sau 5 lần thử. Vui lòng thử lại sau.",
+        };
       }
 
       const classSize =
@@ -553,6 +580,15 @@ export const command = mutation({
 
       if (room.phase !== "lobby") {
         return { ok: false, error: "Trò chơi đã bắt đầu hoặc đã kết thúc" };
+      }
+
+      // Close any active polls for this room on quiz start
+      const activePolls = await ctx.db
+        .query("quizPolls")
+        .withIndex("by_room", (q) => q.eq("roomCode", roomCode))
+        .collect();
+      for (const p of activePolls) {
+        if (p.active) await ctx.db.patch(p._id, { active: false });
       }
 
       const nextGeneration = room.generation + 1;
@@ -805,12 +841,30 @@ export const command = mutation({
         .withIndex("by_code", (q) => q.eq("code", roomCode))
         .first();
 
-      if (!room || room.hostToken !== hostToken) {
-        return { ok: false, error: "Không có quyền thực hiện" };
+      if (!room || room.hostToken !== hostToken || room.phase === "closed") {
+        return { ok: false, error: "Không có quyền thực hiện hoặc phòng đã đóng" };
       }
 
       const nextEpoch = room.epoch + 1;
       const nextGeneration = room.generation + 1;
+
+      // Clean up previous epoch answers to keep bounded TTL and prevent unbounded storage
+      const oldAnswers = await ctx.db
+        .query("quizAnswers")
+        .withIndex("by_room", (q) => q.eq("roomCode", roomCode))
+        .collect();
+      for (const a of oldAnswers) {
+        await ctx.db.delete(a._id);
+      }
+
+      // Close any active polls on replay
+      const activePolls = await ctx.db
+        .query("quizPolls")
+        .withIndex("by_room", (q) => q.eq("roomCode", roomCode))
+        .collect();
+      for (const p of activePolls) {
+        if (p.active) await ctx.db.patch(p._id, { active: false });
+      }
 
       await ctx.db.patch(room._id, {
         phase: "lobby",
@@ -854,6 +908,15 @@ export const command = mutation({
         return { ok: false, error: "Không có quyền đóng phòng" };
       }
 
+      // Close any active polls on room close
+      const activePolls = await ctx.db
+        .query("quizPolls")
+        .withIndex("by_room", (q) => q.eq("roomCode", roomCode))
+        .collect();
+      for (const p of activePolls) {
+        if (p.active) await ctx.db.patch(p._id, { active: false });
+      }
+
       await ctx.db.patch(room._id, {
         phase: "closed",
         generation: room.generation + 1,
@@ -867,7 +930,6 @@ export const command = mutation({
     if (event === "presence:heartbeat") {
       const roomCode = String(payload?.roomCode || "").trim().toUpperCase();
       const token = String(payload?.token || "").trim();
-      const isHost = Boolean(payload?.isHost);
       const connectionId = isValidConnectionId(payload?.connectionId)
         ? payload.connectionId.trim()
         : "conn_" + Math.random().toString(36).substring(2, 8);
@@ -875,6 +937,35 @@ export const command = mutation({
       if (!is64Hex(token)) {
         return { ok: false, error: "token không hợp lệ" };
       }
+
+      const room = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_code", (q) => q.eq("code", roomCode))
+        .first();
+
+      if (!room || room.phase === "closed") {
+        return { ok: false, error: "Phòng không tồn tại hoặc đã đóng" };
+      }
+
+      // Authenticate token: either room.hostToken or registered playerToken in this room
+      const isActualHost = room.hostToken === token;
+      let existingPlayer: Doc<"quizPlayers"> | null = null;
+
+      if (!isActualHost) {
+        existingPlayer = await ctx.db
+          .query("quizPlayers")
+          .withIndex("by_room_token", (q) => q.eq("roomCode", roomCode).eq("playerToken", token))
+          .first();
+
+        if (!existingPlayer) {
+          return {
+            ok: false,
+            error: "Mã xác thực không thuộc về chủ phòng hoặc người chơi trong phòng này",
+          };
+        }
+      }
+
+      const derivedIsHost = isActualHost;
 
       const presence = await ctx.db
         .query("quizPresence")
@@ -885,6 +976,7 @@ export const command = mutation({
         await ctx.db.patch(presence._id, {
           lastHeartbeat: now,
           connectionId,
+          isHost: derivedIsHost,
         });
       } else {
         await ctx.db.insert("quizPresence", {
@@ -892,25 +984,25 @@ export const command = mutation({
           token,
           connectionId,
           lastHeartbeat: now,
-          isHost,
+          isHost: derivedIsHost,
         });
       }
 
-      if (!isHost) {
-        const player = await ctx.db
-          .query("quizPlayers")
-          .withIndex("by_room_token", (q) => q.eq("roomCode", roomCode).eq("playerToken", token))
-          .first();
-        if (player) {
-          await ctx.db.patch(player._id, {
-            connected: true,
-            lastHeartbeat: now,
-            connectionId,
-          });
-        }
+      if (derivedIsHost) {
+        await ctx.db.patch(room._id, {
+          hostLastHeartbeat: now,
+          hostConnectionId: connectionId,
+          lastActivity: now,
+        });
+      } else if (existingPlayer) {
+        await ctx.db.patch(existingPlayer._id, {
+          connected: true,
+          lastHeartbeat: now,
+          connectionId,
+        });
       }
 
-      return { ok: true };
+      return { ok: true, isHost: derivedIsHost };
     }
 
     // ─── 9. Poll Integration: Create Poll ───────────────────────────────
@@ -919,7 +1011,7 @@ export const command = mutation({
       const hostToken = String(payload?.hostToken || "").trim();
       const question = String(payload?.question || "").trim();
       const options = Array.isArray(payload?.options)
-        ? payload.options.map((o: any) => String(o).trim())
+        ? payload.options.map((o: any) => String(o || "").trim())
         : [];
 
       const room = await ctx.db
@@ -927,23 +1019,54 @@ export const command = mutation({
         .withIndex("by_code", (q) => q.eq("code", roomCode))
         .first();
 
-      if (!room || room.hostToken !== hostToken) {
+      if (!room || room.phase === "closed") {
+        return { ok: false, error: "Phòng không tồn tại hoặc đã đóng" };
+      }
+
+      if (room.hostToken !== hostToken) {
         return { ok: false, error: "Không có quyền tạo khảo sát" };
       }
 
-      if (!question || options.length < 2) {
+      if (
+        !question ||
+        question.length < 5 ||
+        question.length > QUIZ_CONSTANTS.MAX_POLL_QUESTION_LENGTH ||
+        options.length < 2 ||
+        options.length > QUIZ_CONSTANTS.MAX_POLL_OPTIONS ||
+        options.some(
+          (o: string) =>
+            !o || o.length < 1 || o.length > QUIZ_CONSTANTS.MAX_POLL_OPTION_LENGTH
+        )
+      ) {
         return { ok: false, error: "Câu hỏi hoặc các lựa chọn khảo sát không hợp lệ" };
       }
 
-      // Close prior active polls for this room
+      // Close prior active polls for this room and prune old polls to keep bounded retention
       const existingPolls = await ctx.db
         .query("quizPolls")
-        .withIndex("by_room", (q) => q.eq("roomCode", roomCode))
+        .withIndex("by_room_created", (q) => q.eq("roomCode", roomCode))
         .collect();
 
       for (const ep of existingPolls) {
         if (ep.active) {
           await ctx.db.patch(ep._id, { active: false });
+        }
+      }
+
+      if (existingPolls.length >= QUIZ_CONSTANTS.MAX_POLLS_PER_ROOM) {
+        const pollsToDelete = existingPolls.slice(
+          0,
+          existingPolls.length - (QUIZ_CONSTANTS.MAX_POLLS_PER_ROOM - 1)
+        );
+        for (const oldPoll of pollsToDelete) {
+          const votes = await ctx.db
+            .query("quizPollVotes")
+            .withIndex("by_poll", (q) => q.eq("pollId", oldPoll.pollId))
+            .collect();
+          for (const v of votes) {
+            await ctx.db.delete(v._id);
+          }
+          await ctx.db.delete(oldPoll._id);
         }
       }
 
@@ -967,7 +1090,29 @@ export const command = mutation({
       const roomCode = String(payload?.roomCode || "").trim().toUpperCase();
       const playerToken = String(payload?.playerToken || "").trim();
       const pollId = String(payload?.pollId || "").trim();
-      const optionIndex = Number(payload?.optionIndex);
+      const rawOptionIndex = payload?.optionIndex;
+
+      if (!is64Hex(playerToken)) {
+        return { ok: false, error: "playerToken không hợp lệ" };
+      }
+
+      const room = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_code", (q) => q.eq("code", roomCode))
+        .first();
+
+      if (!room || room.phase === "closed") {
+        return { ok: false, error: "Phòng không tồn tại hoặc đã đóng" };
+      }
+
+      const player = await ctx.db
+        .query("quizPlayers")
+        .withIndex("by_room_token", (q) => q.eq("roomCode", roomCode).eq("playerToken", playerToken))
+        .first();
+
+      if (!player) {
+        return { ok: false, error: "Người chơi chưa tham gia phòng thi đấu này" };
+      }
 
       const poll = await ctx.db
         .query("quizPolls")
@@ -978,9 +1123,17 @@ export const command = mutation({
         return { ok: false, error: "Khảo sát không tồn tại hoặc đã đóng" };
       }
 
-      if (optionIndex < 0 || optionIndex >= poll.options.length) {
+      if (
+        typeof rawOptionIndex !== "number" ||
+        !Number.isInteger(rawOptionIndex) ||
+        !Number.isFinite(rawOptionIndex) ||
+        rawOptionIndex < 0 ||
+        rawOptionIndex >= poll.options.length
+      ) {
         return { ok: false, error: "Lựa chọn khảo sát không hợp lệ" };
       }
+
+      const optionIndex = rawOptionIndex;
 
       const existingVote = await ctx.db
         .query("quizPollVotes")
@@ -1019,8 +1172,8 @@ export const command = mutation({
         .withIndex("by_code", (q) => q.eq("code", roomCode))
         .first();
 
-      if (!room || room.hostToken !== hostToken) {
-        return { ok: false, error: "Không có quyền đóng khảo sát" };
+      if (!room || room.hostToken !== hostToken || room.phase === "closed") {
+        return { ok: false, error: "Không có quyền đóng khảo sát hoặc phòng đã đóng" };
       }
 
       const poll = await ctx.db
@@ -1028,9 +1181,15 @@ export const command = mutation({
         .withIndex("by_pollId", (q) => q.eq("pollId", pollId))
         .first();
 
-      if (poll) {
+      if (!poll || poll.roomCode !== roomCode) {
+        return { ok: false, error: "Khảo sát không tồn tại trong phòng thi này" };
+      }
+
+      if (poll.active) {
         await ctx.db.patch(poll._id, { active: false });
       }
+
+      await ctx.db.patch(room._id, { lastActivity: now });
 
       return { ok: true };
     }

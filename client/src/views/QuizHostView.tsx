@@ -24,6 +24,7 @@ import {
   AlertCircle,
   ExternalLink,
   Medal,
+  Vote,
 } from 'lucide-react';
 
 export const QuizHostView: React.FC = () => {
@@ -241,7 +242,7 @@ export const QuizHostView: React.FC = () => {
     );
   }
 
-  const { room, currentQuestion, revealData, leaderboard } = data;
+  const { room, currentQuestion, revealData, leaderboard, poll } = data;
   const joinUrl = buildRoomJoinUrl(getDefaultJoinBaseUrl(), room.code);
 
   // ─── 2. SẢNH CHỜ CHO MÀN CHIẾU (LOBBY SCREEN) ─────────────────────────
@@ -323,6 +324,37 @@ export const QuizHostView: React.FC = () => {
                 )}
               </div>
             </div>
+
+            {/* Embedded Lesson Poll (Active or results of closed poll) */}
+            {poll && (
+              <div className="p-4 rounded-xl border border-[#c99738] bg-[#fdfcf9] space-y-2 text-xs">
+                <div className="flex items-center justify-between text-[#c99738] font-bold">
+                  <div className="flex items-center gap-1.5">
+                    <Vote className="w-4 h-4" />
+                    <span>{poll.active ? 'Khảo sát lớp đang diễn ra:' : 'Kết quả khảo sát lớp (Đã kết thúc):'}</span>
+                  </div>
+                  <span className="font-mono text-[#6e6761]">{poll.totalVotes} lượt phản hồi</span>
+                </div>
+                <div className="font-semibold text-[#171513]">{poll.question}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {poll.options.map((opt, i) => {
+                    const count = poll.voteCounts[i] || 0;
+                    const pct = poll.totalVotes > 0 ? Math.round((count / poll.totalVotes) * 100) : 0;
+                    return (
+                      <div key={i} className="p-2 rounded-lg bg-white border border-[#dfd6c6] space-y-1">
+                        <div className="flex justify-between text-[11px] font-medium text-[#171513]">
+                          <span className="truncate">{opt}</span>
+                          <span className="font-mono font-bold text-[#193b32] ml-2">{count} ({pct}%)</span>
+                        </div>
+                        <div className="w-full bg-[#ede7dc] h-1.5 rounded-full overflow-hidden">
+                          <div className="bg-[#193b32] h-full" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Host Action Buttons */}
             <div className="pt-2 flex flex-wrap items-center gap-3">
