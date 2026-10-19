@@ -27,6 +27,8 @@ jobs:
       - name: Verify isolated backend target
         run: test "$VITE_CONVEX_URL" = "https://terrific-labrador-176.convex.cloud"
       - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
       - run: npm run build --workspace=client
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4

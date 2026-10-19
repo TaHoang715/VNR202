@@ -42,8 +42,10 @@ export type Doc<TableName extends TableNames> = DocumentByName<
  *
  * IDs are just strings at runtime, but this type can be used to distinguish them from other
  * strings when type checking.
+ *
+ * @typeParam TableName - A string literal type of the table name (like "users").
  */
-export type Id<TableName extends TableNames = TableNames> =
+export type Id<TableName extends TableNames | SystemTableNames> =
   GenericId<TableName>;
 
 /**

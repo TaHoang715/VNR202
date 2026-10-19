@@ -8,19 +8,22 @@
  * @module
  */
 
+import type * as engine from "../engine.js";
+import type * as game from "../game.js";
+import type * as scheduler from "../scheduler.js";
+import type * as types from "../types.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as engine from "../engine.js";
-import type * as game from "../game.js";
-import type * as scheduler from "../scheduler.js";
 
 declare const fullApi: ApiFromModules<{
   engine: typeof engine;
   game: typeof game;
   scheduler: typeof scheduler;
+  types: typeof types;
 }>;
 
 /**
