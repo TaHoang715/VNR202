@@ -167,13 +167,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       },
       {
         id: 'vk-3',
-        text: 'Tác phẩm "Kháng chiến nhất định thắng lợi" của Tổng Bí thư Trường Chinh (đầu 1947)',
+        text: 'Tác phẩm "Kháng chiến nhất định thắng lợi" của Tổng Bí thư Trường Chinh (xuất bản tháng 9/1947)',
         targetPosition: 3,
       },
     ],
     correctOrderIds: ['vk-1', 'vk-2', 'vk-3'],
     explanation:
-      'Đường lối kháng chiến toàn quốc được hình thành và hoàn chỉnh qua 3 văn kiện nối tiếp: Chỉ thị "Toàn dân kháng chiến" (12/12/1946) -> "Lời kêu gọi Toàn quốc kháng chiến" (19/12/1946) -> Tác phẩm "Kháng chiến nhất định thắng lợi" (đầu năm 1947).',
+      'Đường lối kháng chiến toàn quốc được hình thành và hoàn chỉnh qua 3 văn kiện nối tiếp: Chỉ thị "Toàn dân kháng chiến" (12/12/1946) -> "Lời kêu gọi Toàn quốc kháng chiến" (19/12/1946) -> Tác phẩm "Kháng chiến nhất định thắng lợi" (xuất bản tháng 9/1947).',
     sourceNote: 'Giáo trình Lịch sử ĐCSVN (NXB CTQG 2021, Chương 2, Mục I.2)',
   },
 
