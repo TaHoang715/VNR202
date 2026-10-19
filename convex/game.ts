@@ -263,13 +263,15 @@ export const command = mutation({
               ? classSize
               : null;
 
-          const activeRooms = await ctx.db
-            .query("rooms")
-            .filter((q) => q.neq(q.field("phase"), "closed"))
-            .collect();
-
-          if (activeRooms.length >= GAME_CONSTANTS.MAX_ROOMS) {
-            return { ok: false, error: "Máy chủ đã đạt giới hạn phòng tối đa" };
+          let activeRoomCount = 0;
+          for (const phase of ["lobby", "playing", "paused", "reviewing", "finished"] as const) {
+            const activeRooms = await ctx.db.query("rooms")
+              .withIndex("by_phase", (q) => q.eq("phase", phase))
+              .take(GAME_CONSTANTS.MAX_ROOMS);
+            activeRoomCount += activeRooms.length;
+            if (activeRoomCount >= GAME_CONSTANTS.MAX_ROOMS) {
+              return { ok: false, error: "Máy chủ đã đạt giới hạn phòng tối đa" };
+            }
           }
 
           const token = hostToken.trim();
@@ -960,6 +962,11 @@ export const command = mutation({
           ) {
             return { ok: false, error: "Chưa được ủy quyền" };
           }
+
+          // Keep repeated resets bounded: old epochs no longer need private ballots.
+          const previousVotes = await ctx.db.query("votes")
+            .withIndex("by_room", (q) => q.eq("roomCode", roomCode)).collect();
+          for (const vote of previousVotes) await ctx.db.delete(vote._id);
 
           // Clean up all polls and pollVotes for fresh epoch
           const roomPolls = await ctx.db
