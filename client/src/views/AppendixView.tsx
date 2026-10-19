@@ -69,8 +69,8 @@ export const AppendixView: React.FC = () => {
                 2. Mục đích & Phạm vi hỗ trợ của AI:
               </span>
               <p className="leading-relaxed">
-                Hỗ trợ viết mã nguồn frontend (React/TypeScript/Vite/Tailwind), backend Socket.IO cho trò chơi giáo dục "Giữ vững căn cứ",
-                dàn trang slide tương thích máy chiếu và định dạng danh mục trích dẫn. AI <strong>không</strong> thay thế việc đọc giáo trình của sinh viên.
+                Hỗ trợ viết giao diện (React/TypeScript/Vite/Tailwind), backend Convex cho trò chơi "Giữ vững căn cứ",
+                bài học cuộn dọc, bản in và danh mục trích dẫn. Bản Socket.IO được giữ để chạy cục bộ. AI <strong>không</strong> thay thế việc đọc giáo trình của sinh viên.
               </p>
             </div>
           </div>
@@ -81,8 +81,8 @@ export const AppendixView: React.FC = () => {
                 3. Các câu lệnh (Prompts) mẫu chính yếu:
               </span>
               <div className="p-3.5 bg-[#fdfcf9] rounded-xl border border-[#dfd6c6] font-mono text-[11px] space-y-1.5 text-[#6e6761]">
-                <div>• "Thiết kế kiến trúc Socket.IO server-authoritative cho trò chơi Giữ vững căn cứ, 4 vòng, 90 giây..."</div>
-                <div>• "Xây dựng 12 slide trình chiếu Lịch sử Đảng Chương 2 I.2 với phong cách tư liệu giấy kem, mực tối..."</div>
+                <div>• "Làm game hợp tác 4 lượt, mỗi lượt 90 giây; chuyển phòng online sang project Convex riêng, giữ nguyên luật chơi."</div>
+                <div>• "Trình bày bài học Chương 2 I.2 thành 12 mục cuộn dọc, dùng ảnh tư liệu có nguồn và bản in."</div>
                 <div>• "Soạn thảo luận cứ đối chiếu câu hỏi dựa trên văn kiện chính thống 1946–1950..."</div>
               </div>
             </div>
