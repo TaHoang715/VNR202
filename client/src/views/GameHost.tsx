@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
-import { getSocket, SessionStorage } from '../socket';
+import { getSocket, SessionStorage, getDefaultJoinBaseUrl, buildRoomJoinUrl } from '../socket';
 import { RoomSnapshot, RoundResultSnapshot, TeamSnapshot } from '../types';
 import { evaluateVictory } from '../demoController';
 import {
@@ -31,17 +31,7 @@ export const GameHost: React.FC = () => {
   const [classSizeInput, setClassSizeInput] = useState<string>('');
   const [qrDataUrl, setQrDataUrl] = useState<string>('');
   const [publicJoinUrl, setPublicJoinUrl] = useState<string>(() => {
-    const isLocalhost =
-      typeof window !== 'undefined' &&
-      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-    const saved = typeof window !== 'undefined' ? localStorage.getItem('vnr202_public_join_url') : null;
-    if (saved) {
-      if (!isLocalhost && (saved.includes('localhost') || saved.includes('127.0.0.1'))) {
-        return window.location.origin;
-      }
-      return saved;
-    }
-    return typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3001';
+    return getDefaultJoinBaseUrl();
   });
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
@@ -116,7 +106,7 @@ export const GameHost: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('vnr202_public_join_url', publicJoinUrl);
     if (roomCode) {
-      const fullUrl = `${publicJoinUrl}?room=${roomCode}`;
+      const fullUrl = buildRoomJoinUrl(publicJoinUrl, roomCode);
       QRCode.toDataURL(fullUrl, { width: 220, margin: 2, color: { dark: '#9d242b', light: '#f6f3ed' } })
         .then((url) => setQrDataUrl(url))
         .catch(() => {});
@@ -216,7 +206,7 @@ export const GameHost: React.FC = () => {
   };
 
   const handleCopyLink = () => {
-    const fullUrl = `${publicJoinUrl}?room=${roomCode}`;
+    const fullUrl = buildRoomJoinUrl(publicJoinUrl, roomCode);
     navigator.clipboard.writeText(fullUrl).then(() => {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
@@ -541,7 +531,7 @@ export const GameHost: React.FC = () => {
                 <span className="text-xs text-[#6e6761]">Hoặc truy cập:</span>
                 <div className="flex items-center justify-center gap-2">
                   <code className="text-xs bg-white px-2 py-1 rounded border border-[#dfd6c6] font-mono text-[#9d242b]">
-                    {publicJoinUrl}?room={roomCode}
+                    {buildRoomJoinUrl(publicJoinUrl, roomCode)}
                   </code>
                   <button
                     onClick={handleCopyLink}

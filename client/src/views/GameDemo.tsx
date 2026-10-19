@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { getServerUrl } from '../socket';
+import { createGameConnection, GameConnection } from '../socket';
 import {
   RoomSnapshot,
   RoundResultSnapshot,
@@ -33,7 +32,7 @@ import {
 } from 'lucide-react';
 
 interface BotConnection {
-  socket: Socket;
+  socket: GameConnection;
   id: string;
   nickname: string;
   team: number;
@@ -50,7 +49,7 @@ interface GameDemoProps {
 
 // Bounded emit helper with promise ack and timeout
 async function emitWithTimeout<T = any>(
-  socket: Socket,
+  socket: GameConnection,
   event: string,
   data: any,
   timeoutMs: number = 6000
@@ -103,10 +102,10 @@ export const GameDemo: React.FC<GameDemoProps> = ({ onClose }) => {
 
   // Synchronous State References (Guards against stale React closures)
   const snapshotRef = useRef<RoomSnapshot | null>(null);
-  const hostSocketRef = useRef<Socket | null>(null);
+  const hostSocketRef = useRef<GameConnection | null>(null);
   const hostAuthRef = useRef<{ roomCode: string; hostToken: string } | null>(null);
   const botConnectionsRef = useRef<BotConnection[]>([]);
-  const allSocketsRef = useRef<Set<Socket>>(new Set());
+  const allSocketsRef = useRef<Set<GameConnection>>(new Set());
   const waitResolversRef = useRef<Set<() => void>>(new Set());
   const autoRunIdRef = useRef(0);
   const nextBotNumberRef = useRef(11);
@@ -225,15 +224,8 @@ export const GameDemo: React.FC<GameDemoProps> = ({ onClose }) => {
     setTimerRemaining(null);
     snapshotRef.current = null;
 
-    const serverUrl = getServerUrl();
-
-    // 1. Dedicated host socket
-    const hostSocket = io(serverUrl, {
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-      reconnection: false,
-      timeout: 6000,
-    });
+    // 1. Dedicated host connection
+    const hostSocket = createGameConnection();
     allSocketsRef.current.add(hostSocket);
     hostSocketRef.current = hostSocket;
 
@@ -343,12 +335,7 @@ export const GameDemo: React.FC<GameDemoProps> = ({ onClose }) => {
         return;
       }
 
-      const bSocket = io(serverUrl, {
-        transports: ['websocket', 'polling'],
-        autoConnect: true,
-        reconnection: false,
-        timeout: 5000,
-      });
+      const bSocket = createGameConnection();
       allSocketsRef.current.add(bSocket);
 
       try {
@@ -651,14 +638,8 @@ export const GameDemo: React.FC<GameDemoProps> = ({ onClose }) => {
     const currentNum = nextBotNumberRef.current++;
     const teamNames = ['Bắc Sơn', 'Nam Kỳ', 'Việt Bắc', 'Tây Nguyên'];
     const newNickname = `Máy ${currentNum} (${teamNames[teamIndex] || `Đội ${teamIndex + 1}`})`;
-    const serverUrl = getServerUrl();
 
-    const bSocket = io(serverUrl, {
-      transports: ['websocket', 'polling'],
-      autoConnect: true,
-      reconnection: false,
-      timeout: 5000,
-    });
+    const bSocket = createGameConnection();
     allSocketsRef.current.add(bSocket);
 
     try {

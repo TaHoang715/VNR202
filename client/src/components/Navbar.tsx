@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getSocket, getServerUrl, setServerUrl } from '../socket';
+import { getSocket, getServerUrl, setServerUrl, isConvexMode } from '../socket';
 import {
   BookOpen,
   Presentation,
@@ -131,7 +131,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
                     ? 'bg-[#e8f0ec] text-[#193b32] border-[#193b32]/30'
                     : 'bg-amber-50 text-amber-900 border-amber-300'
                 }`}
-                title={connected ? 'Máy chủ Socket.IO đang kết nối' : 'Đang ngắt kết nối máy chủ'}
+                title={
+                  isConvexMode()
+                    ? connected
+                      ? 'Máy chủ đám mây đang kết nối trực tuyến'
+                      : 'Đang kết nối máy chủ đám mây...'
+                    : connected
+                    ? 'Máy chủ Socket.IO đang kết nối'
+                    : 'Đang ngắt kết nối máy chủ'
+                }
               >
                 {connected ? (
                   <>
@@ -149,7 +157,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
               <button
                 onClick={() => setShowConfig(true)}
                 className="p-2 rounded-full text-[#6e6761] hover:text-[#9d242b] hover:bg-[#ede7dc] transition-colors"
-                title="Cấu hình kết nối máy chủ / LAN"
+                title={isConvexMode() ? 'Thông tin kết nối hệ thống' : 'Cấu hình kết nối máy chủ / LAN'}
               >
                 <Settings className="w-4 h-4" />
               </button>
@@ -194,7 +202,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
           <div className="bg-[#f6f3ed] border border-[#dfd6c6] rounded-2xl max-w-md w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-[#dfd6c6]">
               <h3 className="font-serif font-bold text-lg text-[#171513]">
-                Cấu hình kết nối Game Server
+                {isConvexMode() ? 'Kết nối máy chủ hệ thống' : 'Cấu hình kết nối Game Server'}
               </h3>
               <button
                 onClick={() => setShowConfig(false)}
@@ -204,54 +212,87 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
               </button>
             </div>
 
-            <div className="py-4 space-y-4">
-              <p className="text-xs text-[#3a3530] leading-relaxed">
-                Máy chủ Socket.IO quản lý phòng chơi <strong>"Giữ vững căn cứ"</strong> và khảo sát lớp học.
-                Khi kết nối nhiều điện thoại trong cùng mạng LAN, nhập địa chỉ IP LAN của máy chủ (ví dụ:{' '}
-                <code className="bg-[#ede7dc] px-1.5 py-0.5 rounded text-[#9d242b] font-mono">
-                  http://192.168.1.15:3001
-                </code>
-                ) thay cho localhost để mã QR mở được trên điện thoại.
-              </p>
-
-              <div>
-                <label className="block text-xs font-semibold text-[#171513] uppercase tracking-wide mb-1.5">
-                  Địa chỉ Socket.IO Server:
-                </label>
-                <input
-                  type="text"
-                  value={serverUrlInput}
-                  onChange={(e) => setServerUrlInput(e.target.value)}
-                  placeholder="http://localhost:3001 hoặc IP LAN"
-                  className="w-full px-3.5 py-2 text-sm bg-white border border-[#dfd6c6] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9d242b] font-mono"
-                />
-              </div>
-
-              <div className="bg-[#fdfcf9] border border-[#dfd6c6] p-3.5 rounded-xl text-xs space-y-1.5 text-[#3a3530]">
-                <div className="font-semibold text-[#193b32] flex items-center gap-1.5">
-                  <Wifi className="w-3.5 h-3.5 text-[#193b32]" />
-                  <span>Nguyên tắc kết nối cục bộ:</span>
+            {isConvexMode() ? (
+              <div className="py-4 space-y-4">
+                <div className="p-3.5 bg-[#e8f0ec] border border-[#193b32]/30 text-[#193b32] text-xs rounded-xl flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse flex-shrink-0" />
+                  <div>
+                    <strong>Hệ thống máy chủ đám mây đang hoạt động</strong>
+                    <div className="text-[11px] text-[#2c5347] mt-0.5">
+                      Đồng bộ thời gian thực cho phòng chơi & khảo sát lớp học.
+                    </div>
+                  </div>
                 </div>
-                <div>• Trạng thái phòng lưu trong RAM server (reset khi restart server).</div>
-                <div>• Tuyệt đối không tự mở tunnel công khai trái phép khi chưa duyệt.</div>
-                <div>• Máy chủ tự động dọn phòng không hoạt động sau 30 phút (TTL).</div>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#dfd6c6]">
-              <button
-                onClick={() => setShowConfig(false)}
-                className="px-4 py-2 text-xs font-medium text-[#3a3530] hover:bg-[#ede7dc] rounded-full transition-colors"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleSaveServerUrl}
-                className="px-5 py-2 text-xs font-semibold bg-[#9d242b] text-white rounded-full hover:bg-[#7a171d] shadow-sm transition-colors"
-              >
-                Lưu & Kết nối lại
-              </button>
-            </div>
+                <div className="bg-[#fdfcf9] border border-[#dfd6c6] p-3.5 rounded-xl text-xs space-y-1.5 text-[#3a3530]">
+                  <div className="font-semibold text-[#193b32] flex items-center gap-1.5">
+                    <Wifi className="w-3.5 h-3.5 text-[#193b32]" />
+                    <span>Đặc điểm kết nối trực tuyến:</span>
+                  </div>
+                  <div>• Thiết bị sinh viên kết nối tự động khi quét mã QR hoặc bấm link.</div>
+                  <div>• Không yêu cầu nhập địa chỉ IP thủ công hay cấu hình mạng LAN.</div>
+                  <div>• Bảo vệ phiên chơi và tự động ngắt kết nối an toàn khi đóng trình duyệt.</div>
+                </div>
+
+                <div className="flex items-center justify-end pt-3 border-t border-[#dfd6c6]">
+                  <button
+                    onClick={() => setShowConfig(false)}
+                    className="px-5 py-2 text-xs font-semibold bg-[#9d242b] text-white rounded-full hover:bg-[#7a171d] shadow-sm transition-colors"
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="py-4 space-y-4">
+                <p className="text-xs text-[#3a3530] leading-relaxed">
+                  Máy chủ Socket.IO quản lý phòng chơi <strong>"Giữ vững căn cứ"</strong> và khảo sát lớp học.
+                  Khi kết nối nhiều điện thoại trong cùng mạng LAN, nhập địa chỉ IP LAN của máy chủ (ví dụ:{' '}
+                  <code className="bg-[#ede7dc] px-1.5 py-0.5 rounded text-[#9d242b] font-mono">
+                    http://192.168.1.15:3001
+                  </code>
+                  ) thay cho localhost để mã QR mở được trên điện thoại.
+                </p>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#171513] uppercase tracking-wide mb-1.5">
+                    Địa chỉ Socket.IO Server:
+                  </label>
+                  <input
+                    type="text"
+                    value={serverUrlInput}
+                    onChange={(e) => setServerUrlInput(e.target.value)}
+                    placeholder="http://localhost:3001 hoặc IP LAN"
+                    className="w-full px-3.5 py-2 text-sm bg-white border border-[#dfd6c6] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#9d242b] font-mono"
+                  />
+                </div>
+
+                <div className="bg-[#fdfcf9] border border-[#dfd6c6] p-3.5 rounded-xl text-xs space-y-1.5 text-[#3a3530]">
+                  <div className="font-semibold text-[#193b32] flex items-center gap-1.5">
+                    <Wifi className="w-3.5 h-3.5 text-[#193b32]" />
+                    <span>Nguyên tắc kết nối cục bộ:</span>
+                  </div>
+                  <div>• Trạng thái phòng lưu trong RAM server (reset khi restart server).</div>
+                  <div>• Tuyệt đối không tự mở tunnel công khai trái phép khi chưa duyệt.</div>
+                  <div>• Máy chủ tự động dọn phòng không hoạt động sau 30 phút (TTL).</div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#dfd6c6]">
+                  <button
+                    onClick={() => setShowConfig(false)}
+                    className="px-4 py-2 text-xs font-medium text-[#3a3530] hover:bg-[#ede7dc] rounded-full transition-colors"
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    onClick={handleSaveServerUrl}
+                    className="px-5 py-2 text-xs font-semibold bg-[#9d242b] text-white rounded-full hover:bg-[#7a171d] shadow-sm transition-colors"
+                  >
+                    Lưu & Kết nối lại
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

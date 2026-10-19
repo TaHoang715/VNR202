@@ -17,11 +17,15 @@ export interface SlidePhotoBinding {
   note: string;
 }
 
+const rawBase = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.BASE_URL) || '/';
+const baseUrl = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+export const resolveAssetPath = (path: string) => `${baseUrl}${path.replace(/^\/+/, '')}`;
+
 export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
   hanoi1946: {
     id: 'hanoi1946',
     file: 'hanoi-1946.jpg',
-    src: '/images/history/hanoi-1946.jpg',
+    src: resolveAssetPath('images/history/hanoi-1946.jpg'),
     caption: 'Chiến đấu tại Hà Nội những ngày đầu Toàn quốc kháng chiến, 1946–1947.',
     date: '1946–1947',
     credit: 'Ảnh tư liệu / Báo Quân đội nhân dân',
@@ -31,7 +35,7 @@ export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
   hochiminh1950: {
     id: 'hochiminh1950',
     file: 'ho-chi-minh-dong-khe-1950.jpeg',
-    src: '/images/history/ho-chi-minh-dong-khe-1950.jpeg',
+    src: resolveAssetPath('images/history/ho-chi-minh-dong-khe-1950.jpeg'),
     caption: 'Chủ tịch Hồ Chí Minh trên đài quan sát núi Báo Đông trong Chiến dịch Biên giới, tháng 9/1950.',
     date: '09/1950',
     credit: 'Ảnh tư liệu, đăng tại Bảo tàng Hồ Chí Minh',
@@ -41,7 +45,7 @@ export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
   porters1950: {
     id: 'porters1950',
     file: 'dan-cong-bien-gioi-1950.jpg',
-    src: '/images/history/dan-cong-bien-gioi-1950.jpg',
+    src: resolveAssetPath('images/history/dan-cong-bien-gioi-1950.jpg'),
     caption: 'Dân công phục vụ Chiến dịch Biên giới năm 1950.',
     date: '1950',
     credit: 'Ảnh tư liệu / Báo Cao Bằng',
@@ -51,7 +55,7 @@ export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
   yagi2024: {
     id: 'yagi2024',
     file: 'cuu-ho-yagi-2024.jpg',
-    src: '/images/history/cuu-ho-yagi-2024.jpg',
+    src: resolveAssetPath('images/history/cuu-ho-yagi-2024.jpg'),
     caption: 'Lực lượng cứu hộ hỗ trợ người dân tại khu vực bị ảnh hưởng bởi bão Yagi, tháng 9/2024.',
     date: '09/2024',
     credit: 'VOV, bài ảnh về ứng phó bão Yagi',
@@ -61,7 +65,7 @@ export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
   border1950: {
     id: 'border1950',
     file: 'chien-dich-bien-gioi-1950.jpg',
-    src: '/images/history/chien-dich-bien-gioi-1950.jpg',
+    src: resolveAssetPath('images/history/chien-dich-bien-gioi-1950.jpg'),
     caption: 'Bộ đội trong Chiến dịch Biên giới Thu–Đông năm 1950.',
     date: '1950',
     credit: 'Ảnh tư liệu / Thông tấn xã Việt Nam',
@@ -71,7 +75,7 @@ export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
   journey1950: {
     id: 'journey1950',
     file: 'hanh-quan-1950.jpeg',
-    src: '/images/history/hanh-quan-1950.jpeg',
+    src: resolveAssetPath('images/history/hanh-quan-1950.jpeg'),
     caption: 'Chủ tịch Hồ Chí Minh trên đường đi Chiến dịch Biên giới năm 1950.',
     date: '1950',
     credit: 'Ảnh tư liệu / Bảo tàng Hồ Chí Minh',
