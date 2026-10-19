@@ -889,4 +889,145 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
     expect(subWrongRevealed!.myState!.myPointsAwarded).toBe(0);
     expect(subWrongRevealed!.myState!.myScore).toBe(0);
   });
+
+  // ─── 13. Disconnected Player & Early Reveal Membership Check Regression ─
+  it('does not trigger early reveal when disconnected player answered and connected player remains pending', async () => {
+    const t = convexTest(schema, modules);
+    const hostToken = make64Hex('1');
+    const pA = make64Hex('2');
+    const pB = make64Hex('3');
+    const pC = make64Hex('4');
+
+    const createRes = await t.mutation(anyApi.quiz.command, {
+      event: 'room:create',
+      payload: { hostToken },
+    });
+    const roomCode = createRes.roomCode;
+
+    // Join 3 players: A, B, C
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Player A', playerToken: pA },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Player B', playerToken: pB },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Player C', playerToken: pC },
+    });
+
+    // Start Question 1 (epoch 1)
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:start',
+      payload: { roomCode, hostToken },
+    });
+
+    // 1. Player A answers correctly
+    const resA = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: pA,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(resA.ok).toBe(true);
+    expect(resA.acknowledged).toBe(true);
+
+    // 2. Model Player A disconnecting (controlled DB state)
+    await t.run(async (ctx) => {
+      const playerA = await ctx.db
+        .query("quizPlayers")
+        .withIndex("by_room_token", (q) => q.eq("roomCode", roomCode).eq("playerToken", pA))
+        .first();
+      expect(playerA).not.toBeNull();
+      await ctx.db.patch(playerA!._id, { connected: false });
+    });
+
+    // 3. Player B answers while Player C is still connected and pending
+    const resB = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: pB,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(resB.ok).toBe(true);
+    expect(resB.acknowledged).toBe(true);
+
+    // CRITICAL REGRESSION CHECK:
+    // Under buggy count comparison: allAnswersCurrent (2) >= connectedPlayers (2, B and C).
+    // Under membership check: Player C is connected and has NOT answered yet!
+    // The room MUST remain in 'question' phase!
+    const subHostDuring = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: hostToken,
+      connectionId: 'conn_h',
+    });
+    expect(subHostDuring!.room.phase).toBe('question');
+    expect(subHostDuring!.room.answeredCount).toBe(2);
+    expect(subHostDuring!.room.connectedCount).toBe(2);
+    expect(subHostDuring!.revealData).toBeNull();
+
+    // Scores MUST stay masked in public snapshots before reveal
+    for (const entry of subHostDuring!.leaderboard) {
+      expect(entry.totalScore).toBe(0);
+      expect(entry.correctCount).toBe(0);
+    }
+
+    // Inspect Player B private state: answered, but score masked
+    const subB = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: pB,
+      connectionId: 'conn_b',
+    });
+    expect(subB!.myState!.hasAnsweredCurrent).toBe(true);
+    expect(subB!.myState!.myScore).toBe(0);
+    expect(subB!.myState!.myPointsAwarded).toBeUndefined();
+
+    // Inspect Player C private state: still pending
+    const subC = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: pC,
+      connectionId: 'conn_c',
+    });
+    expect(subC!.myState!.hasAnsweredCurrent).toBe(false);
+
+    // 4. Now Player C answers
+    const resC = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: pC,
+        questionIndex: 1,
+        answer: 'b',
+      },
+    });
+    expect(resC.ok).toBe(true);
+    expect(resC.acknowledged).toBe(true);
+
+    // Now ALL connected players (B and C) have answered -> reveals once!
+    const subHostAfter = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: hostToken,
+      connectionId: 'conn_h',
+    });
+    expect(subHostAfter!.room.phase).toBe('revealing');
+    expect(subHostAfter!.revealData).not.toBeNull();
+    expect(subHostAfter!.revealData!.correctOptionId).toBe('b');
+
+    // Scores are now unmasked
+    const entryB = subHostAfter!.leaderboard.find((l) => l.nickname === 'Player B')!;
+    const entryC = subHostAfter!.leaderboard.find((l) => l.nickname === 'Player C')!;
+    expect(entryB.totalScore).toBeGreaterThanOrEqual(1000);
+    expect(entryC.totalScore).toBeGreaterThanOrEqual(1000);
+  });
 });

@@ -684,7 +684,7 @@ export const command = mutation({
 
       await ctx.db.patch(room._id, { lastActivity: now });
 
-      // Check if all connected players in room have answered
+      // Check if EVERY currently connected player in room has submitted an answer for current epoch & question
       const connectedPlayers = await ctx.db
         .query("quizPlayers")
         .withIndex("by_room", (q) => q.eq("roomCode", roomCode))
@@ -698,8 +698,13 @@ export const command = mutation({
         )
         .collect();
 
-      if (connectedPlayers.length > 0 && allAnswersCurrent.length >= connectedPlayers.length) {
-        // Everyone answered! Early reveal!
+      const answeredPlayerTokens = new Set(allAnswersCurrent.map((a) => a.playerToken));
+      const allConnectedHaveAnswered =
+        connectedPlayers.length > 0 &&
+        connectedPlayers.every((p) => answeredPlayerTokens.has(p.playerToken));
+
+      if (allConnectedHaveAnswered) {
+        // Everyone currently connected has answered! Early reveal!
         const nextGeneration = room.generation + 1;
         const revealDeadlineMs = now + QUIZ_CONSTANTS.REVEAL_DURATION_MS;
 
