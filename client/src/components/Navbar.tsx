@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { getSocket, getServerUrl, setServerUrl, isConvexMode } from '../socket';
+import React, { useState } from 'react';
+import { getServerUrl, setServerUrl, isConvexMode } from '../socket';
 import {
   BookOpen,
   Presentation,
   Gamepad2,
   FileText,
   Wifi,
-  WifiOff,
   Settings,
   X,
 } from 'lucide-react';
@@ -19,25 +18,9 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => {
-  const [connected, setConnected] = useState<boolean>(false);
   const [showConfig, setShowConfig] = useState<boolean>(false);
   const [serverUrlInput, setServerUrlInput] = useState<string>(getServerUrl());
 
-  useEffect(() => {
-    const socket = getSocket();
-    setConnected(socket.connected);
-
-    const onConnect = () => setConnected(true);
-    const onDisconnect = () => setConnected(false);
-
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-    };
-  }, []);
 
   const handleSaveServerUrl = () => {
     const trimmed = serverUrlInput.trim();
@@ -123,37 +106,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
               })}
             </nav>
 
-            {/* Right actions: Server status + Settings */}
+            {/* Connection settings */}
             <div className="flex items-center gap-2.5">
-              <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-medium border transition-colors ${
-                  connected
-                    ? 'bg-[#e8f0ec] text-[#193b32] border-[#193b32]/30'
-                    : 'bg-amber-50 text-amber-900 border-amber-300'
-                }`}
-                title={
-                  isConvexMode()
-                    ? connected
-                      ? 'Máy chủ đám mây đang kết nối trực tuyến'
-                      : 'Đang kết nối máy chủ đám mây...'
-                    : connected
-                    ? 'Máy chủ Socket.IO đang kết nối'
-                    : 'Đang ngắt kết nối máy chủ'
-                }
-              >
-                {connected ? (
-                  <>
-                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                    <span className="hidden sm:inline">Máy chủ: Trực tuyến</span>
-                  </>
-                ) : (
-                  <>
-                    <WifiOff className="w-3.5 h-3.5 text-amber-600" />
-                    <span className="hidden sm:inline">Máy chủ: Chưa kết nối</span>
-                  </>
-                )}
-              </div>
-
               <button
                 onClick={() => setShowConfig(true)}
                 className="p-2 rounded-full text-[#6e6761] hover:text-[#9d242b] hover:bg-[#ede7dc] transition-colors"
