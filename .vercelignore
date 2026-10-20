@@ -1,0 +1,9 @@
+.agent
+.git
+.env*
+.codebase-memory
+node_modules
+client/node_modules
+server/node_modules
+client/dist
+server/dist

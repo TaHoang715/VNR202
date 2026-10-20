@@ -25,3 +25,7 @@ tmp/
 # Agent and internal tooling metadata
 .agent/
 .codebase-memory/
+.vercel/
+
+.vercel
+.env*

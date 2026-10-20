@@ -10,6 +10,8 @@
 
 import type * as engine from "../engine.js";
 import type * as game from "../game.js";
+import type * as quiz from "../quiz.js";
+import type * as quizScheduler from "../quizScheduler.js";
 import type * as scheduler from "../scheduler.js";
 import type * as types from "../types.js";
 
@@ -22,6 +24,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   engine: typeof engine;
   game: typeof game;
+  quiz: typeof quiz;
+  quizScheduler: typeof quizScheduler;
   scheduler: typeof scheduler;
   types: typeof types;
 }>;

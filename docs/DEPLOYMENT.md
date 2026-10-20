@@ -1,11 +1,11 @@
 # Triển khai VNR202
 
-Giao diện chạy trên GitHub Pages; phòng chơi, phiếu bầu, khảo sát và đồng hồ lượt chạy trên Convex. Không dùng Render.
+Giao diện chạy trên Vercel; phòng chơi, phiếu bầu, khảo sát và đồng hồ lượt chạy trên Convex. Không dùng Render.
 
 ## Tài nguyên riêng
 
 - Repo: https://github.com/TaHoang715/VNR202
-- Giao diện: https://tahoang715.github.io/VNR202/
+- Giao diện: https://vnr202-quiz-20261020.vercel.app/
 - Project Convex: taminhhoang-nk/vnr202-classroom-20261019
 - Development: grand-peccary-45 — https://grand-peccary-45.convex.cloud
 - Production: terrific-labrador-176 — https://terrific-labrador-176.convex.cloud
@@ -29,9 +29,13 @@ Lệnh đầu cập nhật môi trường thử VNR202. Lệnh sau cập nhật 
 
 ## Cập nhật giao diện
 
-Workflow `.github/workflows/pages.yml` build `client/dist` khi push nhánh `main`. Repository variable `VITE_CONVEX_URL` phải là `https://terrific-labrador-176.convex.cloud`; workflow kiểm tra giá trị này. `VITE_BASE_PATH=/VNR202/` giúp ảnh và QR hoạt động ở đường dẫn GitHub Pages.
+Project Vercel `vnr202-quiz-20261020` thuộc scope `ta-hoang715-s-projects`, kết nối repo GitHub. Push nhánh `main` tự triển khai production. `vercel.json` cài dependency tại root, build workspace client và xuất `client/dist`.
 
-Workflow không có khóa deploy Convex và không tự thay đổi backend. Sau khi xuất bản, kiểm tra workflow và URL thật.
+- Production: `VITE_CONVEX_URL=https://terrific-labrador-176.convex.cloud`.
+- Preview/Development: `VITE_CONVEX_URL=https://grand-peccary-45.convex.cloud`.
+- Mọi môi trường: `VITE_BASE_PATH=/`.
+
+Vercel chỉ build frontend, không tự deploy Convex. `.vercel/` và `.env*` không được upload. Workflow GitHub Pages chỉ còn chạy thủ công để dự phòng, dùng base `/VNR202/`.
 
 ## Test trước buổi học
 

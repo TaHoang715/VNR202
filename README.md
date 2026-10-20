@@ -29,6 +29,6 @@ Backend Convex có bộ kiểm thử riêng bằng convex-test. Xem các script 
 
 ## Triển khai
 
-Giao diện trên GitHub Pages và backend trên project Convex riêng **vnr202-classroom-20261019**. Cấu hình, URL và cách cập nhật nằm trong [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Không dùng hay sửa deployment Convex của các dự án cũ.
+Giao diện trên Vercel tại https://vnr202-quiz-20261020.vercel.app và backend trên project Convex riêng **vnr202-classroom-20261019**. Cấu hình, URL và cách cập nhật nằm trong [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Không dùng hay sửa deployment Convex của các dự án cũ.
 
 Ảnh tư liệu lấy từ Báo Quân đội nhân dân, Bảo tàng Hồ Chí Minh, TTXVN, Báo Cao Bằng và VOV; nguồn được ghi trong website. Không dùng ảnh AI tạo nhân vật lịch sử.
