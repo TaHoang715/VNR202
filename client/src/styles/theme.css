@@ -206,3 +206,81 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 @media print { .scroll-reveal { opacity: 1 !important; transform: none !important; } .page-enter,.animate-in { animation: none !important; } }
 
 @media print { @page { size: A4 portrait; } .slide-container { min-height: auto; } }
+
+/* ============================================================ */
+/* SCOPED ORIGINAL GAME THEME (Purple & Gold Palette)          */
+/* Scoped to .original-game-root only - does not affect lesson  */
+/* ============================================================ */
+.original-game-root {
+  --color-primary: #4a148c;
+  --color-primary-container: #eaddff;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #21005d;
+  --color-secondary: #fbc02d;
+  --color-secondary-container: #fff0c4;
+  --color-on-secondary: #4b3600;
+  --color-surface: #ffffff;
+  --color-on-surface: #1a1b1f;
+  --color-surface-variant: #f3edf7;
+  --color-on-surface-variant: #49454f;
+  --color-outline: #79747e;
+  --color-outline-variant: #cac4d0;
+  --color-background: #fdfbff;
+  font-family: 'Space Grotesk', 'Manrope', 'Plus Jakarta Sans', system-ui, sans-serif;
+  background-color: #fdfbff;
+  color: #1a1b1f;
+}
+
+.original-game-root .bg-primary { background-color: #4a148c; }
+.original-game-root .hover\:bg-primary\/90:hover { background-color: rgba(74, 20, 140, 0.9); }
+.original-game-root .text-primary { color: #4a148c; }
+.original-game-root .border-primary { border-color: #4a148c; }
+.original-game-root .bg-primary\/5 { background-color: rgba(74, 20, 140, 0.05); }
+.original-game-root .bg-primary\/10 { background-color: rgba(74, 20, 140, 0.1); }
+.original-game-root .bg-primary\/20 { background-color: rgba(74, 20, 140, 0.2); }
+.original-game-root .bg-primary\/80 { background-color: rgba(74, 20, 140, 0.8); }
+.original-game-root .border-primary\/20 { border-color: rgba(74, 20, 140, 0.2); }
+.original-game-root .border-primary\/30 { border-color: rgba(74, 20, 140, 0.3); }
+.original-game-root .border-primary\/80 { border-color: rgba(74, 20, 140, 0.8); }
+.original-game-root .ring-primary { --tw-ring-color: #4a148c; }
+.original-game-root .ring-primary\/30 { --tw-ring-color: rgba(74, 20, 140, 0.3); }
+.original-game-root .focus\:ring-primary:focus { --tw-ring-color: #4a148c; }
+.original-game-root .focus\:border-primary:focus { border-color: #4a148c; }
+
+.original-game-root .bg-surface { background-color: #ffffff; }
+.original-game-root .text-on-surface { color: #1a1b1f; }
+.original-game-root .bg-surface-variant\/20 { background-color: rgba(231, 224, 236, 0.2); }
+.original-game-root .bg-surface-variant\/30 { background-color: rgba(231, 224, 236, 0.3); }
+.original-game-root .bg-surface-variant\/50 { background-color: rgba(231, 224, 236, 0.5); }
+.original-game-root .hover\:bg-surface-variant:hover { background-color: #e7e0ec; }
+.original-game-root .text-on-surface-variant { color: #49454f; }
+.original-game-root .text-on-surface-variant\/50 { color: rgba(73, 69, 79, 0.5); }
+.original-game-root .text-on-primary { color: #ffffff; }
+.original-game-root .text-outline { color: #79747e; }
+.original-game-root .border-outline-variant { border-color: #cac4d0; }
+.original-game-root .border-outline-variant\/20 { border-color: rgba(202, 196, 208, 0.2); }
+.original-game-root .border-outline-variant\/30 { border-color: rgba(202, 196, 208, 0.3); }
+.original-game-root .border-outline-variant\/40 { border-color: rgba(202, 196, 208, 0.4); }
+.original-game-root .border-outline-variant\/50 { border-color: rgba(202, 196, 208, 0.5); }
+.original-game-root .bg-background { background-color: #fdfbff; }
+.original-game-root .font-headline { font-family: 'Space Grotesk', 'Plus Jakarta Sans', system-ui, sans-serif; }
+
+.original-game-root button {
+  border-radius: 12px;
+  cursor: pointer;
+}
+.original-game-root input {
+  border-radius: 10px;
+}
+.original-game-root .custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant) transparent;
+}
+.original-game-root .custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.original-game-root .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-outline-variant);
+  border-radius: 20px;
+}

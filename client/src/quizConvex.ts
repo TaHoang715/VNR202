@@ -114,6 +114,38 @@ export async function advanceOnlineQuiz(args: {
   });
 }
 
+export async function forceOnlineQuizRound(args: {
+  roomCode: string;
+  hostToken: string;
+}) {
+  const client = getQuizConvexClient();
+  if (!client) throw new Error('Máy chủ Convex trực tuyến chưa được cấu hình');
+
+  return client.mutation(anyApi.quiz.command, {
+    event: 'quiz:force',
+    payload: {
+      roomCode: args.roomCode.trim().toUpperCase(),
+      hostToken: args.hostToken,
+    },
+  });
+}
+
+export async function finishOnlineQuiz(args: {
+  roomCode: string;
+  hostToken: string;
+}) {
+  const client = getQuizConvexClient();
+  if (!client) throw new Error('Máy chủ Convex trực tuyến chưa được cấu hình');
+
+  return client.mutation(anyApi.quiz.command, {
+    event: 'quiz:finish',
+    payload: {
+      roomCode: args.roomCode.trim().toUpperCase(),
+      hostToken: args.hostToken,
+    },
+  });
+}
+
 export async function replayOnlineQuiz(args: {
   roomCode: string;
   hostToken: string;

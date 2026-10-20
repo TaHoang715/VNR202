@@ -81,7 +81,7 @@ export const AppendixView: React.FC = () => {
                 3. Các câu lệnh (Prompts) mẫu chính yếu:
               </span>
               <div className="p-3.5 bg-[#fdfcf9] rounded-xl border border-[#dfd6c6] font-mono text-[11px] space-y-1.5 text-[#6e6761]">
-                <div>• "Phát triển trò chơi trắc nghiệm cá nhân 10 câu Giải mã kháng chiến (solo tức thì và online Convex, 25s/câu, tính điểm chuẩn xác 1000 + 250 tốc độ)..."</div>
+                <div>• "Phát triển trò chơi Đấu trường tri thức 10 vòng Đường lối kháng chiến (solo tức thì và online Convex, 60s/vòng, tính điểm mili-giây tối đa ~6000, 5 trắc nghiệm + 5 đuổi hình bắt chữ)..."</div>
                 <div>• "Trình bày bài học Chương 2 I.2 thành 12 mục cuộn dọc, dùng ảnh tư liệu có nguồn và bản in."</div>
                 <div>• "Soạn thảo luận cứ đối chiếu câu hỏi dựa trên văn kiện chính thống 1946–1950..."</div>
               </div>

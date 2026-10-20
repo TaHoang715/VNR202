@@ -12,32 +12,34 @@ function make64Hex(char: string = 'a'): string {
 
 describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () => {
   // ─── 1. Scoring & Answer Evaluation ──────────────────────────────────
-  it('correctly calculates score with 1000 base + speed bonus up to 250 and 0 for incorrect', () => {
-    // Correct at full remaining time (25000ms): 1000 + 250 = 1250
-    const maxScore = calculateQuestionScore(true, 25000, 25000);
+  it('correctly calculates score with floor(serverRemainingMs/10) max 6000 and 0 for incorrect', () => {
+    // Correct at full remaining time (60000ms): 6000
+    const maxScore = calculateQuestionScore(true, 60000, 60000);
     expect(maxScore.isCorrect).toBe(true);
-    expect(maxScore.points).toBe(1250);
+    expect(maxScore.points).toBe(6000);
 
-    // Correct at half remaining time (12500ms): 1000 + 125 = 1125
-    const halfScore = calculateQuestionScore(true, 12500, 25000);
+    // Correct at half remaining time (30000ms): 3000
+    const halfScore = calculateQuestionScore(true, 30000, 60000);
     expect(halfScore.isCorrect).toBe(true);
-    expect(halfScore.points).toBe(1125);
+    expect(halfScore.points).toBe(3000);
 
-    // Correct at 0 remaining time: 1000 + 0 = 1000
-    const minScore = calculateQuestionScore(true, 0, 25000);
+    // Correct at 0 remaining time: 0
+    const minScore = calculateQuestionScore(true, 0, 60000);
     expect(minScore.isCorrect).toBe(true);
-    expect(minScore.points).toBe(1000);
+    expect(minScore.points).toBe(0);
 
     // Incorrect answer: 0
-    const wrongScore = calculateQuestionScore(false, 20000, 25000);
+    const wrongScore = calculateQuestionScore(false, 50000, 60000);
     expect(wrongScore.isCorrect).toBe(false);
     expect(wrongScore.points).toBe(0);
 
-    // Ordering answer evaluation
-    const orderQ = QUIZ_QUESTIONS.find((q) => q.type === 'order')!;
-    expect(evaluateAnswer(orderQ, orderQ.correctOrderIds)).toBe(true);
-    expect(evaluateAnswer(orderQ, ['wrong', 'order'])).toBe(false);
-    expect(evaluateAnswer(orderQ, [...orderQ.correctOrderIds!].reverse())).toBe(false);
+    // Catchphrase evaluation and normalization
+    const catchphraseQ = QUIZ_QUESTIONS.find((q) => q.type === 'catchphrase')!;
+    expect(evaluateAnswer(catchphraseQ, 'Toàn dân')).toBe(true);
+    expect(evaluateAnswer(catchphraseQ, 'toan dan')).toBe(true);
+    expect(evaluateAnswer(catchphraseQ, 'TOÀN DÂN')).toBe(true);
+    expect(evaluateAnswer(catchphraseQ, '  toàn   dân  ')).toBe(true);
+    expect(evaluateAnswer(catchphraseQ, 'sai đáp án')).toBe(false);
   });
 
   // ─── 2. Room Creation & Player Join & Sảnh 200 người ─────────────────
@@ -1029,5 +1031,311 @@ describe('Giải mã kháng chiến — Convex Backend & Acceptance Tests', () =
     const entryC = subHostAfter!.leaderboard.find((l) => l.nickname === 'Player C')!;
     expect(entryB.totalScore).toBeGreaterThanOrEqual(1000);
     expect(entryC.totalScore).toBeGreaterThanOrEqual(1000);
+  });
+
+  // ─── 14. Catchphrase Flow: Wrong Retry, Accent Normalization, Duplicates, Untrusted Score ──
+  it('handles catchphrase wrong retry without locking, accent normalization, duplicate protection, and server-authoritative scoring', async () => {
+    const t = convexTest(schema, modules);
+    const hostToken = make64Hex('1');
+    const playerToken1 = make64Hex('2');
+    const playerToken2 = make64Hex('3');
+
+    const createRes = await t.mutation(anyApi.quiz.command, {
+      event: 'room:create',
+      payload: { hostToken },
+    });
+    const roomCode = createRes.roomCode;
+
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Thi Sinh 1', playerToken: playerToken1 },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode, nickname: 'Thi Sinh 2', playerToken: playerToken2 },
+    });
+
+    // Start quiz (Q1)
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:start',
+      payload: { roomCode, hostToken },
+    });
+
+    // Both players answer Q1 to trigger reveal
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: { roomCode, epoch: 1, playerToken: playerToken1, questionIndex: 1, answer: 'b' },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: { roomCode, epoch: 1, playerToken: playerToken2, questionIndex: 1, answer: 'b' },
+    });
+
+    // Advance to Q2 (Catchphrase: "Toàn dân")
+    const advRes = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:advance',
+      payload: { roomCode, hostToken },
+    });
+    expect(advRes.ok).toBe(true);
+
+    // Pre-reveal check: verify letter hint is provided but raw answer is not leaked!
+    const subQ2 = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: playerToken1,
+      connectionId: 'c1',
+    });
+    expect(subQ2!.room.phase).toBe('question');
+    expect(subQ2!.currentQuestion!.type).toBe('catchphrase');
+    expect((subQ2!.currentQuestion as any).correctAnswer).toBeUndefined();
+    expect(subQ2!.currentQuestion!.letterHint).toBeDefined();
+    expect(subQ2!.currentQuestion!.letterHint!.wordLengths).toEqual([4, 3]);
+
+    // 1. Wrong attempt: returns error with canRetry: true, does NOT record answer
+    const wrongRes = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: playerToken1,
+        questionIndex: 2,
+        answer: 'Nhân dân', // wrong catchphrase
+      },
+    });
+    expect(wrongRes.ok).toBe(false);
+    expect(wrongRes.error).toContain('Đáp án chưa chính xác');
+    expect(wrongRes.canRetry).toBe(true);
+
+    // Verify player is NOT marked answered in snapshot
+    const subAfterWrong = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: playerToken1,
+      connectionId: 'c1',
+    });
+    expect(subAfterWrong!.myState!.hasAnsweredCurrent).toBe(false);
+    expect(subAfterWrong!.room.phase).toBe('question');
+
+    // 2. Client attempts to spoof an untrusted score field: server ignores client score and computes floor(remainingMs/10)
+    // Accent/casing/whitespace normalization: "  toan   dan  " -> accepted!
+    const correctRes = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: playerToken1,
+        questionIndex: 2,
+        answer: '   toan   dan  ',
+        clientSpoofedScore: 999999,
+      },
+    });
+    expect(correctRes.ok).toBe(true);
+    expect(correctRes.acknowledged).toBe(true);
+
+    // Verify player IS now marked answered
+    const subAfterCorrect = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: playerToken1,
+      connectionId: 'c1',
+    });
+    expect(subAfterCorrect!.myState!.hasAnsweredCurrent).toBe(true);
+
+    // 3. Duplicate submission after correct: rejected
+    const dupRes = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: playerToken1,
+        questionIndex: 2,
+        answer: 'Toàn dân',
+      },
+    });
+    expect(dupRes.ok).toBe(false);
+    expect(dupRes.error).toContain('đã nộp câu trả lời cho câu hỏi này');
+
+    // 4. Stale epoch rejection
+    const staleEpochRes = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 999,
+        playerToken: playerToken2,
+        questionIndex: 2,
+        answer: 'Toàn dân',
+      },
+    });
+    expect(staleEpochRes.ok).toBe(false);
+    expect(staleEpochRes.error).toContain('Phiên thi đấu (epoch) không khớp');
+
+    // 5. Player 2 submits uppercase unaccented "TOAN DAN" -> triggers early reveal because all connected answered!
+    const p2Res = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:answer',
+      payload: {
+        roomCode,
+        epoch: 1,
+        playerToken: playerToken2,
+        questionIndex: 2,
+        answer: 'TOAN DAN',
+      },
+    });
+    expect(p2Res.ok).toBe(true);
+
+    // Room reveals
+    const subRevealed = await t.query(anyApi.quiz.subscribe, {
+      roomCode,
+      token: hostToken,
+      connectionId: 'ch',
+    });
+    expect(subRevealed!.room.phase).toBe('revealing');
+    expect(subRevealed!.revealData!.correctAnswer).toBe('Toàn dân');
+
+    // Both players earned server-authoritative score <= 6000 per round (total <= 12000 for 2 rounds)
+    for (const p of subRevealed!.leaderboard) {
+      expect(p.totalScore).toBeGreaterThan(6000);
+      expect(p.totalScore).toBeLessThanOrEqual(12000);
+    }
+  });
+
+  // ─── 15. Security Regressions for hostforce and hostfinish ─────────────
+  it('strictly enforces authorization, phase, closed, and cross-room guards on quiz:force and quiz:finish', async () => {
+    const t = convexTest(schema, modules);
+    const hostTokenA = make64Hex('1');
+    const hostTokenB = make64Hex('2');
+    const playerToken = make64Hex('3');
+
+    const resA = await t.mutation(anyApi.quiz.command, {
+      event: 'room:create',
+      payload: { hostToken: hostTokenA },
+    });
+    const roomCodeA = resA.roomCode;
+
+    // 1. In lobby: quiz:force and quiz:finish MUST be rejected
+    const forceInLobby = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:force',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(forceInLobby.ok).toBe(false);
+    expect(forceInLobby.error).toContain('trạng thái câu hỏi');
+
+    const finishInLobby = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:finish',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(finishInLobby.ok).toBe(false);
+    expect(finishInLobby.error).toContain('đang trong trận thi đấu');
+
+    // Join player & start quiz
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:join',
+      payload: { roomCode: roomCodeA, nickname: 'Hoc Vien', playerToken },
+    });
+    await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:start',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+
+    // 2. Unauthorized / playerToken / cross-room hostToken rejected
+    const forcePlayer = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:force',
+      payload: { roomCode: roomCodeA, hostToken: playerToken },
+    });
+    expect(forcePlayer.ok).toBe(false);
+
+    const finishCross = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:finish',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenB },
+    });
+    expect(finishCross.ok).toBe(false);
+
+    // 3. Invalid / non-hex token rejected
+    const forceBogus = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:force',
+      payload: { roomCode: roomCodeA, hostToken: 'invalid_token' },
+    });
+    expect(forceBogus.ok).toBe(false);
+    expect(forceBogus.error).toContain('không hợp lệ');
+
+    // 4. Legitimate host calls quiz:force -> moves to revealing
+    const validForce = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:force',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(validForce.ok).toBe(true);
+
+    let sub = await t.query(anyApi.quiz.subscribe, {
+      roomCode: roomCodeA,
+      token: hostTokenA,
+      connectionId: 'ch',
+    });
+    expect(sub!.room.phase).toBe('revealing');
+
+    // 5. quiz:force rejected when already in revealing
+    const forceInReveal = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:force',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(forceInReveal.ok).toBe(false);
+
+    // 6. Legitimate host calls quiz:finish -> moves to finished
+    const validFinish = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:finish',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(validFinish.ok).toBe(true);
+
+    sub = await t.query(anyApi.quiz.subscribe, {
+      roomCode: roomCodeA,
+      token: hostTokenA,
+      connectionId: 'ch',
+    });
+    expect(sub!.room.phase).toBe('finished');
+
+    // 7. quiz:finish rejected when already finished
+    const finishAgain = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:finish',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(finishAgain.ok).toBe(false);
+
+    // 8. Close room -> neither force nor finish can be performed on closed room (cannot revive)
+    await t.mutation(anyApi.quiz.command, {
+      event: 'room:close',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+
+    const forceClosed = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:force',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(forceClosed.ok).toBe(false);
+    expect(forceClosed.error).toContain('đã đóng');
+
+    const finishClosed = await t.mutation(anyApi.quiz.command, {
+      event: 'quiz:finish',
+      payload: { roomCode: roomCodeA, hostToken: hostTokenA },
+    });
+    expect(finishClosed.ok).toBe(false);
+    expect(finishClosed.error).toContain('đã đóng');
+  });
+  it('keeps results visible until host advances and ignores the previous reveal timer', async () => {
+    const t = convexTest(schema, modules);
+    const hostToken = make64Hex('a'), playerToken = make64Hex('b');
+    const created = await t.mutation(anyApi.quiz.command, { event: 'room:create', payload: { hostToken } });
+    const roomCode = created.roomCode;
+    await t.mutation(anyApi.quiz.command, { event: 'room:join', payload: { roomCode, playerToken, nickname: 'Timer test' } });
+    await t.mutation(anyApi.quiz.command, { event: 'quiz:start', payload: { roomCode, hostToken } });
+    await t.mutation(anyApi.quiz.command, { event: 'quiz:answer', payload: { roomCode, playerToken, epoch: 1, questionIndex: 1, answer: QUIZ_QUESTIONS[0].correctOptionId } });
+    const room = await t.run(async ctx => ctx.db.query('quizRooms').first());
+    expect(room!.phase).toBe('revealing');
+    const timer = { roomCode, epoch: room!.epoch, questionIndex: 1, generation: room!.generation };
+    await t.mutation(anyApi.quizScheduler.resolveRevealTimer, timer);
+    const results = await t.run(async ctx => ctx.db.query('quizRooms').first());
+    expect(results!.phase).toBe('revealing');
+    expect(results!.currentQuestionIndex).toBe(1);
+    expect(results!.revealDeadlineMs).toBeNull();
+    await t.mutation(anyApi.quiz.command, { event: 'quiz:advance', payload: { roomCode, hostToken } });
+    await t.mutation(anyApi.quizScheduler.resolveRevealTimer, timer);
+    const next = await t.run(async ctx => ctx.db.query('quizRooms').first());
+    expect(next!.phase).toBe('question');
+    expect(next!.currentQuestionIndex).toBe(2);
   });
 });

@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { SLIDES, SlideData } from '../data/slides';
 import { SOURCES } from '../data/sources';
-import { getSocket } from '../socket';
-import { createOnlineQuizPoll, closeOnlineQuizPoll, isQuizConvexAvailable } from '../quizConvex';
 import { AIUsageRecord } from '../components/AIUsageRecord';
-import { PollSnapshot } from '../types';
 import { ViewType } from '../components/Navbar';
 import { getPhotoBindingForSlide } from '../data/historicalPhotos';
 import {
   BookOpen,
   FileText,
   ExternalLink,
-  Vote,
   Sparkles,
   Gamepad2,
   ArrowRight,
@@ -35,30 +31,6 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
   const [scrollProgress, setScrollProgress] = useState<number>(0);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [isPrintMode, setIsPrintMode] = useState<boolean>(false);
-  const [pollMessage, setPollMessage] = useState('');
-  const [poll, setPoll] = useState<PollSnapshot | null>(null);
-
-  // Sync with host room poll state
-  useEffect(() => {
-    const socket = getSocket();
-    const sync = () => {
-      const roomCode = localStorage.getItem('vnr202_host_room');
-      const hostToken = localStorage.getItem('vnr202_host_token');
-      if (roomCode && hostToken) {
-        socket.emit('host:reconnect', { roomCode, hostToken }, (response: any) => {
-          if (response.ok) setPoll(response.poll || null);
-        });
-      }
-    };
-    socket.on('poll:update', setPoll);
-    socket.on('connect', sync);
-    sync();
-    return () => {
-      socket.off('poll:update', setPoll);
-      socket.off('connect', sync);
-    };
-  }, []);
-
   useEffect(() => {
     const header = document.querySelector('header');
     if (!header) return;
@@ -125,80 +97,6 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
     }, 300);
   };
 
-  const handleLaunchPoll = async (slideId: number) => {
-    const isSlide7 = slideId === 7;
-    const pollName = isSlide7 ? 'Khảo sát 2: Trường kỳ' : 'Khảo sát 1: Toàn dân';
-    const question = isSlide7
-      ? 'Theo bạn, yếu tố quyết định nhất để thực hiện thắng lợi "Trường kỳ kháng chiến" là gì?'
-      : 'Theo bạn, yếu tố nào là cội nguồn sức mạnh lớn nhất trong kháng chiến toàn dân?';
-    const options = isSlide7
-      ? [
-          'Dựa vào sức mình là chính, bồi dưỡng sức dân',
-          'Bẻ gãy âm mưu đánh nhanh thắng nhanh của địch',
-          'Tích cực củng cố căn cứ địa và hậu phương',
-          'Tranh thủ sự ủng hộ của phong trào hòa bình quốc tế',
-        ]
-      : [
-          'Khối đại đoàn kết toàn dân tộc',
-          'Nghệ thuật quân sự ba thứ quân',
-          'Lòng tin son sắt vào sự lãnh đạo của Đảng',
-          'Nền kinh tế tự cấp tự túc tại chỗ',
-        ];
-
-    // Priority 1: Check active online quiz room (Giải mã kháng chiến)
-    const quizRoomCode = localStorage.getItem('vnr202_quiz_host_room');
-    const quizHostToken = localStorage.getItem('vnr202_quiz_host_token');
-
-    if (quizRoomCode && quizHostToken && isQuizConvexAvailable()) {
-      try {
-        const resp = await createOnlineQuizPoll({
-          roomCode: quizRoomCode,
-          hostToken: quizHostToken,
-          question,
-          options,
-        });
-        if (resp.ok) {
-          setPollMessage(`Đã kích hoạt cuộc thăm dò ý kiến (${pollName}) tới toàn bộ người chơi trong phòng ${quizRoomCode}!`);
-          return;
-        } else {
-          setPollMessage('Lỗi kích hoạt khảo sát: ' + (resp.error || 'Vui lòng kiểm tra phòng'));
-          return;
-        }
-      } catch (err: any) {
-        setPollMessage('Lỗi kết nối khảo sát: ' + (err.message || String(err)));
-        return;
-      }
-    }
-
-    // Priority 2: Fallback to socket legacy room if present
-    const legacyRoomCode = localStorage.getItem('vnr202_host_room');
-    const legacyHostToken = localStorage.getItem('vnr202_host_token');
-
-    if (legacyRoomCode && legacyHostToken) {
-      const socket = getSocket();
-      socket.emit(
-        'poll:create',
-        {
-          roomCode: legacyRoomCode,
-          hostToken: legacyHostToken,
-          question,
-          options,
-        },
-        (resp: any) => {
-          if (resp.ok) {
-            setPollMessage(`Đã kích hoạt cuộc thăm dò ý kiến (${pollName}) trên điện thoại của lớp học!`);
-          } else {
-            setPollMessage('Lỗi kích hoạt khảo sát: ' + (resp.error || 'Vui lòng kiểm tra mã chủ phòng'));
-          }
-        }
-      );
-      return;
-    }
-
-    setPollMessage('Vui lòng tạo phòng thi trước (tại thẻ Game -> Chủ phòng) để nhận mã phòng trước khi kích hoạt khảo sát lớp học.');
-  };
-
-  // Printable whole article output
   if (isPrintMode) {
     return (
       <div className="bg-white p-8 space-y-10 text-[#171513]">
@@ -518,63 +416,6 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
             </div>
           </header>
 
-          {pollMessage && <div role="status" className="no-print rounded-2xl border border-[#9d242b]/30 bg-[#faebee] p-4 text-sm text-[#7a171d]">{pollMessage}<button className="ml-3 underline" onClick={() => setPollMessage('')}>Đóng</button></div>}
-          {/* ACTIVE IN-TALK POLL FLOATING NOTIFICATION (IF POLL IS ACTIVE) */}
-          {poll && poll.active && (
-            <div className="sticky top-20 z-20 no-print editorial-card p-4 border-2 border-[#9d242b] bg-[#fdfcf9] shadow-xl space-y-2 animate-in fade-in">
-              <div className="flex items-center justify-between">
-                <h4 className="font-bold text-sm text-[#9d242b] flex items-center gap-1.5">
-                  <Vote className="w-4 h-4" />
-                  <span>Khảo sát lớp đang diễn ra: {poll.question}</span>
-                </h4>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#faebee] text-[#9d242b] font-bold">
-                  {poll.totalVotes} lượt phản hồi
-                </span>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
-                {poll.options.map((opt, i) => {
-                  const count = poll.voteCounts[i] || 0;
-                  const pct = poll.totalVotes > 0 ? Math.round((count / poll.totalVotes) * 100) : 0;
-                  return (
-                    <div key={opt} className="p-2 bg-white rounded border border-[#dfd6c6]">
-                      <div className="flex justify-between font-medium">
-                        <span className="truncate">{opt}</span>
-                        <span className="font-mono">{count} ({pct}%)</span>
-                      </div>
-                      <div className="w-full h-1 bg-gray-100 rounded-full mt-1 overflow-hidden">
-                        <div className="h-full bg-[#9d242b]" style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="text-right pt-1">
-                <button
-                  onClick={async () => {
-                    const quizRoomCode = localStorage.getItem('vnr202_quiz_host_room');
-                    const quizHostToken = localStorage.getItem('vnr202_quiz_host_token');
-                    if (quizRoomCode && quizHostToken && isQuizConvexAvailable()) {
-                      await closeOnlineQuizPoll({
-                        roomCode: quizRoomCode,
-                        hostToken: quizHostToken,
-                        pollId: poll.id,
-                      });
-                    } else {
-                      getSocket().emit('poll:close', {
-                        roomCode: localStorage.getItem('vnr202_host_room'),
-                        hostToken: localStorage.getItem('vnr202_host_token'),
-                        pollId: poll.id,
-                      }, () => {});
-                    }
-                  }}
-                  className="px-3 py-1 rounded-full text-xs font-semibold bg-[#9d242b] text-white hover:bg-[#7a171d]"
-                >
-                  Đóng cuộc khảo sát
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* ============================================================ */}
           {/* THE 12 CONTINUOUS SECTIONS (VARIED EDITORIAL COMPOSITIONS)    */}
           {/* ============================================================ */}
@@ -644,34 +485,6 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                         </div>
                       )}
 
-                      {/* Interactive Poll Launcher Widget (In Slide 5 & 7) */}
-                      {slide.hasInteractivePoll && (
-                        <div className="no-print p-4 rounded-2xl bg-[#faebee]/60 border border-[#9d242b]/30 space-y-3 mt-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-xs font-bold text-[#9d242b]">
-                              <Vote className="w-4 h-4" />
-                              <span>Khảo Sát Lớp Học Tương Tác</span>
-                            </div>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white text-[#9d242b] border border-[#9d242b]/20">
-                              Lồng ghép trong bài
-                            </span>
-                          </div>
-
-                          <p className="text-xs text-[#3a3530]">
-                            {slide.id === 7
-                              ? 'Câu hỏi khảo sát: Theo bạn, yếu tố quyết định nhất để thực hiện thắng lợi "Trường kỳ kháng chiến" là gì?'
-                              : 'Câu hỏi khảo sát: Theo bạn, yếu tố nào là cội nguồn sức mạnh lớn nhất trong kháng chiến toàn dân?'}
-                          </p>
-
-                          <button
-                            onClick={() => handleLaunchPoll(slide.id)}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#9d242b] text-white text-xs font-semibold rounded-full hover:bg-[#7a171d] shadow-sm transition-all"
-                          >
-                            <Vote className="w-3.5 h-3.5" />
-                            <span>Kích hoạt câu hỏi trên điện thoại của lớp</span>
-                          </button>
-                        </div>
-                      )}
                     </div>
 
                     {/* Archival Photo Card (5 cols) */}
@@ -791,7 +604,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
               </div>
               <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
                 <span className="font-mono font-bold text-[#c99738]">02. Đua tốc độ</span>
-                <p>10 câu hỏi độc lập (25s/câu): 1.000 điểm chuẩn + 250 điểm thưởng tốc độ.</p>
+                <p>10 vòng thi đấu (60s/vòng): trắc nghiệm 4 màu và đuổi hình bắt chữ, tối đa ~6.000 điểm/vòng.</p>
               </div>
               <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
                 <span className="font-mono font-bold text-[#c99738]">03. Vinh danh</span>

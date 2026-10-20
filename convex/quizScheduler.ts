@@ -5,7 +5,7 @@ import { QUIZ_CONSTANTS } from "../shared/quizData";
 
 /**
  * Authoritative 25s question timer resolution:
- * When 25 seconds answering window elapses, transition to 'revealing' phase.
+ * When the answering window elapses, transition to 'revealing' phase.
  * Schedule 8s reveal timer.
  * Guarded by epoch, questionIndex, and generation.
  */
@@ -59,8 +59,8 @@ export const resolveQuestionTimer = internalMutation({
 });
 
 /**
- * Authoritative 8s reveal timer resolution:
- * When 8s answer reveal & explanation ends, advance to next question or finish quiz.
+ * Clear the reveal countdown while preserving host-controlled results:
+ * The host explicitly advances or finishes the quiz; this timer never changes rounds.
  * Guarded by epoch, questionIndex, and generation.
  */
 export const resolveRevealTimer = internalMutation({
@@ -87,46 +87,8 @@ export const resolveRevealTimer = internalMutation({
       return;
     }
 
-    const now = Date.now();
-    const nextGeneration = room.generation + 1;
-
-    if (room.currentQuestionIndex >= QUIZ_CONSTANTS.TOTAL_QUESTIONS) {
-      // All 10 questions finished
-      await ctx.db.patch(room._id, {
-        phase: "finished",
-        deadlineMs: null,
-        revealDeadlineMs: null,
-        generation: nextGeneration,
-        lastActivity: now,
-      });
-      return;
-    }
-
-    // Advance to next question
-    const nextQuestionIndex = room.currentQuestionIndex + 1;
-    const deadlineMs = now + QUIZ_CONSTANTS.QUESTION_DURATION_MS;
-
-    await ctx.db.patch(room._id, {
-      phase: "question",
-      currentQuestionIndex: nextQuestionIndex,
-      questionStartedAt: now,
-      deadlineMs,
-      revealDeadlineMs: null,
-      generation: nextGeneration,
-      lastActivity: now,
-    });
-
-    // Schedule 25s question timer for next question
-    await ctx.scheduler.runAfter(
-      QUIZ_CONSTANTS.QUESTION_DURATION_MS,
-      anyApi.quizScheduler.resolveQuestionTimer,
-      {
-        roomCode: args.roomCode,
-        epoch: room.epoch,
-        questionIndex: nextQuestionIndex,
-        generation: nextGeneration,
-      }
-    );
+    // Keep results visible until the host explicitly advances the round.
+    await ctx.db.patch(room._id, { revealDeadlineMs: null });
   },
 });
 

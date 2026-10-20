@@ -46,6 +46,7 @@ export interface QuizLeaderboardEntry {
   totalTimeSpentMs: number;
   correctCount: number;
   rank: number;
+  hasSubmittedCurrent?: boolean;
 }
 
 export interface QuizSubscribeEnvelope {
@@ -184,6 +185,7 @@ export const subscribe = query({
       totalTimeSpentMs: st.visibleTimeSpentMs,
       correctCount: st.visibleCorrectCount,
       rank: idx + 1,
+      hasSubmittedCurrent: currentQuestionAnswersByToken.has(st.player.playerToken),
     }));
 
     // Question & Reveal data
@@ -690,6 +692,17 @@ export const command = mutation({
       }
 
       const isCorrect = evaluateAnswer(targetQuestion, answer);
+
+      // Wrong retry allowed for catchphrase questions without marking answered
+      if (targetQuestion.type === "catchphrase" && !isCorrect) {
+        return {
+          ok: false,
+          error: "Đáp án chưa chính xác, hãy thử lại!",
+          isCorrect: false,
+          canRetry: true,
+        };
+      }
+
       const remainingMs = Math.max(0, room.deadlineMs - now);
       const scoreResult = calculateQuestionScore(isCorrect, remainingMs);
       const timeTakenMs = Math.max(0, QUIZ_CONSTANTS.QUESTION_DURATION_MS - remainingMs);
@@ -829,6 +842,102 @@ export const command = mutation({
       );
 
       return { ok: true, finished: false, nextQuestionIndex };
+    }
+
+    // ─── 5b. Host Force Round (Qua vòng) ──────────────────────────────
+    if (event === "quiz:force") {
+      const roomCode = String(payload?.roomCode || "").trim().toUpperCase();
+      const hostToken = String(payload?.hostToken || "").trim();
+
+      if (!is64Hex(hostToken)) {
+        return { ok: false, error: "Mã xác thực hostToken không hợp lệ" };
+      }
+
+      const room = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_code", (q) => q.eq("code", roomCode))
+        .first();
+
+      if (!room || room.hostToken !== hostToken) {
+        return { ok: false, error: "Không có quyền thực hiện hoặc phòng không tồn tại" };
+      }
+
+      if (room.phase === "closed") {
+        return { ok: false, error: "Phòng thi đấu đã đóng" };
+      }
+
+      if (now - room.lastActivity > QUIZ_CONSTANTS.ROOM_TTL_MS) {
+        return { ok: false, error: "Phòng thi đấu đã hết hạn hoạt động" };
+      }
+
+      if (room.phase !== "question") {
+        return { ok: false, error: "Chỉ có thể kết thúc sớm vòng khi đang ở trạng thái câu hỏi" };
+      }
+
+      const nextGeneration = room.generation + 1;
+      const revealDeadlineMs = now + QUIZ_CONSTANTS.REVEAL_DURATION_MS;
+
+      await ctx.db.patch(room._id, {
+        phase: "revealing",
+        revealDeadlineMs,
+        generation: nextGeneration,
+        lastActivity: now,
+      });
+
+      await ctx.scheduler.runAfter(
+        QUIZ_CONSTANTS.REVEAL_DURATION_MS,
+        anyApi.quizScheduler.resolveRevealTimer,
+        {
+          roomCode,
+          epoch: room.epoch,
+          questionIndex: room.currentQuestionIndex,
+          generation: nextGeneration,
+        }
+      );
+
+      return { ok: true };
+    }
+
+    // ─── 5c. Host Finish Game Early (Kết thúc sớm) ───────────────────
+    if (event === "quiz:finish") {
+      const roomCode = String(payload?.roomCode || "").trim().toUpperCase();
+      const hostToken = String(payload?.hostToken || "").trim();
+
+      if (!is64Hex(hostToken)) {
+        return { ok: false, error: "Mã xác thực hostToken không hợp lệ" };
+      }
+
+      const room = await ctx.db
+        .query("quizRooms")
+        .withIndex("by_code", (q) => q.eq("code", roomCode))
+        .first();
+
+      if (!room || room.hostToken !== hostToken) {
+        return { ok: false, error: "Không có quyền thực hiện hoặc phòng không tồn tại" };
+      }
+
+      if (room.phase === "closed") {
+        return { ok: false, error: "Phòng thi đấu đã đóng" };
+      }
+
+      if (now - room.lastActivity > QUIZ_CONSTANTS.ROOM_TTL_MS) {
+        return { ok: false, error: "Phòng thi đấu đã hết hạn hoạt động" };
+      }
+
+      if (room.phase !== "question" && room.phase !== "revealing") {
+        return { ok: false, error: "Chỉ có thể kết thúc khi đang trong trận thi đấu (question hoặc revealing)" };
+      }
+
+      const nextGeneration = room.generation + 1;
+      await ctx.db.patch(room._id, {
+        phase: "finished",
+        deadlineMs: null,
+        revealDeadlineMs: null,
+        generation: nextGeneration,
+        lastActivity: now,
+      });
+
+      return { ok: true };
     }
 
     // ─── 6. Replay Quiz ─────────────────────────────────────────────────

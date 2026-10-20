@@ -212,10 +212,10 @@ export const SoloQuizView: React.FC = () => {
             <div className="font-bold text-[#193b32] pb-1 border-b border-[#dfd6c6]">
               Quy tắc tính điểm chuẩn xác:
             </div>
-            <div>• <strong>10 câu hỏi:</strong> Bao gồm câu hỏi chọn đáp án, ảnh tư liệu thật và sắp xếp mốc thời gian.</div>
-            <div>• <strong>Thời gian:</strong> 25 giây mỗi câu. 8 giây đối chiếu đáp án & lời giải thích lịch sử.</div>
-            <div>• <strong>Cách tính điểm:</strong> 1.000 điểm chuẩn cho câu trả lời đúng + tối đa 250 điểm thưởng tốc độ (tổng tối đa 1.250 điểm/câu).</div>
-            <div>• <strong>Không phạt:</strong> Trả lời sai hoặc quá hạn nhận 0 điểm, không bị trừ điểm.</div>
+            <div>• <strong>10 câu hỏi:</strong> Gồm 5 câu trắc nghiệm phản xạ và 5 câu đuổi hình bắt chữ kèm ảnh tư liệu lịch sử thật.</div>
+            <div>• <strong>Thời gian:</strong> 60 giây mỗi vòng thi đấu.</div>
+            <div>• <strong>Cách tính điểm:</strong> Tính theo mili-giây còn lại: floor(thời gian còn lại / 10), tối đa ~6.000 điểm/câu.</div>
+            <div>• <strong>Không phạt:</strong> Trả lời sai nhận 0 điểm, câu đuổi hình bắt chữ được gõ thử lại nhiều lần đến khi hết giờ.</div>
           </div>
 
           <button
@@ -233,7 +233,7 @@ export const SoloQuizView: React.FC = () => {
 
   // ─── 2. FINISHED SCREEN ───────────────────────────────────────────────
   if (phase === 'finished') {
-    const maxPossible = QUIZ_CONSTANTS.TOTAL_QUESTIONS * (QUIZ_CONSTANTS.BASE_SCORE + QUIZ_CONSTANTS.MAX_SPEED_BONUS);
+    const maxPossible = QUIZ_CONSTANTS.TOTAL_QUESTIONS * QUIZ_CONSTANTS.MAX_SCORE;
     const scorePercent = Math.round((totalScore / maxPossible) * 100);
 
     return (

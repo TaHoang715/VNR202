@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const records = [
   { task: 'Nội dung & bài học', tool: 'Codex + OpenCode (Opus 4.6 medium, sau đó Gemini Flash High)', prompt: 'Soạn 12 mục đúng Chương 2 I.2, có nguồn, liên hệ và AI Usage; không bịa số trang hay xác nhận của sinh viên.', result: 'Bản thảo 12 mục cuộn dọc, ghi chú người nói, danh mục nguồn và bản in. Chưa được sinh viên duyệt theo giáo trình.' },
-  { task: 'Game & giao diện', tool: 'OpenCode qua 9Router; Codex điều phối và review', prompt: 'Chuyển sang trò chơi cá nhân Giải mã kháng chiến (10 câu trắc nghiệm, solo tức thì và online Convex, tính điểm 1000 + 250 tốc độ, tích hợp khảo sát bài học).', result: 'Website và backend Convex chuyên biệt; thi đấu cá nhân độc lập, câu hỏi tư liệu và sắp xếp mốc thời gian, bảo vệ token và kết nối lại an toàn.' },
+  { task: 'Game & giao diện', tool: 'OpenCode qua 9Router; Codex điều phối và review', prompt: 'Chuyển sang trò chơi Đấu trường tri thức 10 vòng (trắc nghiệm phản xạ 4 màu và đuổi hình bắt chữ, solo tức thì và online Convex, tính điểm mili-giây tối đa ~6000, tích hợp âm nhạc và ảnh tư liệu thật).', result: 'Website và backend Convex chuyên biệt; thi đấu trực tiếp, câu hỏi ảnh tư liệu thật và thử lại đáp án sai, bảo vệ token và kết nối lại an toàn.' },
   { task: 'Kiểm chứng & kiểm thử', tool: 'Codex, công cụ web/trình duyệt; OpenCode hỗ trợ sửa lỗi', prompt: 'Đối chiếu nguồn chính thống; kiểm tra build, nhiều client, thao tác giao diện, nêu đúng giới hạn tiếp cận tài liệu.', result: 'Đã đọc các trang nguồn trực tuyến và chạy kiểm thử kỹ thuật. Chưa tiếp cận toàn văn giáo trình chính; nhóm phải tự đối chiếu nội dung học thuật.' },
 ];
 

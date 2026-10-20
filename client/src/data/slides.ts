@@ -39,9 +39,9 @@ export const SLIDES: SlideData[] = [
     },
     sources: [
       {
-        label: 'Giáo trình Lịch sử ĐCSVN (Khối không chuyên)',
+        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam (Khối không chuyên)',
         url: 'https://www.nxbctqg.org.vn/giao-trinh-lich-su-dang-cong-san-viet-nam-danh-cho-bac-dai-hoc-he-khong-chuyen-ly-luan-chinh-tri-.html',
-        note: 'NXB CTQG 2021, Chương 2 Mục I.2 (Bản nháp chờ đối chiếu số trang cụ thể)',
+        note: 'Nhà xuất bản Chính trị quốc gia Sự thật 2021, Chương 2 Mục I.2 (Bản nháp chờ đối chiếu số trang cụ thể)',
       },
     ],
     speakerNotes:
@@ -58,7 +58,7 @@ export const SLIDES: SlideData[] = [
       points: [
         'Hiệp định Sơ bộ (6/3) và Tạm ước (14/9/1946) bị Pháp liên tục bội ước (khiêu khích tại Hải Phòng, Lạng Sơn, Hà Nội).',
         'Ngày 18/12/1946, tướng Morlière gửi tối hậu thư đòi tước vũ khí Tự vệ Thủ đô.',
-        'Hội nghị Vạn Phúc (18–19/12/1946): Ban Thường vụ TW Đảng quyết định phát động kháng chiến toàn quốc.',
+        'Hội nghị Vạn Phúc (18–19/12/1946): Ban Thường vụ Trung ương Đảng quyết định phát động kháng chiến toàn quốc.',
       ],
       archivalQuote: {
         text: 'Chúng ta càng nhân nhượng, thực dân Pháp càng lấn tới... Thà hy sinh tất cả, chứ nhất định không chịu mất nước!',
@@ -115,7 +115,7 @@ export const SLIDES: SlideData[] = [
     },
     sources: [
       {
-        label: 'Giáo trình Lịch sử ĐCSVN 2021',
+        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam 2021',
         note: 'Chương 2, Mục I.2 (Tính chất và mục tiêu kháng chiến)',
       },
     ],
@@ -191,8 +191,8 @@ export const SLIDES: SlideData[] = [
     },
     sources: [
       {
-        label: 'Giáo trình Lịch sử ĐCSVN',
-        note: 'NXB CTQG 2021, Chương 2 Mục I.2',
+        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam',
+        note: 'Nhà xuất bản Chính trị quốc gia Sự thật 2021, Chương 2 Mục I.2',
       },
     ],
     speakerNotes:
@@ -207,7 +207,7 @@ export const SLIDES: SlideData[] = [
     content: {
       heading: 'Tiềm lực vật chất nuôi dưỡng cuộc kháng chiến',
       points: [
-        'Di chuyển an toàn các cơ quan Trung ương, xưởng máy, kho tàng lên Chiến khu Việt Bắc (An toàn khu - ATK).',
+        'Di chuyển an toàn các cơ quan Trung ương, xưởng máy, kho tàng lên Chiến khu Việt Bắc (An toàn khu).',
         'Xây dựng làng chiến đấu và căn cứ địa tại chỗ; thực hiện triệt để phương châm "vườn không nhà trống".',
         'Đẩy mạnh phong trào "Tăng gia sản xuất tự cấp tự túc" và phát hành đồng tiền tài chính độc lập.',
       ],
@@ -262,7 +262,7 @@ export const SLIDES: SlideData[] = [
     },
     sources: [
       {
-        label: 'Giáo trình Lịch sử ĐCSVN 2021',
+        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam 2021',
         note: 'Chương 2 Mục I.2: Đúc kết kinh nghiệm lãnh đạo của Đảng',
       },
     ],

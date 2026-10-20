@@ -4,82 +4,106 @@ import {
   QUIZ_CONSTANTS,
   calculateQuestionScore,
   evaluateAnswer,
+  normalizeCatchphrase,
   sanitizeQuestionForClient,
   extractRevealData,
-  QuestionType,
 } from './data/quizData';
 
 describe('Giải mã kháng chiến — Client Quiz Engine & Questions Suite', () => {
-  // ─── 1. Scoring Semantics ─────────────────────────────────────────────
+  // ─── 1. Scoring Semantics (floor(serverRemainingMs/10) max 6000) ───────
   describe('calculateQuestionScore', () => {
-    it('awards 1250 points for correct answer submitted instantly (25s remaining)', () => {
-      const res = calculateQuestionScore(true, 25000, 25000);
+    it('awards 6000 points for correct answer submitted instantly (60s remaining)', () => {
+      const res = calculateQuestionScore(true, 60000, 60000);
       expect(res.isCorrect).toBe(true);
-      expect(res.points).toBe(1250);
+      expect(res.points).toBe(6000);
     });
 
-    it('awards 1125 points for correct answer submitted at mid-point (12.5s remaining)', () => {
-      const res = calculateQuestionScore(true, 12500, 25000);
+    it('awards 3000 points for correct answer submitted at mid-point (30s remaining)', () => {
+      const res = calculateQuestionScore(true, 30000, 60000);
       expect(res.isCorrect).toBe(true);
-      expect(res.points).toBe(1125);
+      expect(res.points).toBe(3000);
     });
 
-    it('awards 1000 base points for correct answer submitted at the last moment (0s remaining)', () => {
-      const res = calculateQuestionScore(true, 0, 25000);
+    it('awards 0 points for correct answer submitted at 0s remaining', () => {
+      const res = calculateQuestionScore(true, 0, 60000);
       expect(res.isCorrect).toBe(true);
-      expect(res.points).toBe(1000);
+      expect(res.points).toBe(0);
     });
 
     it('awards 0 points for any incorrect answer regardless of remaining time', () => {
-      const resInstant = calculateQuestionScore(false, 25000, 25000);
+      const resInstant = calculateQuestionScore(false, 60000, 60000);
       expect(resInstant.isCorrect).toBe(false);
       expect(resInstant.points).toBe(0);
 
-      const resLate = calculateQuestionScore(false, 1000, 25000);
+      const resLate = calculateQuestionScore(false, 15000, 60000);
       expect(resLate.isCorrect).toBe(false);
       expect(resLate.points).toBe(0);
     });
 
     it('clamps remaining time within [0, timeLimitMs]', () => {
-      const overTime = calculateQuestionScore(true, 30000, 25000);
-      expect(overTime.points).toBe(1250);
+      const overTime = calculateQuestionScore(true, 75000, 60000);
+      expect(overTime.points).toBe(6000);
 
-      const negativeTime = calculateQuestionScore(true, -5000, 25000);
-      expect(negativeTime.points).toBe(1000);
+      const negativeTime = calculateQuestionScore(true, -5000, 60000);
+      expect(negativeTime.points).toBe(0);
     });
   });
 
-  // ─── 2. Question Answer Evaluation ────────────────────────────────────
-  describe('evaluateAnswer', () => {
-    it('evaluates choice and photo questions correctly', () => {
-      const q1 = QUIZ_QUESTIONS[0]; // choice
+  // ─── 2. Question Answer Evaluation & Catchphrase Normalization ────────
+  describe('evaluateAnswer & normalizeCatchphrase', () => {
+    it('evaluates choice questions strictly by exact ID or exact full text', () => {
+      const q1 = QUIZ_QUESTIONS[0]; // choice Q1, correct B
+      expect(evaluateAnswer(q1, 'B')).toBe(true);
       expect(evaluateAnswer(q1, 'b')).toBe(true);
-      expect(evaluateAnswer(q1, 'a')).toBe(false);
+      expect(evaluateAnswer(q1, 'B. Quyết định phát động cuộc kháng chiến toàn quốc trong toàn dân, toàn quân')).toBe(true);
+      expect(evaluateAnswer(q1, 'Quyết định phát động cuộc kháng chiến toàn quốc trong toàn dân, toàn quân')).toBe(true);
+      // Rejects arbitrary prefixes or bogus strings starting with B
+      expect(evaluateAnswer(q1, 'BOGUS')).toBe(false);
+      expect(evaluateAnswer(q1, 'B. Quyết định...')).toBe(false);
+      expect(evaluateAnswer(q1, 'A')).toBe(false);
       expect(evaluateAnswer(q1, '')).toBe(false);
       expect(evaluateAnswer(q1, null)).toBe(false);
-
-      const photoQ = QUIZ_QUESTIONS.find((q) => q.type === 'photo')!;
-      expect(evaluateAnswer(photoQ, photoQ.correctOptionId)).toBe(true);
-      expect(evaluateAnswer(photoQ, 'wrong_option')).toBe(false);
     });
 
-    it('evaluates button-based ordering questions strictly', () => {
-      const orderQ = QUIZ_QUESTIONS.find((q) => q.type === 'order')!;
-      const correctOrder = orderQ.correctOrderIds!;
+    it('normalizes accents, casing, and whitespace variants for catchphrases', () => {
+      expect(normalizeCatchphrase('Toàn dân')).toBe('toan dan');
+      expect(normalizeCatchphrase('  TOÀN   DÂN  ')).toBe('toan dan');
+      expect(normalizeCatchphrase('toan dan')).toBe('toan dan');
+      expect(normalizeCatchphrase('Tự Lực Cánh Sinh')).toBe('tu luc canh sinh');
+      expect(normalizeCatchphrase('TU LUC CANH SINH')).toBe('tu luc canh sinh');
+      expect(normalizeCatchphrase('Biên giới')).toBe('bien gioi');
+      expect(normalizeCatchphrase('BIEN GIOI')).toBe('bien gioi');
+      expect(normalizeCatchphrase('Trường kỳ')).toBe('truong ky');
+      expect(normalizeCatchphrase('Toàn diện')).toBe('toan dien');
+    });
 
-      // Exact correct sequence
-      expect(evaluateAnswer(orderQ, correctOrder)).toBe(true);
+    it('evaluates all 5 catchphrase questions accurately with accented and unaccented input', () => {
+      const catchphrases = QUIZ_QUESTIONS.filter((q) => q.type === 'catchphrase');
+      expect(catchphrases).toHaveLength(5);
 
-      // Reversed sequence
-      expect(evaluateAnswer(orderQ, [...correctOrder].reverse())).toBe(false);
+      const expectedAnswers = [
+        'Toàn dân',
+        'Toàn diện',
+        'Trường kỳ',
+        'Tự lực cánh sinh',
+        'Biên giới',
+      ];
 
-      // Partial sequence
-      expect(evaluateAnswer(orderQ, [correctOrder[0]])).toBe(false);
+      catchphrases.forEach((q, idx) => {
+        const expected = expectedAnswers[idx];
+        expect(q.correctAnswer).toBe(expected);
 
-      // Malformed inputs
-      expect(evaluateAnswer(orderQ, 'vk-1')).toBe(false);
-      expect(evaluateAnswer(orderQ, null)).toBe(false);
-      expect(evaluateAnswer(orderQ, undefined)).toBe(false);
+        // Standard exact match
+        expect(evaluateAnswer(q, expected)).toBe(true);
+        // Lowercase unaccented
+        expect(evaluateAnswer(q, normalizeCatchphrase(expected))).toBe(true);
+        // Uppercase unaccented
+        expect(evaluateAnswer(q, normalizeCatchphrase(expected).toUpperCase())).toBe(true);
+        // Extra spaces
+        expect(evaluateAnswer(q, `  ${expected}   `)).toBe(true);
+        // Wrong answer
+        expect(evaluateAnswer(q, 'sai đáp án')).toBe(false);
+      });
     });
   });
 
@@ -96,15 +120,15 @@ describe('Giải mã kháng chiến — Client Quiz Engine & Questions Suite', (
         // Answers and explanations MUST be undefined
         const raw = clientQ as any;
         expect(raw.correctOptionId).toBeUndefined();
-        expect(raw.correctOrderIds).toBeUndefined();
+        expect(raw.correctAnswer).toBeUndefined();
         expect(raw.explanation).toBeUndefined();
         expect(raw.sourceNote).toBeUndefined();
 
-        // If order question, items must not expose targetPosition
-        if (clientQ.orderItems) {
-          for (const item of clientQ.orderItems) {
-            expect((item as any).targetPosition).toBeUndefined();
-          }
+        // For catchphrase, letterHint is provided but does NOT contain full answer
+        if (q.type === 'catchphrase') {
+          expect(clientQ.letterHint).toBeDefined();
+          expect(clientQ.letterHint!.wordLengths.length).toBeGreaterThan(0);
+          expect(JSON.stringify(clientQ.letterHint)).not.toContain(q.correctAnswer!);
         }
       }
     });
@@ -116,10 +140,10 @@ describe('Giải mã kháng chiến — Client Quiz Engine & Questions Suite', (
         expect(reveal.explanation.length).toBeGreaterThan(10);
         expect(reveal.sourceNote.length).toBeGreaterThan(5);
 
-        if (q.type === 'choice' || q.type === 'photo') {
+        if (q.type === 'choice') {
           expect(reveal.correctOptionId).toBe(q.correctOptionId);
-        } else if (q.type === 'order') {
-          expect(reveal.correctOrderIds).toEqual(q.correctOrderIds);
+        } else if (q.type === 'catchphrase') {
+          expect(reveal.correctAnswer).toBe(q.correctAnswer);
         }
       }
     });
@@ -127,88 +151,33 @@ describe('Giải mã kháng chiến — Client Quiz Engine & Questions Suite', (
 
   // ─── 4. Full 10 Questions Content Integrity ───────────────────────────
   describe('10 Sourced History Questions (1946–1950) Content Integrity', () => {
-    it('contains exactly 10 questions with IDs 1 to 10', () => {
+    it('contains exactly 10 questions alternating 5 choices and 5 catchphrases', () => {
       expect(QUIZ_QUESTIONS).toHaveLength(10);
       QUIZ_QUESTIONS.forEach((q, idx) => {
         expect(q.id).toBe(idx + 1);
+        if (idx % 2 === 0) {
+          expect(q.type).toBe('choice');
+        } else {
+          expect(q.type).toBe('catchphrase');
+        }
       });
     });
 
-    it('covers choice, accessible timeline order, and authentic photo question types', () => {
-      const types = new Set(QUIZ_QUESTIONS.map((q) => q.type));
-      expect(types.has('choice')).toBe(true);
-      expect(types.has('order')).toBe(true);
-      expect(types.has('photo')).toBe(true);
-    });
-
-    it('verifies all historical photos use real archive paths and complete metadata', () => {
-      const photoQuestions = QUIZ_QUESTIONS.filter((q) => q.type === 'photo');
-      expect(photoQuestions.length).toBeGreaterThanOrEqual(2);
-
-      for (const pq of photoQuestions) {
-        expect(pq.photo).toBeDefined();
-        expect(pq.photo!.src).toContain('images/history/');
-        expect(pq.photo!.caption.length).toBeGreaterThan(10);
-        expect(pq.photo!.credit.length).toBeGreaterThan(5);
-        expect(pq.photo!.date.length).toBeGreaterThan(3);
-        expect(pq.photo!.source).toMatch(/^https?:\/\//);
+    it('verifies all catchphrase questions have real historical photos and metadata', () => {
+      const catchphrases = QUIZ_QUESTIONS.filter((q) => q.type === 'catchphrase');
+      for (const cp of catchphrases) {
+        expect(cp.photo).toBeDefined();
+        expect(cp.photo!.src).toMatch(/images\/(history|game)\//);
+        expect(cp.photo!.caption.length).toBeGreaterThan(10);
+        expect(cp.photo!.credit.length).toBeGreaterThan(5);
+        expect(cp.photo!.date.length).toBeGreaterThan(3);
+        expect(cp.photo!.source).toMatch(/^https?:\/\//);
       }
-    });
 
-    it('verifies all timeline ordering questions have valid items and sequential targets', () => {
-      const orderQuestions = QUIZ_QUESTIONS.filter((q) => q.type === 'order');
-      expect(orderQuestions.length).toBeGreaterThanOrEqual(2);
-
-      for (const oq of orderQuestions) {
-        expect(oq.orderItems).toBeDefined();
-        expect(oq.correctOrderIds).toBeDefined();
-        expect(oq.orderItems!.length).toBe(oq.correctOrderIds!.length);
-
-        const itemIds = oq.orderItems!.map((it) => it.id);
-        for (const cid of oq.correctOrderIds!) {
-          expect(itemIds).toContain(cid);
-        }
-      }
-    });
-  });
-
-  // ─── 5. Timeline Reordering Permutations ──────────────────────────────
-  describe('Accessible Button-based Reordering Logic', () => {
-    it('simulates moveUp and moveDown operations accurately', () => {
-      const initial = ['item-A', 'item-B', 'item-C'];
-
-      // Move item at index 1 up -> swaps with index 0
-      const moveUp = (arr: string[], idx: number) => {
-        if (idx <= 0) return arr;
-        const copy = [...arr];
-        const temp = copy[idx - 1];
-        copy[idx - 1] = copy[idx];
-        copy[idx] = temp;
-        return copy;
-      };
-
-      const moveDown = (arr: string[], idx: number) => {
-        if (idx >= arr.length - 1) return arr;
-        const copy = [...arr];
-        const temp = copy[idx + 1];
-        copy[idx + 1] = copy[idx];
-        copy[idx] = temp;
-        return copy;
-      };
-
-      // Moving middle item up
-      const afterUp = moveUp(initial, 1);
-      expect(afterUp).toEqual(['item-B', 'item-A', 'item-C']);
-
-      // Moving first item up: no-op
-      expect(moveUp(afterUp, 0)).toEqual(['item-B', 'item-A', 'item-C']);
-
-      // Moving first item down
-      const afterDown = moveDown(afterUp, 0);
-      expect(afterDown).toEqual(['item-A', 'item-B', 'item-C']);
-
-      // Moving last item down: no-op
-      expect(moveDown(afterDown, 2)).toEqual(['item-A', 'item-B', 'item-C']);
+      // Verify Q4 uses the authentic Ty Tuyên truyền Thái Nguyên poster
+      const q4 = QUIZ_QUESTIONS[3];
+      expect(q4.photo?.src).toBe('images/game/san-xuat-hoc-chu.jpg');
+      expect(q4.photo?.caption).toContain('Ty Tuyên truyền văn nghệ Thái Nguyên');
     });
   });
 });

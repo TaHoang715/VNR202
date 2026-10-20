@@ -167,7 +167,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#9d242b]" />
-                  <span>Khảo sát nhanh tương tác trong lớp học qua mã phòng.</span>
+
                 </div>
               </div>
             </div>
@@ -194,19 +194,17 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               </div>
 
               <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#171513]">
-                Thử thách cá nhân: "Giải mã kháng chiến"
+                Đấu trường tri thức: "Đường lối kháng chiến"
               </h3>
 
               <p className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
-                Trò chơi trắc nghiệm cá nhân 10 câu hỏi bao gồm trắc nghiệm chọn đáp án, ảnh tư liệu thật và sắp xếp
-                mốc thời gian bằng nút bấm tiếp cận. Điểm số chuẩn xác 1.000 điểm + 250 điểm thưởng tốc độ, thi đấu trực
-                tuyến toàn lớp hoặc chơi thử ngay lập tức.
+                Trò chơi thi đấu 10 vòng kết hợp trắc nghiệm phản xạ 4 lựa chọn màu sắc và đuổi hình bắt chữ điền từ khóa kèm ảnh tư liệu lịch sử thật (Toàn dân, Toàn diện, Trường kỳ, Tự lực cánh sinh, Biên giới). Điểm tính theo thời gian thực (vòng 60 giây, tối đa ~6.000 điểm/câu), thi đấu trực tuyến cùng cả lớp.
               </p>
 
               <div className="space-y-2 pt-2 text-xs text-[#3a3530]">
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-                  <span>Chế độ "Chơi thử ngay" hoạt động tức thì trên trình duyệt không cần máy chủ.</span>
+
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
