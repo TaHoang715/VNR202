@@ -163,7 +163,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#9d242b]" />
-                  <span>Tích hợp ghi chú người nói và xuất bản in PDF.</span>
+                  <span>Có bản in PDF để theo dõi bài học.</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#9d242b]" />

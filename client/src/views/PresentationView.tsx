@@ -108,7 +108,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
             Đường lối kháng chiến toàn quốc & quá trình tổ chức thực hiện (1946 – 1950)
           </h1>
           <p className="text-xs text-gray-600">
-            Học phần Lịch sử Đảng Cộng sản Việt Nam • Toàn văn 12 phần bài học kèm ảnh tư liệu, nguồn dẫn, ghi chú người nói và 2 phụ lục
+            Học phần Lịch sử Đảng Cộng sản Việt Nam • Toàn văn 12 phần bài học kèm ảnh tư liệu, nguồn dẫn và 2 phụ lục
           </p>
         </div>
 
@@ -164,11 +164,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-gray-200 text-[11px] text-gray-700">
-                <strong>Ghi chú người nói: </strong> {slide.speakerNotes}
-              </div>
-
-              <div className="text-[10px] text-gray-500">
+<div className="text-[10px] text-gray-500">
                 <strong>Nguồn trích dẫn: </strong>
                 {slide.sources.map((s, sIdx) => (
                   <span key={sIdx}>
@@ -529,22 +525,6 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       </div>
                     </div>
                   </div>
-
-                  {/* Expandable Speaker Notes in Section */}
-                  <details className="group rounded-xl border border-[#dfd6c6] bg-[#fdfcf9] overflow-hidden no-print">
-                    <summary className="flex items-center justify-between px-4 py-2.5 cursor-pointer text-xs font-semibold text-[#9d242b] hover:bg-[#ede7dc]/40 select-none">
-                      <span className="flex items-center gap-1.5">
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>Ghi chú diễn giải của người nói (Phần {slide.id})</span>
-                      </span>
-                      <span className="text-[10px] text-[#6e6761] group-open:rotate-180 transition-transform">
-                        ▼
-                      </span>
-                    </summary>
-                    <div className="px-4 py-3 border-t border-[#dfd6c6]/60 text-xs text-[#171513] font-serif italic bg-white/60 leading-relaxed">
-                      "{slide.speakerNotes}"
-                    </div>
-                  </details>
 
                   {/* Section Footnote: Sources & Citations */}
                   <div className="pt-3 border-t border-[#dfd6c6]/60 text-xs text-[#6e6761] flex flex-wrap items-center justify-between gap-2">

@@ -2,7 +2,7 @@
 
 Website bài học môn Lịch sử Đảng Cộng sản Việt Nam, Chương 2, Mục I.2, kèm thử thách trắc nghiệm cá nhân **Giải mã kháng chiến** cho cả lớp.
 
-- Bài học cuộn dọc gồm 12 mục, ảnh tư liệu có nguồn, ghi chú và bản in.
+- Bài học cuộn dọc gồm 12 mục, ảnh tư liệu có nguồn và bản in.
 - Thử thách Đấu trường tri thức "Đường lối kháng chiến": 10 vòng thi đấu (60s/vòng), tính điểm thời gian thực mili-giây floor(thời gian còn lại / 10) tối đa ~6.000 điểm/vòng; thi đấu trực tuyến phòng 6 ký tự / QR đến 200 người.
 - Hai thể thức chuẩn xác 1946–1950: 5 câu trắc nghiệm phản xạ 4 lựa chọn màu sắc và 5 câu đuổi hình bắt chữ điền từ khóa kèm ảnh tư liệu lịch sử thật, cho phép thử lại khi trả lời sai mà không bị khóa.
 - Phụ lục AI Usage và tài liệu tham khảo. Nhóm cần đối chiếu giáo trình bản in trước khi nộp.
