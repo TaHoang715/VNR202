@@ -151,9 +151,9 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               </h3>
 
               <p className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
-                Hệ thống 12 mục trình bày hoàn cảnh lịch sử tháng 12/1946, 3 văn kiện nền tảng của Đảng,
-                4 nội dung cốt lõi (toàn dân, toàn diện, trường kỳ, tự lực cánh sinh), hai chiến dịch lớn
-                (Việt Bắc 1947, Biên giới 1950) và bài học thực tiễn về phương châm 4 tại chỗ hôm nay.
+                Hệ thống 12 mục theo cấu trúc 4 phần: hoàn cảnh lịch sử tháng 12/1946, 3 văn kiện nền tảng của Đảng,
+                4 nội dung cốt lõi (toàn dân, toàn diện, trường kỳ, dựa vào sức mình là chính), hai chiến dịch lớn
+                (Việt Bắc 1947, Biên giới 1950) và bài học tự lực tự cường trong phát triển nguồn nhân lực bán dẫn hôm nay.
               </p>
 
               <div className="space-y-2 pt-2 text-xs text-[#3a3530]">
@@ -390,9 +390,9 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
 
           <div className="p-4 rounded-xl bg-[#fdfcf9] border border-[#dfd6c6] space-y-2">
             <span className="font-mono font-bold text-xs text-[#c99738] block">04. Vận dụng</span>
-            <h4 className="font-serif font-bold text-sm text-[#171513]">Liên hệ quản trị nguồn lực</h4>
+            <h4 className="font-serif font-bold text-sm text-[#171513]">Tự lực cánh sinh & Công nghệ</h4>
             <p className="leading-relaxed">
-              Vận dụng bài học chuẩn bị nội lực và phương châm "4 tại chỗ" vào phân tích năng lực ứng phó rủi ro hiện đại (ứng phó thiên tai, bão Yagi 2024).
+              Vận dụng bài học "Dựa vào sức mình là chính" gắn với hợp tác quốc tế vào phân tích mục tiêu đào tạo nhân lực ngành bán dẫn theo Quyết định số 1017/QĐ-TTg năm 2024.
             </p>
           </div>
         </div>

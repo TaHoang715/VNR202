@@ -16,10 +16,25 @@ import {
 } from 'lucide-react';
 
 const LESSON_TITLES = [
-  'Khái quát bài học', 'Bối cảnh & quyết định kháng chiến', 'Ba văn kiện nền tảng',
-  'Tính chất & mục tiêu', 'Kháng chiến toàn dân', 'Kháng chiến toàn diện',
-  'Trường kỳ & tự lực cánh sinh', 'Căn cứ địa & hậu phương', 'Các chiến dịch 1947–1950',
-  'Ý nghĩa & bài học kinh nghiệm', 'Liên hệ thực tiễn hôm nay', 'Kết luận và ôn tập',
+  'Khái quát bài học',
+  'Bối cảnh & quyết định kháng chiến',
+  'Hệ thống văn kiện đường lối',
+  'Tính chất & mục tiêu kháng chiến',
+  'Kháng chiến toàn dân',
+  'Kháng chiến toàn diện',
+  'Trường kỳ & dựa vào sức mình là chính',
+  'Tổ chức thực hiện toàn diện',
+  'Hai chiến dịch bước ngoặt',
+  'Kết quả, hạn chế & bài học',
+  'Vận dụng tự lực cánh sinh hôm nay',
+  'Kết luận và ôn tập',
+];
+
+const LESSON_PARTS = [
+  { id: 1, title: 'Bối cảnh lịch sử', range: 'Mục 1 – 2', startSec: 'sec-1' },
+  { id: 2, title: 'Đường lối kháng chiến', range: 'Mục 3 – 7', startSec: 'sec-3' },
+  { id: 3, title: 'Tổ chức thực hiện', range: 'Mục 8 – 10', startSec: 'sec-8' },
+  { id: 4, title: 'Liên hệ & Ôn tập', range: 'Mục 11 – 12', startSec: 'sec-11' },
 ];
 
 interface PresentationViewProps {
@@ -118,7 +133,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
             <article key={slide.id} className="slide-container p-8 border border-gray-300 rounded-2xl bg-[#fdfcf9] space-y-4">
               <div className="flex justify-between items-center text-xs text-gray-500 border-b border-gray-200 pb-2">
                 <span className="font-semibold text-[#9d242b] uppercase font-mono">
-                  Phần {idx + 1} / 12 — {slide.section}
+                  Mục {idx + 1} / 12 — {slide.section} (Phần {slide.part}: {slide.partTitle})
                 </span>
               </div>
 
@@ -139,6 +154,23 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       </div>
                     ))}
                   </div>
+
+                  {slide.content.groups && slide.content.groups.length > 0 && (
+                    <div className="space-y-2 py-1">
+                      {slide.content.groups.map((grp, gIdx) => (
+                        <div key={gIdx} className="p-2.5 rounded border border-gray-200 bg-white space-y-1 text-xs">
+                          <h4 className="font-bold text-[#9d242b]">{grp.title}</h4>
+                          <div className="space-y-1 pl-2.5 border-l-2 border-gray-200">
+                            {grp.points.map((pt, ptIdx) => (
+                              <div key={ptIdx} className="text-[11px] text-gray-800 leading-relaxed">
+                                • {pt}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {slide.content.archivalQuote && (
                     <blockquote className="p-3 bg-[#ede7dc]/40 border-l-4 border-[#9d242b] rounded-r text-xs italic">
@@ -184,7 +216,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
           <h2 className="text-xl font-bold font-serif text-[#171513]">Báo Cáo Sử Dụng Trí Tuệ Nhân Tạo (AI Usage)</h2>
           <div className="space-y-2 text-xs text-gray-800 leading-relaxed">
             <p><strong>1. Công cụ & Mô hình thực tế:</strong> Codex kết hợp OpenCode (Claude Opus 4.6 medium ban đầu; chuyển sang ag/gemini-3.8-flash-high khi Opus trả HTTP 503).</p>
-            <p><strong>2. Mục đích:</strong> Hỗ trợ thiết kế mã nguồn website, máy chủ thời gian thực Socket.IO cho trò chơi giáo dục và định dạng dàn trang bài học.</p>
+            <p><strong>2. Mục đích:</strong> Hỗ trợ xây dựng website, trò chơi trực tuyến dùng Convex và định dạng bài học.</p>
             <p><strong>3. Trách nhiệm học thuật:</strong> Toàn bộ nội dung sự kiện, văn kiện và diễn giải lịch sử là Bản thảo (Draft) cần sinh viên trực tiếp đối chiếu giáo trình bản in (NXB Chính trị quốc gia Sự thật, 2021) trước khi trình bày và nộp cho giảng viên.</p>
           </div>
           <AIUsageRecord />
@@ -290,27 +322,48 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                   {SLIDES.map((slide) => {
                     const isActive = activeSectionId === `sec-${slide.id}`;
                     return (
-                      <button
-                        key={slide.id}
-                        aria-current={isActive ? 'location' : undefined}
-                onClick={() => scrollToSection(`sec-${slide.id}`)}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all ${
-                          isActive
-                            ? 'bg-[#9d242b] text-white font-semibold shadow-sm'
-                            : 'text-[#3a3530] hover:bg-[#ede7dc]/70 hover:text-[#9d242b]'
-                        }`}
-                      >
-                        <span
-                          className={`font-mono text-[10px] w-5 text-center px-1 rounded ${
-                            isActive ? 'bg-white/20 text-white' : 'text-[#6e6761] bg-[#ede7dc]'
+                      <React.Fragment key={slide.id}>
+                        {slide.id === 1 && (
+                          <div className="pt-1 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
+                            Phần I • Bối cảnh
+                          </div>
+                        )}
+                        {slide.id === 3 && (
+                          <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
+                            Phần II • Đường lối
+                          </div>
+                        )}
+                        {slide.id === 8 && (
+                          <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
+                            Phần III • Thực hiện
+                          </div>
+                        )}
+                        {slide.id === 11 && (
+                          <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
+                            Phần IV • Vận dụng
+                          </div>
+                        )}
+                        <button
+                          aria-current={isActive ? 'location' : undefined}
+                          onClick={() => scrollToSection(`sec-${slide.id}`)}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all ${
+                            isActive
+                              ? 'bg-[#9d242b] text-white font-semibold shadow-sm'
+                              : 'text-[#3a3530] hover:bg-[#ede7dc]/70 hover:text-[#9d242b]'
                           }`}
                         >
-                          {slide.id < 10 ? `0${slide.id}` : slide.id}
-                        </span>
-                        <span className="truncate text-[11px] leading-tight">
-                          {LESSON_TITLES[slide.id - 1]}
-                        </span>
-                      </button>
+                          <span
+                            className={`font-mono text-[10px] w-5 text-center px-1 rounded ${
+                              isActive ? 'bg-white/20 text-white' : 'text-[#6e6761] bg-[#ede7dc]'
+                            }`}
+                          >
+                            {slide.id < 10 ? `0${slide.id}` : slide.id}
+                          </span>
+                          <span className="truncate text-[11px] leading-tight">
+                            {LESSON_TITLES[slide.id - 1]}
+                          </span>
+                        </button>
+                      </React.Fragment>
                     );
                   })}
                 </nav>
@@ -395,6 +448,30 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
               bốn nội dung cốt lõi của chiến tranh nhân dân, hai chiến dịch lớn 1947–1950 và bài học vận dụng hôm nay.
             </p>
 
+            {/* 4-Part Quick Anchor Navigation */}
+            <div className="pt-4 border-t border-[#dfd6c6] space-y-2.5">
+              <div className="text-xs font-mono font-bold uppercase tracking-wider text-[#9d242b]">
+                Cấu trúc 4 phần bài học:
+              </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                {LESSON_PARTS.map((part) => (
+                  <button
+                    key={part.id}
+                    onClick={() => scrollToSection(part.startSec)}
+                    className="p-3 rounded-2xl bg-[#fdfcf9] border border-[#dfd6c6] hover:border-[#9d242b] hover:bg-[#faebee]/40 transition-all text-left group shadow-xs"
+                  >
+                    <div className="flex items-center justify-between text-[11px] font-mono font-bold text-[#9d242b]">
+                      <span>Phần {part.id}</span>
+                      <span className="text-[#6e6761] font-normal text-[10px]">{part.range}</span>
+                    </div>
+                    <div className="font-serif font-bold text-xs sm:text-sm text-[#171513] group-hover:text-[#9d242b] transition-colors mt-0.5">
+                      {part.title}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#dfd6c6] text-xs text-[#6e6761]">
               <div className="flex items-center gap-2">
                 <span className="font-medium text-[#171513]">12 mục</span>
@@ -435,6 +512,9 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#9d242b] bg-[#faebee] px-2.5 py-0.5 rounded-full border border-[#9d242b]/20">
                         {slide.section}
                       </span>
+                      <span className="text-xs font-serif italic text-[#6e6761] hidden sm:inline">
+                        • Phần {slide.part}: {slide.partTitle}
+                      </span>
                     </div>
                   </div>
 
@@ -451,7 +531,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                   {/* Dynamic Varied Editorial Layout */}
                   <div className={`grid grid-cols-1 md:grid-cols-12 gap-8 items-start ${isEven ? '' : ''}`}>
                     {/* Content Column (7 cols) */}
-                    <div className="md:col-span-7 space-y-4">
+                    <div className={`${slide.content.groups ? 'md:col-span-12' : 'md:col-span-7'} space-y-4`}>
                       {slide.content.heading && (
                         <h4 className="font-sans font-bold text-xs uppercase tracking-wider text-[#9d242b]">
                           {slide.content.heading}:
@@ -484,9 +564,9 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                     </div>
 
                     {/* Archival Photo Card (5 cols) */}
-                    <div className="md:col-span-5">
-                      <div className="p-3 sm:p-4 rounded-2xl bg-[#fdfcf9] border border-[#dfd6c6] shadow-sm space-y-3">
-                        <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-[#0e201b]">
+                    <div className={slide.content.groups ? 'md:col-span-12' : 'md:col-span-5'}>
+                      <div className={`p-3 sm:p-4 rounded-2xl bg-[#fdfcf9] border border-[#dfd6c6] shadow-sm ${slide.content.groups ? 'flex flex-col sm:flex-row gap-4 sm:items-center' : 'space-y-3'}`}>
+                        <div className={`relative rounded-xl overflow-hidden aspect-[4/3] bg-[#0e201b] ${slide.content.groups ? 'w-full sm:w-48 shrink-0' : ''}`}>
                           <img
                             src={photoBinding.photo.src}
                             alt={photoBinding.specificCaption}
@@ -525,6 +605,30 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       </div>
                     </div>
                   </div>
+
+                  {/* Structured Groups rendered full-width below the intro/photo grid */}
+                  {slide.content.groups && slide.content.groups.length > 0 && (
+                    <div className={`pt-2 ${slide.id === 8 ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'}`}>
+                      {slide.content.groups.map((grp, gIdx) => (
+                        <div
+                          key={gIdx}
+                          className="p-4 sm:p-5 rounded-2xl bg-[#fdfcf9] border border-[#dfd6c6] shadow-xs space-y-2.5"
+                        >
+                          <h5 className="font-serif font-bold text-sm sm:text-base text-[#9d242b] flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#9d242b]" />
+                            <span>{grp.title}</span>
+                          </h5>
+                          <div className="space-y-2 pl-3.5 border-l-2 border-[#dfd6c6]">
+                            {grp.points.map((pt, ptIdx) => (
+                              <p key={ptIdx} className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
+                                {pt}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Section Footnote: Sources & Citations */}
                   <div className="pt-3 border-t border-[#dfd6c6]/60 text-xs text-[#6e6761] flex flex-wrap items-center justify-between gap-2">

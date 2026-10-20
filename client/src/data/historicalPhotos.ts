@@ -62,6 +62,16 @@ export const HISTORICAL_PHOTOS: Record<string, HistoricalPhoto> = {
     source: 'https://english.vov.vn/en/multimedia/photos/competent-agencies-lend-a-helping-hand-to-people-in-yagi-hit-localities-post1120333.vov',
     context: 'Liên hệ hiện nay: ứng phó thiên tai, không đồng nhất với chiến tranh',
   },
+  semiconductor2024: {
+    id: 'semiconductor2024',
+    file: 'semiconductor-training.jpg',
+    src: resolveAssetPath('images/history/semiconductor-training.jpg'),
+    caption: 'Khởi động chương trình đào tạo nhân lực vi mạch bán dẫn tại Đà Nẵng, ngày 26/3/2024.',
+    date: '26/03/2024',
+    credit: 'Ảnh đăng trên Cổng thông tin điện tử Bộ Khoa học và Công nghệ (bài gốc Mic.gov.vn)',
+    source: 'https://mst.gov.vn/da-nang-khoi-dong-chuong-trinh-dao-tao-nhan-luc-vi-mach-ban-dan-197240401103958705.htm',
+    context: 'Hoạt động đào tạo nhân lực vi mạch bán dẫn tại Trường Đại học Công nghệ Thông tin và Truyền thông Việt–Hàn, Đại học Đà Nẵng; minh họa thực tế cho nỗ lực chuẩn bị nguồn lực nội sinh, không khẳng định đã đạt mục tiêu 50.000 người.',
+  },
   border1950: {
     id: 'border1950',
     file: 'chien-dich-bien-gioi-1950.jpg',
@@ -138,7 +148,7 @@ export const SLIDE_PHOTO_BINDINGS: Record<number, SlidePhotoBinding> = {
     slideId: 8,
     photo: HISTORICAL_PHOTOS.porters1950,
     specificCaption: 'Huy động nguồn lực nhân dân tiếp tế cho chiến dịch giải phóng biên cương năm 1950.',
-    specificContext: 'Tiềm lực vật chất và hậu phương An toàn khu (ATK) Việt Bắc nuôi dưỡng các chiến dịch lớn.',
+    specificContext: 'Tiềm lực vật chất và hậu phương An toàn khu Việt Bắc nuôi dưỡng các chiến dịch lớn.',
     note: 'Vai trò nòng cốt của nhân dân trong xây dựng căn cứ địa và hậu phương vững mạnh.',
   },
   9: {
@@ -157,17 +167,17 @@ export const SLIDE_PHOTO_BINDINGS: Record<number, SlidePhotoBinding> = {
   },
   11: {
     slideId: 11,
-    photo: HISTORICAL_PHOTOS.yagi2024,
-    specificCaption: 'Lực lượng cứu hộ hỗ trợ người dân tại khu vực chịu ảnh hưởng của bão số 3 (Yagi), tháng 9/2024.',
-    specificContext: 'Liên hệ phương pháp luận: Tinh thần chủ động, hiệp đồng lực lượng và phương châm "4 tại chỗ".',
-    note: 'Liên hệ quản trị rủi ro hiện đại; nhóm phân định rõ không đồng nhất thiên tai với chiến tranh.',
+    photo: HISTORICAL_PHOTOS.semiconductor2024,
+    specificCaption: 'Khởi động chương trình đào tạo nhân lực vi mạch bán dẫn tại Đà Nẵng, ngày 26/3/2024.',
+    specificContext: 'Lễ khởi động chương trình đào tạo nhân lực vi mạch bán dẫn tại Đà Nẵng, trước khi Chương trình quốc gia được phê duyệt tháng 9/2024.',
+    note: 'Sự kiện ngày 26/3/2024 tại Trường Đại học Công nghệ Thông tin và Truyền thông Việt–Hàn, Đại học Đà Nẵng; minh chứng thực tế cho nỗ lực đào tạo tại cơ sở đại học.',
   },
   12: {
     slideId: 12,
     photo: HISTORICAL_PHOTOS.hochiminh1950,
-    specificCaption: 'Bác Hồ quan sát trận đánh đồn Đông Khê (Chiến dịch Biên giới 1950).',
-    specificContext: 'Khép lại 12 bài học lý luận và chuyển tiếp sang hoạt động trải nghiệm mô phỏng giáo dục.',
-    note: 'Ảnh tư liệu chính thức. Hoạt động sau đây là mô phỏng học tập giả định, không dùng ảnh tư liệu làm gameplay.',
+    specificCaption: 'Chủ tịch Hồ Chí Minh trên đài quan sát núi Báo Đông trong Chiến dịch Biên giới (tháng 9/1950).',
+    specificContext: 'Dấu mốc lịch sử quân và dân ta giành thế chủ động chiến lược trên chiến trường chính Bắc Bộ sau 4 năm kiên cường kháng chiến (1946–1950).',
+    note: 'Ảnh tư liệu lịch sử lưu trữ tại Bảo tàng Hồ Chí Minh; di tích lịch sử núi Báo Đông, xã Đức Long, huyện Thạch An, tỉnh Cao Bằng.',
   },
 };
 
