@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getServerUrl, setServerUrl, isConvexMode } from '../socket';
+import { GAME_ENABLED } from '../config/features';
 import {
   BookOpen,
   Presentation,
@@ -30,12 +31,14 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
     }
   };
 
-  const navItems: { view: ViewType; label: string; time: string; icon: React.ReactNode }[] = [
+  const allNavItems: { view: ViewType; label: string; time: string; icon: React.ReactNode }[] = [
     { view: 'landing', label: 'Tổng quan', time: '', icon: <BookOpen className="w-4 h-4" /> },
     { view: 'slides', label: 'Bài học', time: "15'", icon: <Presentation className="w-4 h-4" /> },
     { view: 'game', label: 'Game', time: "10'", icon: <Gamepad2 className="w-4 h-4" /> },
     { view: 'appendix', label: 'AI & Nguồn', time: '', icon: <FileText className="w-4 h-4" /> },
   ];
+
+  const navItems = GAME_ENABLED ? allNavItems : allNavItems.filter((item) => item.view !== 'game');
 
   return (
     <>
@@ -106,16 +109,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
               })}
             </nav>
 
-            {/* Connection settings */}
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={() => setShowConfig(true)}
-                className="p-2 rounded-full text-[#6e6761] hover:text-[#9d242b] hover:bg-[#ede7dc] transition-colors"
-                title={isConvexMode() ? 'Thông tin kết nối hệ thống' : 'Cấu hình kết nối máy chủ / LAN'}
-              >
-                <Settings className="w-4 h-4" />
-              </button>
-            </div>
+            {/* Connection settings (game-specific, visible only when game is enabled) */}
+            {GAME_ENABLED && (
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={() => setShowConfig(true)}
+                  className="p-2 rounded-full text-[#6e6761] hover:text-[#9d242b] hover:bg-[#ede7dc] transition-colors"
+                  title={isConvexMode() ? 'Thông tin kết nối hệ thống' : 'Cấu hình kết nối máy chủ / LAN'}
+                >
+                  <Settings className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Mobile Navigation Pills */}
@@ -151,7 +156,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onSelectView }) => 
       </header>
 
       {/* Server Config Modal */}
-      {showConfig && (
+      {GAME_ENABLED && showConfig && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-[#f6f3ed] border border-[#dfd6c6] rounded-2xl max-w-md w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-[#dfd6c6]">

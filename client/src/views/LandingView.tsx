@@ -2,6 +2,7 @@ import React from 'react';
 import { ViewType } from '../components/Navbar';
 import { GeometricTimeline } from '../components/GeometricTimeline';
 import { HISTORICAL_PHOTOS } from '../data/historicalPhotos';
+import { GAME_ENABLED } from '../config/features';
 import {
   Presentation,
   Gamepad2,
@@ -50,13 +51,15 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <button
-              onClick={() => onSelectView('game')}
-              className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#193b32] text-white text-sm font-semibold shadow-md hover:bg-[#122b24] hover:shadow-lg transition-all"
-            >
-              <Gamepad2 className="w-4 h-4" />
-              <span>Chơi Giải mã kháng chiến</span>
-            </button>
+            {GAME_ENABLED && (
+              <button
+                onClick={() => onSelectView('game')}
+                className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#193b32] text-white text-sm font-semibold shadow-md hover:bg-[#122b24] hover:shadow-lg transition-all"
+              >
+                <Gamepad2 className="w-4 h-4" />
+                <span>Chơi Giải mã kháng chiến</span>
+              </button>
+            )}
 
             <button
               onClick={() => onSelectView('appendix')}
@@ -67,15 +70,17 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[#dfd6c6]/80 text-xs">
+          <div className={`grid ${GAME_ENABLED ? 'grid-cols-3' : 'grid-cols-2'} gap-4 pt-4 border-t border-[#dfd6c6]/80 text-xs`}>
             <div>
               <div className="font-serif font-bold text-xl text-[#9d242b]">12 mục</div>
               <div className="text-[#6e6761] mt-0.5">Bài học tư liệu lịch sử</div>
             </div>
-            <div>
-              <div className="font-serif font-bold text-xl text-[#193b32]">10 câu</div>
-              <div className="text-[#6e6761] mt-0.5">Trắc nghiệm cá nhân & tốc độ</div>
-            </div>
+            {GAME_ENABLED && (
+              <div>
+                <div className="font-serif font-bold text-xl text-[#193b32]">10 câu</div>
+                <div className="text-[#6e6761] mt-0.5">Trắc nghiệm cá nhân & tốc độ</div>
+              </div>
+            )}
             <div>
               <div className="font-serif font-bold text-xl text-[#c99738]">Tư liệu</div>
               <div className="text-[#6e6761] mt-0.5">Ảnh tư liệu & nguồn chính thống</div>
@@ -122,7 +127,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
         </div>
       </section>
 
-      {/* Two Pillars Section: Bai hoc & Mo phong */}
+      {/* Pillars Section: Bai hoc (and Mo phong game if enabled) */}
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#dfd6c6] pb-4">
           <div>
@@ -130,18 +135,18 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               Cấu trúc nội dung
             </span>
             <h2 className="font-serif font-bold text-2xl sm:text-3xl text-[#171513] mt-1">
-              Hai hoạt động trọng tâm
+              {GAME_ENABLED ? 'Hai hoạt động trọng tâm' : 'Nội dung trọng tâm'}
             </h2>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className={`grid grid-cols-1 ${GAME_ENABLED ? 'md:grid-cols-2' : ''} gap-8`}>
           {/* Card 1: Bai hoc */}
           <div className="editorial-card p-6 sm:p-8 flex flex-col justify-between border-t-4 border-t-[#9d242b]">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="px-3 py-1 rounded-full bg-[#faebee] text-[#9d242b] font-mono font-bold text-xs">
-                  Phần 1: Bài học
+                  {GAME_ENABLED ? 'Phần 1: Bài học' : 'Bài học chuyên đề'}
                 </span>
                 <Presentation className="w-5 h-5 text-[#9d242b]" />
               </div>
@@ -165,10 +170,6 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
                   <span className="w-1.5 h-1.5 rounded-full bg-[#9d242b]" />
                   <span>Có bản in PDF để theo dõi bài học.</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9d242b]" />
-
-                </div>
               </div>
             </div>
 
@@ -183,50 +184,48 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
             </div>
           </div>
 
-          {/* Card 2: Mo phong game */}
-          <div className="editorial-card p-6 sm:p-8 flex flex-col justify-between border-t-4 border-t-[#193b32]">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-[#e8f0ec] text-[#193b32] font-mono font-bold text-xs">
-                  Phần 2: Thử thách trắc nghiệm
-                </span>
-                <Gamepad2 className="w-5 h-5 text-[#193b32]" />
-              </div>
-
-              <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#171513]">
-                Đấu trường tri thức: "Đường lối kháng chiến"
-              </h3>
-
-              <p className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
-                Trò chơi thi đấu 10 vòng kết hợp trắc nghiệm phản xạ 4 lựa chọn màu sắc và đuổi hình bắt chữ điền từ khóa kèm ảnh tư liệu lịch sử thật (Toàn dân, Toàn diện, Trường kỳ, Tự lực cánh sinh, Biên giới). Điểm tính theo thời gian thực (vòng 60 giây, tối đa ~6.000 điểm/câu), thi đấu trực tuyến cùng cả lớp.
-              </p>
-
-              <div className="space-y-2 pt-2 text-xs text-[#3a3530]">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-
+          {/* Card 2: Mo phong game (rendered only when GAME_ENABLED) */}
+          {GAME_ENABLED && (
+            <div className="editorial-card p-6 sm:p-8 flex flex-col justify-between border-t-4 border-t-[#193b32]">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full bg-[#e8f0ec] text-[#193b32] font-mono font-bold text-xs">
+                    Phần 2: Thử thách trắc nghiệm
+                  </span>
+                  <Gamepad2 className="w-5 h-5 text-[#193b32]" />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-                  <span>Màn hình chủ phòng và người chơi kết nối nhanh qua mã QR (đến 200 người).</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
-                  <span>Bảng vàng vinh danh trực tiếp các cá nhân có điểm số và tốc độ xuất sắc nhất.</span>
+
+                <h3 className="font-serif font-bold text-xl sm:text-2xl text-[#171513]">
+                  Đấu trường tri thức: "Đường lối kháng chiến"
+                </h3>
+
+                <p className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
+                  Trò chơi thi đấu 10 vòng kết hợp trắc nghiệm phản xạ 4 lựa chọn màu sắc và đuổi hình bắt chữ điền từ khóa kèm ảnh tư liệu lịch sử thật (Toàn dân, Toàn diện, Trường kỳ, Tự lực cánh sinh, Biên giới). Điểm tính theo thời gian thực (vòng 60 giây, tối đa ~6.000 điểm/câu), thi đấu trực tuyến cùng cả lớp.
+                </p>
+
+                <div className="space-y-2 pt-2 text-xs text-[#3a3530]">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
+                    <span>Màn hình chủ phòng và người chơi kết nối nhanh qua mã QR (đến 200 người).</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#193b32]" />
+                    <span>Bảng vàng vinh danh trực tiếp các cá nhân có điểm số và tốc độ xuất sắc nhất.</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="pt-6 mt-6 border-t border-[#dfd6c6]">
-              <button
-                onClick={() => onSelectView('game')}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#193b32] text-white text-xs font-semibold hover:bg-[#122b24] transition-colors"
-              >
-                <span>Tham gia Giải mã kháng chiến</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
+              <div className="pt-6 mt-6 border-t border-[#dfd6c6]">
+                <button
+                  onClick={() => onSelectView('game')}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-[#193b32] text-white text-xs font-semibold hover:bg-[#122b24] transition-colors"
+                >
+                  <span>Tham gia Giải mã kháng chiến</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -381,10 +380,16 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
           </div>
 
           <div className="p-4 rounded-xl bg-[#fdfcf9] border border-[#dfd6c6] space-y-2">
-            <span className="font-mono font-bold text-xs text-[#193b32] block">03. Thực hành</span>
-            <h4 className="font-serif font-bold text-sm text-[#171513]">Mô phỏng quyết định</h4>
+            <span className={`font-mono font-bold text-xs ${GAME_ENABLED ? 'text-[#193b32]' : 'text-[#9d242b]'} block`}>
+              03. Thực hành
+            </span>
+            <h4 className="font-serif font-bold text-sm text-[#171513]">
+              {GAME_ENABLED ? 'Mô phỏng quyết định' : 'Hệ thống hóa kiến thức'}
+            </h4>
             <p className="leading-relaxed">
-              Thử thách kiến thức và tốc độ phản xạ trong trò chơi "Giải mã kháng chiến" cùng tập thể lớp.
+              {GAME_ENABLED
+                ? 'Thử thách kiến thức và tốc độ phản xạ trong trò chơi "Giải mã kháng chiến" cùng tập thể lớp.'
+                : 'Đối chiếu các mốc sự kiện và tìm hiểu mối liên hệ giữa đường lối kháng chiến với quá trình tổ chức thực hiện.'}
             </p>
           </div>
 

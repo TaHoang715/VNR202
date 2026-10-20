@@ -4,6 +4,7 @@ import { SOURCES } from '../data/sources';
 import { AIUsageRecord } from '../components/AIUsageRecord';
 import { ViewType } from '../components/Navbar';
 import { getPhotoBindingForSlide } from '../data/historicalPhotos';
+import { GAME_ENABLED } from '../config/features';
 import {
   BookOpen,
   FileText,
@@ -133,7 +134,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
             <article key={slide.id} className="slide-container p-8 border border-gray-300 rounded-2xl bg-[#fdfcf9] space-y-4">
               <div className="flex justify-between items-center text-xs text-gray-500 border-b border-gray-200 pb-2">
                 <span className="font-semibold text-[#9d242b] uppercase font-mono">
-                  Mục {idx + 1} / 12 — {slide.section} (Phần {slide.part}: {slide.partTitle})
+                  Mục {idx + 1} / 12 — {!GAME_ENABLED && slide.id === 12 ? 'Kết luận & Ôn tập' : slide.section} (Phần {slide.part}: {slide.partTitle})
                 </span>
               </div>
 
@@ -147,12 +148,14 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                   </h3>
 
                   <div className="space-y-1.5 py-2">
-                    {slide.content.points.map((pt, pIdx) => (
-                      <div key={pIdx} className="text-xs flex gap-2">
-                        <span className="text-[#9d242b] font-bold">•</span>
-                        <span className="text-gray-800 leading-relaxed">{pt}</span>
-                      </div>
-                    ))}
+                    {slide.content.points
+                      .filter((pt) => GAME_ENABLED || slide.id !== 12 || (!pt.includes('mục Game') && !pt.includes('quét mã QR')))
+                      .map((pt, pIdx) => (
+                        <div key={pIdx} className="text-xs flex gap-2">
+                          <span className="text-[#9d242b] font-bold">•</span>
+                          <span className="text-gray-800 leading-relaxed">{pt}</span>
+                        </div>
+                      ))}
                   </div>
 
                   {slide.content.groups && slide.content.groups.length > 0 && (
@@ -378,7 +381,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                     <span>Xuất PDF Bản In</span>
                   </button>
 
-                  {onSelectView && (
+                  {GAME_ENABLED && onSelectView && (
                     <button
                       onClick={() => onSelectView('game')}
                       className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-full bg-[#193b32] text-white text-xs font-semibold hover:bg-[#122b24] transition-colors shadow-sm"
@@ -510,7 +513,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                         {slide.id < 10 ? `0${slide.id}` : slide.id}
                       </span>
                       <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#9d242b] bg-[#faebee] px-2.5 py-0.5 rounded-full border border-[#9d242b]/20">
-                        {slide.section}
+                        {!GAME_ENABLED && slide.id === 12 ? 'Kết luận & Ôn tập' : slide.section}
                       </span>
                       <span className="text-xs font-serif italic text-[#6e6761] hidden sm:inline">
                         • Phần {slide.part}: {slide.partTitle}
@@ -539,14 +542,16 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       )}
 
                       <div className="space-y-3">
-                        {slide.content.points.map((pt, pIdx) => (
-                          <div key={pIdx} className="flex items-start gap-3">
-                            <span className="w-2 h-2 rounded-full bg-[#9d242b] flex-shrink-0 mt-2" />
-                            <p className="text-sm sm:text-base text-[#171513] leading-relaxed">
-                              {pt}
-                            </p>
-                          </div>
-                        ))}
+                        {slide.content.points
+                          .filter((pt) => GAME_ENABLED || slide.id !== 12 || (!pt.includes('mục Game') && !pt.includes('quét mã QR')))
+                          .map((pt, pIdx) => (
+                            <div key={pIdx} className="flex items-start gap-3">
+                              <span className="w-2 h-2 rounded-full bg-[#9d242b] flex-shrink-0 mt-2" />
+                              <p className="text-sm sm:text-base text-[#171513] leading-relaxed">
+                                {pt}
+                              </p>
+                            </div>
+                          ))}
                       </div>
 
                       {/* Archival Quote (if present) */}
@@ -666,57 +671,85 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
           {/* ============================================================ */}
           {/* CALL TO ACTION (CTA): GAME SIMULATION                         */}
           {/* ============================================================ */}
-          <section className="editorial-card p-8 sm:p-12 bg-gradient-to-br from-[#193b32] to-[#0e201b] text-white rounded-3xl shadow-xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#c99738] text-xs font-mono font-semibold uppercase tracking-wider border border-white/20">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Hoạt động tiếp theo</span>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="font-serif font-bold text-2xl sm:text-3xl lg:text-4xl text-white">
-                Thử thách trắc nghiệm: Giải mã kháng chiến
-              </h3>
-              <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-2xl font-light">
-                Cùng tham gia thử thách 10 câu hỏi độc lập về lịch sử Đường lối kháng chiến toàn quốc (1946–1950), so tài kiến thức và tốc độ phản xạ trên điện thoại hoặc màn chiếu.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs text-white/90">
-              <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
-                <span className="font-mono font-bold text-[#c99738]">01. Tham gia</span>
-                <p>Nhập mã phòng 6 ký tự hoặc quét mã QR bằng điện thoại để vào phòng thi đấu.</p>
+          {GAME_ENABLED ? (
+            <section className="editorial-card p-8 sm:p-12 bg-gradient-to-br from-[#193b32] to-[#0e201b] text-white rounded-3xl shadow-xl space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#c99738] text-xs font-mono font-semibold uppercase tracking-wider border border-white/20">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Hoạt động tiếp theo</span>
               </div>
-              <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
-                <span className="font-mono font-bold text-[#c99738]">02. Đua tốc độ</span>
-                <p>10 vòng thi đấu (60s/vòng): trắc nghiệm 4 màu và đuổi hình bắt chữ, tối đa ~6.000 điểm/vòng.</p>
-              </div>
-              <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
-                <span className="font-mono font-bold text-[#c99738]">03. Vinh danh</span>
-                <p>Bảng vàng trực tiếp vinh danh các cá nhân có điểm số và tốc độ xuất sắc nhất.</p>
-              </div>
-            </div>
 
-            <div className="pt-4 flex flex-wrap items-center gap-4 border-t border-white/20">
-              {onSelectView && (
+              <div className="space-y-2">
+                <h3 className="font-serif font-bold text-2xl sm:text-3xl lg:text-4xl text-white">
+                  Thử thách trắc nghiệm: Giải mã kháng chiến
+                </h3>
+                <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-2xl font-light">
+                  Cùng tham gia thử thách 10 câu hỏi độc lập về lịch sử Đường lối kháng chiến toàn quốc (1946–1950), so tài kiến thức và tốc độ phản xạ trên điện thoại hoặc màn chiếu.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs text-white/90">
+                <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
+                  <span className="font-mono font-bold text-[#c99738]">01. Tham gia</span>
+                  <p>Nhập mã phòng 6 ký tự hoặc quét mã QR bằng điện thoại để vào phòng thi đấu.</p>
+                </div>
+                <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
+                  <span className="font-mono font-bold text-[#c99738]">02. Đua tốc độ</span>
+                  <p>10 vòng thi đấu (60s/vòng): trắc nghiệm 4 màu và đuổi hình bắt chữ, tối đa ~6.000 điểm/vòng.</p>
+                </div>
+                <div className="p-3 bg-white/10 rounded-xl border border-white/10 space-y-1">
+                  <span className="font-mono font-bold text-[#c99738]">03. Vinh danh</span>
+                  <p>Bảng vàng trực tiếp vinh danh các cá nhân có điểm số và tốc độ xuất sắc nhất.</p>
+                </div>
+              </div>
+
+              <div className="pt-4 flex flex-wrap items-center gap-4 border-t border-white/20">
+                {onSelectView && (
+                  <button
+                    onClick={() => onSelectView('game')}
+                    className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#9d242b] text-white text-sm font-semibold hover:bg-[#7a171d] shadow-lg transition-all"
+                  >
+                    <Gamepad2 className="w-4 h-4" />
+                    <span>Tham gia Giải mã kháng chiến</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
+
                 <button
-                  onClick={() => onSelectView('game')}
-                  className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#9d242b] text-white text-sm font-semibold hover:bg-[#7a171d] shadow-lg transition-all"
+                  onClick={() => scrollToSection('sec-1')}
+                  className="flex items-center gap-1.5 px-4 py-3 rounded-full bg-white/10 text-white text-xs font-medium hover:bg-white/20 transition-all border border-white/20"
                 >
-                  <Gamepad2 className="w-4 h-4" />
-                  <span>Tham gia Giải mã kháng chiến</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Trở lại đầu bài học</span>
+                  <span>↑</span>
                 </button>
-              )}
-
-              <button
-                onClick={() => scrollToSection('sec-1')}
-                className="flex items-center gap-1.5 px-4 py-3 rounded-full bg-white/10 text-white text-xs font-medium hover:bg-white/20 transition-all border border-white/20"
-              >
-                <span>Trở lại đầu bài học</span>
-                <span>↑</span>
-              </button>
-            </div>
-          </section>
+              </div>
+            </section>
+          ) : (
+            <section className="editorial-card p-6 sm:p-8 bg-white border border-[#dfd6c6] rounded-3xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="space-y-1 text-center sm:text-left">
+                <h3 className="font-serif font-bold text-lg text-[#171513]">
+                  Ôn lại bài học
+                </h3>
+                <p className="text-xs text-[#6e6761]">
+                  Ôn lại các phần kiến thức hoặc xuất bản in PDF để theo dõi tài liệu.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handlePrintExport}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#dfd6c6] text-xs font-semibold text-[#3a3530] hover:bg-[#ede7dc] transition-colors"
+                >
+                  <Printer className="w-3.5 h-3.5" />
+                  <span>Xuất PDF Bản In</span>
+                </button>
+                <button
+                  onClick={() => scrollToSection('sec-1')}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#9d242b] text-white text-xs font-semibold hover:bg-[#7a171d] shadow-sm transition-colors"
+                >
+                  <span>Trở lại đầu bài học ↑</span>
+                </button>
+              </div>
+            </section>
+          )}
         </main>
       </div>
     </div>
