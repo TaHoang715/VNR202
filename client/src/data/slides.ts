@@ -296,22 +296,23 @@ export const SLIDES: SlideData[] = [
   },
   {
     id: 12,
-    title: 'KẾT LUẬN & CHUYỂN TIẾP HOẠT ĐỘNG LỚP HỌC',
-    subtitle: 'Tóm lược báo cáo, minh bạch AI và giới thiệu thử thách "Giải mã kháng chiến"',
+    title: 'KẾT LUẬN VÀ ÔN TẬP',
+    subtitle: 'Toàn dân, toàn diện, trường kỳ, dựa vào sức mình là chính',
     section: 'Kết luận & Hoạt động',
     suggestedDurationSeconds: 60,
     content: {
-      heading: 'Khép lại 15 phút báo cáo & Bước vào thử thách trắc nghiệm',
+      heading: 'Nhìn lại giai đoạn 1946–1950',
       points: [
-        'Đường lối kháng chiến 1946–1950 khẳng định nghệ thuật chiến tranh nhân dân sáng tạo của Đảng.',
-        'Minh bạch học thuật: Nội dung là bản thảo hỗ trợ bởi Codex Coordinator và OpenCode Worker (Gemini fallback), chờ nhóm đối chiếu giáo trình in.',
-        'Mời cả lớp tham gia thử thách trắc nghiệm "Giải mã kháng chiến" (10 câu hỏi) trên điện thoại qua mã QR!',
+        'Kháng chiến toàn dân, toàn diện, trường kỳ và dựa vào sức mình là chính là những nội dung cốt lõi của đường lối kháng chiến.',
+        'Từ cuộc chiến đấu ở các đô thị đến Chiến dịch Việt Bắc năm 1947 và Chiến dịch Biên giới năm 1950, lực lượng kháng chiến từng bước lớn mạnh, giành quyền chủ động trên chiến trường chính Bắc Bộ.',
+        'Qua giai đoạn này, có thể thấy vai trò của đoàn kết toàn dân, xây dựng hậu phương và kiên trì mục tiêu độc lập dân tộc.',
+        'Cùng ôn lại bài qua 10 câu trắc nghiệm và đuổi hình bắt chữ. Mở mục Game, chọn Người chơi rồi nhập mã phòng hoặc quét mã QR trên màn hình.',
       ],
     },
     sources: [
       {
-        label: 'Phụ lục AI & Nguồn tham khảo',
-        note: 'Chi tiết tại thẻ "AI & Nguồn" trên thanh điều hướng',
+        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam',
+        note: 'Nhà xuất bản Chính trị quốc gia Sự thật, 2021, Chương 2, Mục I.2',
       },
     ],
     speakerNotes:

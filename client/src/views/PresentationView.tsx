@@ -19,7 +19,7 @@ const LESSON_TITLES = [
   'Khái quát bài học', 'Bối cảnh & quyết định kháng chiến', 'Ba văn kiện nền tảng',
   'Tính chất & mục tiêu', 'Kháng chiến toàn dân', 'Kháng chiến toàn diện',
   'Trường kỳ & tự lực cánh sinh', 'Căn cứ địa & hậu phương', 'Các chiến dịch 1947–1950',
-  'Ý nghĩa & bài học kinh nghiệm', 'Liên hệ thực tiễn hôm nay', 'Kết luận & hoạt động lớp học',
+  'Ý nghĩa & bài học kinh nghiệm', 'Liên hệ thực tiễn hôm nay', 'Kết luận và ôn tập',
 ];
 
 interface PresentationViewProps {
