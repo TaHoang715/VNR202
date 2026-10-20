@@ -322,14 +322,6 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
 
   return (
     <div className="relative min-h-screen bg-[#f6f3ed] text-[#171513]">
-      {/* Top Reading Progress Indicator */}
-      <div className="fixed top-[var(--site-header-height,80px)] left-0 right-0 h-1 bg-[#ede7dc] z-30 pointer-events-none no-print">
-        <div
-          className="h-full bg-[#9d242b] transition-all duration-150"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
       {/* Mobile Anchor Quick Index Bar */}
       <div className="sticky top-[var(--site-header-height,80px)] z-20 lg:hidden bg-[#f6f3ed]/95 backdrop-blur-md border-b border-[#dfd6c6] py-2 px-3 no-print">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
