@@ -52,13 +52,7 @@ export const SLIDES: SlideData[] = [
         'Phần IV — Liên hệ thực tiễn, Trách nhiệm thế hệ trẻ & Minh bạch học thuật: Vận dụng bài học "Dựa vào sức mình là chính", Chiến lược phát triển công nghiệp bán dẫn (QĐ 1018/QĐ-TTg), làm chủ khoa học công nghệ, trách nhiệm của thế hệ trẻ và báo cáo minh bạch ứng dụng AI.',
       ],
     },
-    sources: [
-      {
-        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam (Khối không chuyên)',
-        url: 'https://www.nxbctqg.org.vn/giao-trinh-lich-su-dang-cong-san-viet-nam-danh-cho-bac-dai-hoc-he-khong-chuyen-ly-luan-chinh-tri-.html',
-        note: 'Nhà xuất bản Chính trị quốc gia Sự thật, 2021, Chương 2, Mục I.2',
-      },
-    ],
+    sources: [],
     speakerNotes: '',
   },
   {

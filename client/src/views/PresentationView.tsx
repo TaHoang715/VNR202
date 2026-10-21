@@ -204,6 +204,17 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                   </div>
                 </div>
               </div>
+
+              {slide.sources && slide.sources.length > 0 && (
+                <div className="text-[10px] text-gray-500">
+                  <strong>Nguồn trích dẫn: </strong>
+                  {slide.sources.map((s, sIdx) => (
+                    <span key={sIdx}>
+                      {s.label} ({s.note}){sIdx < slide.sources.length - 1 ? '; ' : ''}
+                    </span>
+                  ))}
+                </div>
+              )}
             </article>
           );
         })}
@@ -682,6 +693,36 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                     </div>
                   )}
 
+                  {/* Section Footnote: Sources & Citations */}
+                  {slide.sources && slide.sources.length > 0 && (
+                    <div className="pt-3 border-t border-[#dfd6c6]/60 text-xs text-[#6e6761] flex flex-wrap items-center justify-between gap-2">
+                      <div className="space-x-2">
+                        <span className="font-semibold text-[#3a3530]">Nguồn dẫn:</span>
+                        {slide.sources.map((s, sIdx) => (
+                          <span key={sIdx} className="inline-flex items-center gap-1">
+                            {s.url ? (
+                              <a
+                                href={s.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[#9d242b] underline hover:text-[#7a171d] inline-flex items-center gap-0.5 font-medium"
+                              >
+                                {s.label}
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            ) : (
+                              <span>{s.label}</span>
+                            )}
+                            <span className="text-[11px] text-[#6e6761]">({s.note})</span>
+                            {sIdx < slide.sources.length - 1 ? '; ' : ''}
+                          </span>
+                        ))}
+                      </div>
+                      <div className="text-[11px] italic text-[#9d242b]">
+                        * Bản thảo học tập VNR202
+                      </div>
+                    </div>
+                  )}
                 </section>
               );
             })}
