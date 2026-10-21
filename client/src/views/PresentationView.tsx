@@ -18,24 +18,24 @@ import {
 
 const LESSON_TITLES = [
   'Khái quát bài học',
-  'Bối cảnh & quyết định kháng chiến',
-  'Hệ thống văn kiện đường lối',
-  'Tính chất & mục tiêu kháng chiến',
-  'Kháng chiến toàn dân',
-  'Kháng chiến toàn diện',
-  'Trường kỳ & dựa vào sức mình là chính',
-  'Tổ chức thực hiện toàn diện',
-  'Hai chiến dịch bước ngoặt',
-  'Kết quả, hạn chế & bài học',
-  'Vận dụng tự lực cánh sinh hôm nay',
-  'Kết luận và ôn tập',
+  'Bối cảnh lịch sử bùng nổ (12/1946)',
+  'Hệ thống văn kiện hình thành đường lối',
+  'Mục tiêu & ý nghĩa lịch sử đường lối',
+  'Kháng chiến toàn dân (Trụ cột 1)',
+  'Kháng chiến toàn diện (Trụ cột 2)',
+  'Trường kỳ & dựa vào sức mình (Trụ cột 3 & 4)',
+  'Tổ chức, chỉ đạo kháng chiến (1947–1950)',
+  'Hai chiến dịch bước ngoặt lịch sử',
+  'Đấu tranh tạm chiếm, uốn nắn & bài học',
+  'Vận dụng bài học: Tự lực cánh sinh & Công nghệ',
+  'Quan điểm & trách nhiệm thế hệ trẻ',
 ];
 
 const LESSON_PARTS = [
   { id: 1, title: 'Bối cảnh lịch sử', range: 'Mục 1 – 2', startSec: 'sec-1' },
   { id: 2, title: 'Đường lối kháng chiến', range: 'Mục 3 – 7', startSec: 'sec-3' },
   { id: 3, title: 'Tổ chức thực hiện', range: 'Mục 8 – 10', startSec: 'sec-8' },
-  { id: 4, title: 'Liên hệ & Ôn tập', range: 'Mục 11 – 12', startSec: 'sec-11' },
+  { id: 4, title: 'Liên hệ & Vận dụng', range: 'Mục 11 – 12', startSec: 'sec-11' },
 ];
 
 interface PresentationViewProps {
@@ -328,22 +328,22 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       <React.Fragment key={slide.id}>
                         {slide.id === 1 && (
                           <div className="pt-1 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
-                            Phần I • Bối cảnh
+                            Phần I • Bối cảnh lịch sử
                           </div>
                         )}
                         {slide.id === 3 && (
                           <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
-                            Phần II • Đường lối
+                            Phần II • Đường lối kháng chiến
                           </div>
                         )}
                         {slide.id === 8 && (
                           <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
-                            Phần III • Thực hiện
+                            Phần III • Tổ chức thực hiện
                           </div>
                         )}
                         {slide.id === 11 && (
                           <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
-                            Phần IV • Vận dụng
+                            Phần IV • Liên hệ & Vận dụng
                           </div>
                         )}
                         <button
@@ -447,8 +447,8 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
             </h1>
 
             <p className="text-base text-[#3a3530] leading-relaxed max-w-3xl">
-              Nội dung gồm bối cảnh lịch sử tháng 12/1946, 3 văn kiện nền tảng định hình đường lối,
-              bốn nội dung cốt lõi của chiến tranh nhân dân, hai chiến dịch lớn 1947–1950 và bài học vận dụng hôm nay.
+              Nội dung chuyên đề gồm bối cảnh lịch sử tháng 12/1946, hệ thống văn kiện & 4 trụ cột đường lối kháng chiến của Đảng,
+              quá trình chỉ đạo xây dựng thực lực & 2 chiến dịch bước ngoặt (1947–1950), cùng bài học vận dụng tự lực cánh sinh vào công nghệ bán dẫn (QĐ 1018/QĐ-TTg) và trách nhiệm của thế hệ trẻ.
             </p>
 
             {/* 4-Part Quick Anchor Navigation */}
@@ -477,9 +477,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
 
             <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#dfd6c6] text-xs text-[#6e6761]">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-[#171513]">12 mục</span>
-                <span>•</span>
-                <span>Đọc liền mạch</span>
+                <span className="font-medium text-[#171513]">12 mục bài học</span>
               </div>
 
               <button

@@ -156,9 +156,9 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
               </h3>
 
               <p className="text-xs sm:text-sm text-[#3a3530] leading-relaxed">
-                Hệ thống 12 mục theo cấu trúc 4 phần: hoàn cảnh lịch sử tháng 12/1946, 3 văn kiện nền tảng của Đảng,
-                4 nội dung cốt lõi (toàn dân, toàn diện, trường kỳ, dựa vào sức mình là chính), hai chiến dịch lớn
-                (Việt Bắc 1947, Biên giới 1950) và bài học tự lực tự cường trong phát triển nguồn nhân lực bán dẫn hôm nay.
+                Hệ thống 12 mục chuyên đề: bối cảnh lịch sử tháng 12/1946, đường lối kháng chiến & 4 trụ cột,
+                chỉ đạo xây dựng thực lực & 2 chiến dịch bước ngoặt (Việt Bắc 1947, Biên giới 1950),
+                và bài học vận dụng tự lực cánh sinh vào công nghệ bán dẫn (QĐ 1018/QĐ-TTg) cùng trách nhiệm thế hệ trẻ.
               </p>
 
               <div className="space-y-2 pt-2 text-xs text-[#3a3530]">
@@ -397,7 +397,7 @@ export const LandingView: React.FC<LandingViewProps> = ({ onSelectView }) => {
             <span className="font-mono font-bold text-xs text-[#c99738] block">04. Vận dụng</span>
             <h4 className="font-serif font-bold text-sm text-[#171513]">Tự lực cánh sinh & Công nghệ</h4>
             <p className="leading-relaxed">
-              Vận dụng bài học "Dựa vào sức mình là chính" gắn với hợp tác quốc tế vào phân tích mục tiêu đào tạo nhân lực ngành bán dẫn theo Quyết định số 1017/QĐ-TTg năm 2024.
+              Vận dụng bài học "Dựa vào sức mình là chính" gắn với Chiến lược phát triển công nghiệp bán dẫn (Quyết định 1018/QĐ-TTg), làm chủ KH-CN và trách nhiệm của thế hệ trẻ.
             </p>
           </div>
         </div>
