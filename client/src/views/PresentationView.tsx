@@ -181,6 +181,14 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       </footer>
                     </blockquote>
                   )}
+
+                  {slide.content.videoEmbed && (
+                    <div className="p-2.5 rounded border border-gray-200 bg-gray-50 text-[11px] space-y-0.5">
+                      <div className="font-semibold text-[#9d242b]">▶ Video tư liệu: {slide.content.videoEmbed.title}</div>
+                      <div className="text-gray-600 italic">{slide.content.videoEmbed.caption}</div>
+                      <div className="text-[10px] text-gray-500 font-mono">https://www.youtube.com/watch?v={slide.content.videoEmbed.youtubeId}</div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="md:col-span-4 p-3 bg-white border border-gray-300 rounded-xl space-y-2">
@@ -569,6 +577,48 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                           <p className="text-xs font-semibold text-[#9d242b] text-right mt-2 not-italic">
                             — {slide.content.archivalQuote.source}
                           </p>
+                        </div>
+                      )}
+
+                      {/* Video Embed (if present) */}
+                      {slide.content.videoEmbed && (
+                        <div className="rounded-2xl border border-[#dfd6c6] bg-[#fdfcf9] overflow-hidden shadow-sm mt-5">
+                          <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-[#f7f4ee] border-b border-[#dfd6c6]">
+                            <div className="flex items-center gap-2.5">
+                              <span className="w-2.5 h-2.5 rounded-full bg-[#9d242b] animate-pulse" />
+                              <span className="font-serif font-bold text-xs sm:text-sm text-[#171513]">
+                                {slide.content.videoEmbed.title}
+                              </span>
+                            </div>
+                            <a
+                              href={`https://www.youtube.com/watch?v=${slide.content.videoEmbed.youtubeId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#9d242b] hover:text-[#7a171d] hover:underline"
+                            >
+                              <span>Mở trên YouTube</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          </div>
+
+                          <div className="relative aspect-video w-full bg-black">
+                            <iframe
+                              className="w-full h-full"
+                              src={`https://www.youtube-nocookie.com/embed/${slide.content.videoEmbed.youtubeId}?rel=0`}
+                              title={slide.content.videoEmbed.title}
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+
+                          <div className="p-3.5 text-xs text-[#6e6761] italic flex flex-wrap items-center justify-between gap-2 bg-white border-t border-[#dfd6c6]/60">
+                            <span className="text-[#3a3530] font-sans not-italic text-xs">
+                              {slide.content.videoEmbed.caption}
+                            </span>
+                            <span className="font-mono text-[10px] text-[#9d242b] bg-[#faebee] px-2.5 py-0.5 rounded-full border border-[#9d242b]/20 not-italic font-bold">
+                              Tư liệu lịch sử 19/12/1946
+                            </span>
+                          </div>
                         </div>
                       )}
 

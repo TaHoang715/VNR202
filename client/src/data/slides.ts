@@ -19,6 +19,11 @@ export interface SlideData {
       text: string;
       source: string;
     };
+    videoEmbed?: {
+      title: string;
+      youtubeId: string;
+      caption: string;
+    };
   };
   sources: {
     label: string;
@@ -94,8 +99,18 @@ export const SLIDES: SlideData[] = [
         text: 'Chúng ta muốn hòa bình, chúng ta phải nhân nhượng. Nhưng chúng ta càng nhân nhượng, thực dân Pháp càng lấn tới, vì chúng quyết tâm cướp nước ta lần nữa! Không! Chúng ta thà hy sinh tất cả, chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ. Hỡi đồng bào! Chúng ta phải đứng lên!',
         source: 'Chủ tịch Hồ Chí Minh — Lời kêu gọi toàn quốc kháng chiến (19/12/1946)',
       },
+      videoEmbed: {
+        title: 'Tư liệu lịch sử: Toàn văn Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)',
+        youtubeId: 'RzTxaGZ4bTw',
+        caption: 'Bản ghi âm và tư liệu hình ảnh giọng đọc của Chủ tịch Hồ Chí Minh phát động Toàn quốc kháng chiến đêm 19/12/1946.',
+      },
     },
     sources: [
+      {
+        label: 'Tư liệu âm thanh & hình ảnh: Lời kêu gọi Toàn quốc kháng chiến (YouTube)',
+        url: 'https://www.youtube.com/watch?v=RzTxaGZ4bTw',
+        note: 'Bản ghi âm toàn văn giọng đọc của Chủ tịch Hồ Chí Minh đêm 19/12/1946',
+      },
       {
         label: 'Lịch sử biên niên Đảng Cộng sản Việt Nam (Tập 3)',
         url: 'https://tulieuvankien.dangcongsan.vn/van-kien-tu-lieu-ve-dang/book/lich-su-dang/lich-su-bien-nien-dang-cong-san-viet-nam-tap-3-176',
