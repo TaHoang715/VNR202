@@ -162,7 +162,7 @@ export const SLIDE_PHOTO_BINDINGS: Record<number, SlidePhotoBinding> = {
     slideId: 10,
     photo: HISTORICAL_PHOTOS.hochiminh1950,
     specificCaption: 'Chủ tịch Hồ Chí Minh trên đài quan sát núi Báo Đông trong Chiến dịch Biên giới (09/1950).',
-    specificContext: 'Đỉnh cao nghệ thuật chỉ đạo chiến lược và bài học giữ vững vai trò lãnh đạo tuyệt đối của Đảng.',
+    specificContext: 'Chủ tịch Hồ Chí Minh trực tiếp ra mặt trận chỉ đạo Chiến dịch Biên giới năm 1950.',
     note: 'Ảnh tư liệu lịch sử chụp tháng 9/1950; không dùng làm ảnh minh họa cho sự kiện 1946.',
   },
   11: {

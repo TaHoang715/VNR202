@@ -67,11 +67,13 @@ export const SLIDES: SlideData[] = [
     content: {
       heading: 'Từ nhân nhượng hòa bình đến quyết định lịch sử',
       points: [
-        'Từ cuối tháng 10/1946, thực dân Pháp liên tục bội ước: đẩy mạnh bình định Nam Bộ, tấn công chiếm Hải Phòng và Lạng Sơn (cuối tháng 11/1946), chiếm đóng trái phép tại Đà Nẵng, Hải Dương.',
-        'Tại Hà Nội, quân Pháp bắn đại bác ở phố Yên Ninh và Hàng Bún. Ngày 18/12/1946, Pháp gửi 3 tối hậu thư đòi tước vũ khí Tự vệ Thủ đô và đòi quyền kiểm soát an ninh thành phố.',
-        'Hội nghị Ban Thường vụ Trung ương Đảng mở rộng họp ngày 18–19/12/1946 tại Vạn Phúc (Hà Đông) quyết định phát động toàn quốc kháng chiến. Ngày 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi toàn quốc kháng chiến.',
-        'Đúng 20 giờ ngày 19/12/1946 (pháo đài Láng nổ súng lúc 20 giờ 03 phút), quân dân Hà Nội đồng loạt nổ súng, kiên cường chiến đấu 60 ngày đêm giam chân địch trong thành phố, bảo vệ an toàn cơ quan đầu não rút lên chiến khu an toàn, thành lập Trung đoàn Thủ đô và chủ động rút quân ngày 17/2/1947.',
-        'Cùng thời điểm, quân dân các đô thị như Đà Nẵng, Huế, Vinh, Nam Định, Bắc Ninh, Bắc Giang đồng loạt nổ súng kìm giữ chân địch, đánh phá giao thông, bảo vệ việc di chuyển người và của lên các khu căn cứ và An toàn khu.',
+        'Đảng, Chính phủ và Chủ tịch Hồ Chí Minh kiên trì hòa hoãn, nhân nhượng có nguyên tắc nhằm bảo vệ độc lập, tranh thủ thời gian chuẩn bị lực lượng và tránh chiến tranh nổ ra quá sớm khi tương quan lực lượng còn bất lợi.',
+        'Tuy nhiên, thực dân Pháp liên tục bội ước: đẩy mạnh bình định Nam Bộ; cuối tháng 11/1946 nổ súng đánh chiếm Hải Phòng, Lạng Sơn và chiếm đóng trái phép tại Đà Nẵng, Hải Dương.',
+        'Tại Hà Nội, giữa tháng 12/1946, quân Pháp ngang nhiên đánh chiếm trụ sở Bộ Tài chính và Bộ Giao thông công chính, bắn đại bác tàn sát đồng bào ở phố Yên Ninh và Hàng Bún (16–17/12). Ngày 18/12/1946, Pháp gửi 3 tối hậu thư đòi tước vũ khí Tự vệ và đòi độc quyền kiểm soát an ninh Thủ đô.',
+        'Hội nghị Ban Thường vụ Trung ương Đảng mở rộng họp ngày 18–19/12/1946 tại Vạn Phúc (Hà Đông) quyết định chủ động phát động toàn quốc kháng chiến. Đêm 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi toàn quốc kháng chiến.',
+        'Từ 20 giờ ngày 19/12/1946, quân dân Hà Nội và các đô thị từ bắc vĩ tuyến 16 trở ra bắt đầu chiến đấu, mở đầu cuộc kháng chiến toàn quốc. Tại Hà Nội, pháo đài Láng bắn loạt đại bác đầu tiên lúc 20 giờ 03 phút.',
+        'Quân dân Hà Nội chiến đấu suốt 60 ngày đêm để giam chân và tiêu hao lực lượng địch, tạo điều kiện di chuyển cơ quan đầu não và chuẩn bị kháng chiến lâu dài. Trung đoàn Thủ đô được thành lập trong thời gian này và chủ động rút ra ngoài thành phố ngày 17/2/1947.',
+        'Cùng thời điểm, quân dân các đô thị như Đà Nẵng, Huế, Vinh, Nam Định, Bắc Ninh, Bắc Giang đồng loạt nổ súng kìm giữ chân địch, đánh phá giao thông, bảo vệ việc di chuyển nhân lực, vật lực lên các khu căn cứ và An toàn khu.',
       ],
       archivalQuote: {
         text: 'Chúng ta thà hy sinh tất cả, chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ. Hỡi đồng bào! Chúng ta phải đứng lên!',
@@ -83,6 +85,11 @@ export const SLIDES: SlideData[] = [
         label: 'Lịch sử biên niên Đảng Cộng sản Việt Nam (Tập 3)',
         url: 'https://tulieuvankien.dangcongsan.vn/van-kien-tu-lieu-ve-dang/book/lich-su-dang/lich-su-bien-nien-dang-cong-san-viet-nam-tap-3-176',
         note: 'Biên niên sự kiện ngày 18–19/12/1946 và cuộc chiến đấu 60 ngày đêm bảo vệ Thủ đô Hà Nội',
+      },
+      {
+        label: 'Lời kêu gọi Toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh (19/12/1946)',
+        url: 'https://hochiminh.vn/tu-tuong-dao-duc-ho-chi-minh/nghien-cuu-tu-tuong-dao-duc-ho-chi-minh/loi-keu-goi-toan-quoc-khang-chien-cua-chu-tich-ho-chi-minh-y-chi-bao-ve-doc-lap-tu-do-cua-dan-toc-5994',
+        note: 'Trang thông tin điện tử Hồ Chí Minh — Bài nghiên cứu về Lời kêu gọi toàn quốc kháng chiến',
       },
     ],
     speakerNotes: '',
@@ -100,7 +107,7 @@ export const SLIDES: SlideData[] = [
       points: [
         'Các chỉ thị tiền đề (1945 – đầu 1946): Chỉ thị "Kháng chiến kiến quốc" (25/11/1945), Chỉ thị "Tình hình và chủ trương" (03/3/1946) và Chỉ thị "Hòa để tiến" (09/3/1946) xác định kẻ thù chính, vạch sách lược hòa hoãn mềm dẻo và chuẩn bị thực lực cho kháng chiến lâu dài.',
         'Chỉ thị "Toàn dân kháng chiến" của Ban Thường vụ Trung ương Đảng (12/12/1946): Vạch rõ mục tiêu bảo vệ nền độc lập, xác định phương châm tiến hành kháng chiến tự vệ, tự lực cánh sinh.',
-        'Lời kêu gọi toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh (19/12/1946): Lời hịch cứu nước kết tinh ý chí độc lập tự do, hiệu triệu toàn thể quốc dân đồng bào đứng lên chống thực dân Pháp xâm lược.',
+        'Lời kêu gọi toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh (19/12/1946): Khẳng định quyết tâm bảo vệ độc lập, tự do và kêu gọi toàn dân đứng lên kháng chiến.',
         'Tác phẩm "Kháng chiến nhất định thắng lợi" của đồng chí Tổng Bí thư Trường Chinh (1947): Luận giải hệ thống lý luận hoàn chỉnh về chiến tranh nhân dân, phân tích cơ sở thắng lợi của đường lối kháng chiến trường kỳ.',
       ],
     },
@@ -109,6 +116,11 @@ export const SLIDES: SlideData[] = [
         label: 'Lịch sử biên niên Đảng Cộng sản Việt Nam (Tập 3)',
         url: 'https://tulieuvankien.dangcongsan.vn/van-kien-tu-lieu-ve-dang/book/lich-su-dang/lich-su-bien-nien-dang-cong-san-viet-nam-tap-3-176',
         note: 'Hệ thống văn kiện đường lối của Ban Thường vụ Trung ương Đảng 1946–1947',
+      },
+      {
+        label: 'Tác phẩm "Kháng chiến nhất định thắng lợi" (1947)',
+        url: 'https://nxblyluanchinhtri.vn/noi-dung-quan-trong-trong-duong-loi-khang-chien-chong-thuc-dan-phap/',
+        note: 'Nhà xuất bản Lý luận chính trị — Giá trị lý luận và thực tiễn trong đường lối kháng chiến',
       },
       {
         label: 'Nghị quyết Hội nghị quân sự toàn quốc của Đảng (19/10/1946)',
@@ -183,7 +195,7 @@ export const SLIDES: SlideData[] = [
       heading: 'Năm mặt trận gắn kết hữu cơ',
       points: [
         'Quân sự: Giữ vai trò mũi nhọn, mang tính quyết định nhằm tiêu hao, tiêu diệt sinh lực địch; từng bước chuyển hóa từ chiến tranh du kích lên vận động chiến.',
-        'Chính trị: Củng cố khối đại đoàn kết toàn dân tộc, củng cố chính quyền dân chủ nhân dân; kiên quyết làm thất bại âm mưu lập chính quyền bù nhìn và chia rẽ dân tộc của địch.',
+        'Chính trị: Củng cố khối đại đoàn kết toàn dân tộc, củng cố chính quyền dân chủ nhân dân; kiên quyết làm thất bại âm mưu "lấy chiến tranh nuôi chiến tranh, dùng người Việt đánh người Việt" và lập chính quyền bù nhìn của địch.',
         'Kinh tế: Đẩy mạnh tăng gia sản xuất, tự cấp tự túc lương thực và nhu yếu phẩm; xây dựng nền tài chính độc lập, thực hiện bao vây kinh tế không cho địch cướp bóc.',
         'Văn hóa & Tư tưởng: Xây dựng nền văn hóa mới mang tính chất dân tộc, khoa học, đại chúng; bài trừ văn hóa nô dịch; đẩy mạnh phong trào Bình dân học vụ diệt giặc dốt.',
         'Ngoại giao: Kiên trì nguyên tắc độc lập tự chủ; tranh thủ sự đồng tình, ủng hộ của các lực lượng hòa bình, dân chủ và tiến bộ trên toàn thế giới.',
@@ -249,7 +261,7 @@ export const SLIDES: SlideData[] = [
           title: 'Quân sự và an ninh',
           points: [
             'Xây dựng lực lượng vũ trang ba thứ quân; cuối năm 1947 bộ đội chính quy có hơn 12 vạn quân (57 trung đoàn, 20 tiểu đoàn độc lập), dân quân tự vệ hơn 1 triệu người.',
-            'Tháng 1/1948, phong quân hàm Đại tướng cho đồng chí Võ Nguyên Giáp, Trung tướng cho đồng chí Nguyễn Bình cùng 9 Thiếu tướng; tháng 11/1949 ban hành Sắc lệnh về nghĩa vụ quân sự. Đến năm 1949–1950, quân số bộ đội đạt khoảng 23 vạn người, dân quân du kích đạt 3 triệu người.',
+            'Tháng 1/1948, phong quân hàm Đại tướng cho đồng chí Võ Nguyên Giáp, Trung tướng cho đồng chí Nguyễn Bình cùng 9 Thiếu tướng; tháng 11/1949 ban hành Sắc lệnh về nghĩa vụ quân sự. Trong giai đoạn 1949–1950, quân số bộ đội đạt khoảng 23 vạn người, dân quân du kích phát triển lên 3 triệu người.',
             'Nha Công an Việt Nam được kiện toàn theo ngành dọc; Tổ điệp báo A13 đánh đắm Thông báo hạm Amyot d\'Inville của Pháp tại vùng biển Sầm Sơn, Thanh Hóa (tháng 9/1950).',
           ],
         },
@@ -315,16 +327,16 @@ export const SLIDES: SlideData[] = [
         {
           title: 'Chiến dịch Biên giới Thu – Đông 1950',
           points: [
-            'Âm mưu của Pháp: Thực hiện Kế hoạch Rơve (Revers, 1949) nhằm tăng cường chiếm đóng đồng bằng Bắc Bộ, thiết lập phòng tuyến khóa chặt biên giới Việt – Trung.',
+            'Bối cảnh: Từ giữa năm 1949, Pháp triển khai Kế hoạch Rơve nhằm mở rộng chiếm đóng ở Bắc Bộ và khóa chặt biên giới Việt – Trung. Ngày 1/10/1949, nước Cộng hòa Nhân dân Trung Hoa ra đời; cùng với việc thiết lập quan hệ ngoại giao đầu năm 1950, tình hình quốc tế tạo thêm điều kiện thuận lợi cho cuộc kháng chiến của Việt Nam.',
             'Chủ trương của Đảng: Tháng 6/1950, Ban Thường vụ Trung ương Đảng quyết định mở Chiến dịch Biên giới nhằm tiêu diệt một bộ phận sinh lực địch, giải phóng dải biên giới, mở rộng căn cứ địa Việt Bắc và khai thông đường liên lạc quốc tế; Chủ tịch Hồ Chí Minh trực tiếp ra mặt trận chỉ đạo.',
             'Kết quả: Sau 29 ngày đêm chiến đấu (16/9 – 14/10/1950), ta giải phóng tuyến biên giới từ Cao Bằng đến Đình Lập, khai thông đường liên lạc với các nước xã hội chủ nghĩa; giành thế chủ động chiến lược trên chiến trường chính Bắc Bộ.',
           ],
         },
         {
-          title: 'Chiến tranh du kích Nam Bộ và phối hợp các chiến trường',
+          title: 'Chiến tranh du kích Nam Bộ và đấu tranh đô thị',
           points: [
             'Tại Nam Bộ, Xứ ủy chỉ đạo phát triển chiến tranh du kích, khắc phục khó khăn trước hệ thống đồn bốt và tháp canh của địch; tổ chức phục kích tiêu hao sinh lực địch, tiêu biểu là trận La Ngà (tháng 3/1948).',
-            'Phong trào đấu tranh chính trị tại đô thị Sài Gòn – Chợ Lớn bùng nổ mạnh mẽ, phối hợp chặt chẽ với chiến trường cả nước.',
+            'Đấu tranh chính trị tại đô thị: Ngày 9/1/1950, học sinh, sinh viên Sài Gòn – Chợ Lớn biểu tình và bị đàn áp; học sinh Trần Văn Ơn hy sinh. Đây là một sự kiện tiêu biểu của phong trào đấu tranh đô thị, phối hợp với cuộc kháng chiến trên cả nước.',
           ],
         },
       ],
@@ -334,6 +346,21 @@ export const SLIDES: SlideData[] = [
         label: 'Chiến dịch Biên giới (16/9 – 14/10/1950): Bước ngoặt cuộc kháng chiến',
         url: 'https://www.qdnd.vn/vung-buoc-duoi-quan-ky-quyet-thang/lich-su-quan-doi-nhan-dan-viet-nam/chien-dich-bien-gioi-16-9-14-10-1950-buoc-ngoat-cuoc-khang-chien-796808',
         note: 'Báo Quân đội nhân dân điện tử — 29 ngày đêm chiến đấu giành thế chủ động chiến lược trên chiến trường chính Bắc Bộ',
+      },
+      {
+        label: 'Bước trưởng thành vượt bậc của Quân đội nhân dân Việt Nam',
+        url: 'https://www.qdnd.vn/quoc-phong-an-ninh/xay-dung-quan-doi/buoc-truong-thanh-vuot-bac-cua-quan-doi-nhan-dan-viet-nam-636630',
+        note: 'Báo Quân đội nhân dân điện tử — Đánh dấu bước nhảy vọt về tổ chức chỉ huy và tác chiến tập trung',
+      },
+      {
+        label: 'Họp mặt kỷ niệm Quốc khánh nước Cộng hòa Nhân dân Trung Hoa',
+        url: 'https://baochinhphu.vn/hop-mat-ky-niem-62-nam-quoc-khanh-trung-quoc-10293384.htm',
+        note: 'Báo điện tử Chính phủ — Đối chiếu ngày thành lập nước Cộng hòa Nhân dân Trung Hoa (1/10/1949)',
+      },
+      {
+        label: 'Phong trào biểu tình ngày 09/01/1950 tại Sài Gòn – Chợ Lớn và ngọn lửa Trần Văn Ơn',
+        url: 'https://www.qdnd.vn/van-hoa/doi-song/xuc-dong-y-nghia-chuong-trinh-sang-mai-ngon-lua-tran-van-on-810762',
+        note: 'Báo Quân đội nhân dân điện tử — Phong trào đấu tranh chính trị tại đô thị miền Nam',
       },
       {
         label: 'Góp phần đánh bại chiến lược đánh nhanh thắng nhanh của thực dân Pháp',
@@ -359,7 +386,7 @@ export const SLIDES: SlideData[] = [
       heading: 'Kết quả, hạn chế và bài học kinh nghiệm',
       points: [
         'Kết quả lịch sử: Đường lối kháng chiến đúng đắn đã động viên được sức mạnh toàn dân tộc, đưa cuộc kháng chiến từ thế phòng ngự ban đầu sang thế chủ động tiến công trên chiến trường chính Bắc Bộ.',
-        'Hạn chế và công tác uốn nắn cuối năm 1950: Trung ương Đảng nhận diện và kịp thời khắc phục một số khuyết điểm: tạm ngừng phát triển Đảng ở một số nơi để củng cố do phát triển quá nóng; ra chỉ thị uốn nắn tư tưởng chủ quan nóng vội muốn chuyển nhanh sang tổng phản công khi chưa đủ điều kiện; khắc phục nhận thức lệch lạc trong việc động viên sức người, sức của vượt quá sức dân.',
+        'Hạn chế và việc khắc phục: Cuối năm 1950, Đảng quyết định tạm ngừng phát triển Đảng để củng cố tổ chức, do việc kết nạp ở nhiều nơi quá nóng và chưa bảo đảm tiêu chuẩn. Trung ương đồng thời uốn nắn tư tưởng chủ quan, nóng vội muốn chuyển nhanh sang tổng phản công khi chưa đủ điều kiện và việc huy động sức người, sức của vượt quá sức dân.',
         'Bài học kinh nghiệm: (1) Giữ vững và tăng cường sự lãnh đạo của Đảng; (2) Dựa vào dân, phát huy khối đại đoàn kết toàn dân tộc; (3) Kết hợp kiên định nguyên tắc độc lập với mềm dẻo về sách lược; (4) Tự lực cánh sinh, chủ động chuẩn bị nội lực.',
       ],
     },
@@ -382,17 +409,22 @@ export const SLIDES: SlideData[] = [
     content: {
       heading: 'Vận dụng bài học chuẩn bị nội lực trong bối cảnh phát triển công nghệ',
       points: [
-        'Xây dựng năng lực nội tại: Tập trung phát triển con người, kỹ năng và năng lực sản xuất của đất nước; đồng thời chủ động học hỏi, hợp tác quốc tế trên nguyên tắc bình đẳng và độc lập tự chủ.',
-        'Chương trình phát triển nhân lực bán dẫn: Ngày 21/9/2024, Thủ tướng Chính phủ ban hành Quyết định số 1017/QĐ-TTg đặt mục tiêu đến năm 2030 đào tạo ít nhất 50.000 người có trình độ đại học trở lên phục vụ ngành công nghiệp bán dẫn (đây là mục tiêu định hướng của đề án, chưa phải kết quả đã đạt).',
-        'Ý nghĩa liên hệ: Việc liên hệ nhằm học hỏi kinh nghiệm về sự chủ động chuẩn bị nội lực trong các hoàn cảnh lịch sử khác nhau, không đồng nhất chiến tranh với phát triển kinh tế.',
-        'Hành động của sinh viên: Chủ động học tập chuyên môn vững vàng, trau dồi ngoại ngữ, rèn luyện kỹ năng thực hành và tích cực tham gia các dự án nghiên cứu, kỳ thực tập tại doanh nghiệp.',
+        'Bài học liên hệ: Trong kháng chiến, xây dựng lực lượng và chuẩn bị nguồn lực giúp ta từng bước giành thế chủ động. Trong bối cảnh phát triển đất nước hiện nay, có thể vận dụng tinh thần chủ động ấy vào đào tạo con người, nghiên cứu và nâng cao năng lực sản xuất trong nước, đồng thời hợp tác quốc tế.',
+        'Ví dụ ngành bán dẫn: Ngày 21/9/2024, Thủ tướng Chính phủ ban hành Quyết định số 1017/QĐ-TTg về chương trình phát triển nguồn nhân lực ngành công nghiệp bán dẫn, đặt mục tiêu đến năm 2030 đào tạo ít nhất 50.000 người có trình độ đại học trở lên.',
+        'Cùng ngày, Quyết định số 1018/QĐ-TTg ban hành chiến lược phát triển công nghiệp bán dẫn Việt Nam. Hai văn bản có phạm vi khác nhau: một chương trình tập trung vào nhân lực, một chiến lược định hướng phát triển ngành.',
+        'Với sinh viên: Học vững chuyên môn, rèn ngoại ngữ và kỹ năng số; tham gia dự án, thực tập để tích lũy kinh nghiệm. Khi dùng công nghệ để học tập, cần kiểm chứng thông tin và tự chịu trách nhiệm về kết quả.',
       ],
     },
     sources: [
       {
+        label: 'Phát triển nguồn nhân lực ngành công nghiệp bán dẫn (Quyết định 1017 & 1018)',
+        url: 'https://baochinhphu.vn/nganh-giao-duc-khan-truong-phat-trien-nguon-nhan-luc-nganh-cong-nghiep-ban-dan-102241211093806289.htm',
+        note: 'Báo điện tử Chính phủ — Chương trình nhân lực theo Quyết định số 1017/QĐ-TTg và chiến lược ngành theo Quyết định số 1018/QĐ-TTg',
+      },
+      {
         label: 'Báo cáo giải trình về kinh tế - xã hội (Chương trình nhân lực bán dẫn)',
         url: 'https://baochinhphu.vn/bao-cao-giai-trinh-ve-kinh-te-xa-hoi-do-thu-tuong-pham-minh-chinh-trinh-bay-tai-ky-hop-thu-8-quoc-hoi-khoa-xv-102241112153549565.htm',
-        note: 'Báo điện tử Chính phủ — Thông tin về Quyết định số 1017/QĐ-TTg ngày 21/9/2024 của Thủ tướng Chính phủ',
+        note: 'Báo điện tử Chính phủ — Mục tiêu đào tạo nhân lực đến năm 2030 theo Quyết định số 1017/QĐ-TTg',
       },
       {
         label: 'Khởi động chương trình đào tạo nhân lực vi mạch bán dẫn tại Đà Nẵng (26/3/2024)',
