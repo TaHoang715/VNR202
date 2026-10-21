@@ -26,16 +26,16 @@ const LESSON_TITLES = [
   'Trường kỳ & dựa vào sức mình (Trụ cột 3 & 4)',
   'Tổ chức, chỉ đạo kháng chiến (1947–1950)',
   'Hai chiến dịch bước ngoặt lịch sử',
-  'Đấu tranh tạm chiếm, uốn nắn & bài học',
-  'Vận dụng bài học: Tự lực cánh sinh & Công nghệ',
-  'Quan điểm & trách nhiệm thế hệ trẻ',
+  'Vận dụng bài học: Tự lực cánh sinh & Bán dẫn',
+  'Quan điểm cá nhân & trách nhiệm thế hệ trẻ',
+  'Báo cáo minh bạch ứng dụng AI & nguồn dẫn',
 ];
 
 const LESSON_PARTS = [
   { id: 1, title: 'Bối cảnh lịch sử', range: 'Mục 1 – 2', startSec: 'sec-1' },
   { id: 2, title: 'Đường lối kháng chiến', range: 'Mục 3 – 7', startSec: 'sec-3' },
-  { id: 3, title: 'Tổ chức thực hiện', range: 'Mục 8 – 10', startSec: 'sec-8' },
-  { id: 4, title: 'Liên hệ & Vận dụng', range: 'Mục 11 – 12', startSec: 'sec-11' },
+  { id: 3, title: 'Tổ chức thực hiện', range: 'Mục 8 – 9', startSec: 'sec-8' },
+  { id: 4, title: 'Vận dụng & Minh bạch', range: 'Mục 10 – 12', startSec: 'sec-10' },
 ];
 
 interface PresentationViewProps {
@@ -134,7 +134,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
             <article key={slide.id} className="slide-container p-8 border border-gray-300 rounded-2xl bg-[#fdfcf9] space-y-4">
               <div className="flex justify-between items-center text-xs text-gray-500 border-b border-gray-200 pb-2">
                 <span className="font-semibold text-[#9d242b] uppercase font-mono">
-                  Mục {idx + 1} / 12 — {!GAME_ENABLED && slide.id === 12 ? 'Kết luận & Ôn tập' : slide.section} (Phần {slide.part}: {slide.partTitle})
+                  Mục {idx + 1} / 12 — {slide.section} (Phần {slide.part}: {slide.partTitle})
                 </span>
               </div>
 
@@ -148,14 +148,12 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                   </h3>
 
                   <div className="space-y-1.5 py-2">
-                    {slide.content.points
-                      .filter((pt) => GAME_ENABLED || slide.id !== 12 || (!pt.includes('mục Game') && !pt.includes('quét mã QR')))
-                      .map((pt, pIdx) => (
-                        <div key={pIdx} className="text-xs flex gap-2">
-                          <span className="text-[#9d242b] font-bold">•</span>
-                          <span className="text-gray-800 leading-relaxed">{pt}</span>
-                        </div>
-                      ))}
+                    {slide.content.points.map((pt, pIdx) => (
+                      <div key={pIdx} className="text-xs flex gap-2">
+                        <span className="text-[#9d242b] font-bold">•</span>
+                        <span className="text-gray-800 leading-relaxed">{pt}</span>
+                      </div>
+                    ))}
                   </div>
 
                   {slide.content.groups && slide.content.groups.length > 0 && (
@@ -341,9 +339,9 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                             Phần III • Tổ chức thực hiện
                           </div>
                         )}
-                        {slide.id === 11 && (
+                        {slide.id === 10 && (
                           <div className="pt-2 pb-0.5 px-2 text-[10px] font-mono font-bold uppercase tracking-wider text-[#9d242b]">
-                            Phần IV • Liên hệ & Vận dụng
+                            Phần IV • Vận dụng & Minh bạch
                           </div>
                         )}
                         <button
@@ -448,7 +446,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
 
             <p className="text-base text-[#3a3530] leading-relaxed max-w-3xl">
               Nội dung chuyên đề gồm bối cảnh lịch sử tháng 12/1946, hệ thống văn kiện & 4 trụ cột đường lối kháng chiến của Đảng,
-              quá trình chỉ đạo xây dựng thực lực & 2 chiến dịch bước ngoặt (1947–1950), cùng bài học vận dụng tự lực cánh sinh vào công nghệ bán dẫn (QĐ 1018/QĐ-TTg) và trách nhiệm của thế hệ trẻ.
+              quá trình chỉ đạo xây dựng thực lực & 2 chiến dịch bước ngoặt (1947–1950), cùng bài học vận dụng tự lực cánh sinh vào công nghệ bán dẫn (QĐ 1018/QĐ-TTg), trách nhiệm thế hệ trẻ và báo cáo minh bạch ứng dụng AI.
             </p>
 
             {/* 4-Part Quick Anchor Navigation */}
@@ -511,7 +509,7 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                         {slide.id < 10 ? `0${slide.id}` : slide.id}
                       </span>
                       <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#9d242b] bg-[#faebee] px-2.5 py-0.5 rounded-full border border-[#9d242b]/20">
-                        {!GAME_ENABLED && slide.id === 12 ? 'Kết luận & Ôn tập' : slide.section}
+                        {slide.section}
                       </span>
                       <span className="text-xs font-serif italic text-[#6e6761] hidden sm:inline">
                         • Phần {slide.part}: {slide.partTitle}
@@ -540,17 +538,27 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
                       )}
 
                       <div className="space-y-3">
-                        {slide.content.points
-                          .filter((pt) => GAME_ENABLED || slide.id !== 12 || (!pt.includes('mục Game') && !pt.includes('quét mã QR')))
-                          .map((pt, pIdx) => (
-                            <div key={pIdx} className="flex items-start gap-3">
-                              <span className="w-2 h-2 rounded-full bg-[#9d242b] flex-shrink-0 mt-2" />
-                              <p className="text-sm sm:text-base text-[#171513] leading-relaxed">
-                                {pt}
-                              </p>
-                            </div>
-                          ))}
+                        {slide.content.points.map((pt, pIdx) => (
+                          <div key={pIdx} className="flex items-start gap-3">
+                            <span className="w-2 h-2 rounded-full bg-[#9d242b] flex-shrink-0 mt-2" />
+                            <p className="text-sm sm:text-base text-[#171513] leading-relaxed">
+                              {pt}
+                            </p>
+                          </div>
+                        ))}
                       </div>
+
+                      {slide.id === 12 && onSelectView && (
+                        <div className="pt-2">
+                          <button
+                            onClick={() => onSelectView('appendix')}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#9d242b] text-white text-xs font-semibold hover:bg-[#7a171d] shadow-sm transition-all"
+                          >
+                            <span>Xem toàn văn Phụ lục Minh bạch AI & Nguồn dẫn</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
 
                       {/* Archival Quote (if present) */}
                       {slide.content.archivalQuote && (

@@ -44,7 +44,7 @@ export const SLIDES: SlideData[] = [
         'Phần I — Bối cảnh lịch sử bùng nổ cuộc kháng chiến toàn quốc (12/1946): Âm mưu, hành động bội ước của thực dân Pháp, quyết định lịch sử của Trung ương Đảng tại Vạn Phúc, Lời kêu gọi Toàn quốc kháng chiến và cuộc chiến đấu 60 ngày đêm bảo vệ Hà Nội cùng các đô thị.',
         'Phần II — Đường lối kháng chiến toàn quốc của Đảng: Hệ thống văn kiện cốt lõi, mục tiêu kháng chiến, 4 trụ cột (Toàn dân, Toàn diện, Trường kỳ, Dựa vào sức mình là chính) và ý nghĩa lịch sử ngọn cờ dẫn đường.',
         'Phần III — Quá trình chỉ đạo xây dựng thực lực và các thắng lợi quân sự tạo bước ngoặt (1947–1950): Tổ chức kháng chiến trên 4 mặt (chính quyền & Đảng, quân sự & an ninh, kinh tế & văn hóa - giáo dục, ngoại giao & liên minh Đông Dương) và 2 chiến dịch lớn (Việt Bắc 1947, Biên giới 1950).',
-        'Phần IV — Liên hệ thực tiễn & Bài học thời đại: Vận dụng bài học "Dựa vào sức mình là chính", Chiến lược phát triển công nghiệp bán dẫn (QĐ 1018/QĐ-TTg), làm chủ khoa học công nghệ, quan điểm cá nhân và trách nhiệm của thế hệ trẻ.',
+        'Phần IV — Liên hệ thực tiễn, Trách nhiệm thế hệ trẻ & Minh bạch học thuật: Vận dụng bài học "Dựa vào sức mình là chính", Chiến lược phát triển công nghiệp bán dẫn (QĐ 1018/QĐ-TTg), làm chủ khoa học công nghệ, trách nhiệm của thế hệ trẻ và báo cáo minh bạch ứng dụng AI.',
       ],
     },
     sources: [
@@ -406,40 +406,6 @@ export const SLIDES: SlideData[] = [
   },
   {
     id: 10,
-    part: 3,
-    partTitle: 'Tổ chức thực hiện',
-    title: 'ĐẤU TRANH VÙNG TẠM BỊ CHIẾM, UỐN NẮN & BÀI HỌC KINH NGHIỆM',
-    subtitle: 'Chiến tranh du kích ở hậu phương địch, tự phê bình cuối năm 1950 và bài học lịch sử',
-    section: 'Tổng kết & Bài học',
-    suggestedDurationSeconds: 70,
-    content: {
-      heading: 'Kháng chiến vùng sau lưng địch và công tác tự chấn chỉnh của Đảng',
-      points: [
-        'Chiến tranh du kích vùng sau lưng địch: Đảng chỉ đạo thực hiện "biến hậu phương của địch thành tiền phương của ta", phá tề trừ gian, đánh bại các cuộc càn quét, bắt lính của địch. Tại Nam Bộ, Xứ ủy chỉ đạo khắc phục "chiến thuật mạng nhện" và tháp canh dày đặc, lập nên các chiến công lớn như La Ngà (3/1948), Cầu Kè (4/1949) và thử nghiệm cách đánh đặc công đầu tiên ở cầu Bà Kiên (18/4/1950).',
-        'Phong trào đấu tranh chính trị tại đô thị: Tiêu biểu là cuộc biểu tình của 3.000 học sinh, sinh viên Sài Gòn - Chợ Lớn ngày 9/1/1950 (Trần Văn Ơn hy sinh) và hơn 500.000 đồng bào Sài Gòn biểu tình chống can thiệp quân sự ngày 19/3/1950.',
-        'Công tác uốn nắn, khắc phục khuyết điểm cuối năm 1950: Đảng quyết định tạm ngừng phát triển Đảng để củng cố vì nhận thấy việc phát triển "quá nóng", mắc sai lầm về tiêu chuẩn đảng viên. Trung ương Đảng ra chỉ thị uốn nắn, sửa chữa sai lầm chủ quan nóng vội muốn chuyển nhanh sang tổng phản công và nhận thức lệch lạc trong việc huy động sức người, sức của vượt quá sức dân.',
-        'Bốn bài học kinh nghiệm lịch sử: Giữ vững và tăng cường sự lãnh đạo của Đảng; dựa vào dân, phát huy khối đại đoàn kết toàn dân tộc; kiên định nguyên tắc độc lập tự chủ kết hợp mềm dẻo về sách lược; tự lực cánh sinh, chủ động xây dựng và chuẩn bị nội lực vững vàng.',
-      ],
-      archivalQuote: {
-        text: 'Biến hậu phương của địch thành tiền phương của ta.',
-        source: 'Chủ trương của Trung ương Đảng chỉ đạo chiến tranh du kích trong vùng sau lưng địch',
-      },
-    },
-    sources: [
-      {
-        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam 2021',
-        note: 'Nhà xuất bản Chính trị quốc gia Sự thật, Chương 2, Mục I.2: Đúc kết kinh nghiệm lãnh đạo và công tác uốn nắn của Đảng',
-      },
-      {
-        label: 'Phong trào biểu tình ngày 09/01/1950 tại Sài Gòn – Chợ Lớn và ngọn lửa Trần Văn Ơn',
-        url: 'https://www.qdnd.vn/van-hoa/doi-song/xuc-dong-y-nghia-chuong-trinh-sang-mai-ngon-lua-tran-van-on-810762',
-        note: 'Báo Quân đội nhân dân điện tử — Phong trào đấu tranh chính trị tại đô thị miền Nam',
-      },
-    ],
-    speakerNotes: '',
-  },
-  {
-    id: 11,
     part: 4,
     partTitle: 'Liên hệ & Vận dụng',
     title: 'VẬN DỤNG THỰC TIỄN & BÀI HỌC THỜI ĐẠI: "DỰA VÀO SỨC MÌNH LÀ CHÍNH"',
@@ -495,7 +461,7 @@ export const SLIDES: SlideData[] = [
     speakerNotes: '',
   },
   {
-    id: 12,
+    id: 11,
     part: 4,
     partTitle: 'Liên hệ & Vận dụng',
     title: 'QUAN ĐIỂM CÁ NHÂN VÀ TRÁCH NHIỆM CỦA THẾ HỆ TRẺ',
@@ -523,6 +489,47 @@ export const SLIDES: SlideData[] = [
     sources: [
       {
         label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam',
+        note: 'Nhà xuất bản Chính trị quốc gia Sự thật, 2021, Chương 2, Mục I.2',
+      },
+    ],
+    speakerNotes: '',
+  },
+  {
+    id: 12,
+    part: 4,
+    partTitle: 'Minh bạch học thuật',
+    title: 'BÁO CÁO MINH BẠCH ỨNG DỤNG AI TRONG HỌC TẬP',
+    subtitle: 'Công cụ hỗ trợ, mục đích sử dụng và quy trình đối chiếu giáo trình chính thống',
+    section: 'Minh bạch AI',
+    suggestedDurationSeconds: 45,
+    content: {
+      heading: 'Báo cáo sử dụng trí tuệ nhân tạo (AI Transparency)',
+      points: [
+        'Công cụ AI hỗ trợ: Nhóm sử dụng trợ lý AI (Codex, Claude, Gemini) hỗ trợ lập trình giao diện trực quan hóa bài thuyết trình, định dạng cấu trúc nội dung và tạo lập câu hỏi kiểm tra nhanh.',
+        'Mục đích sử dụng: Tối ưu hóa trải nghiệm trực quan hóa bài thuyết trình môn học, hỗ trợ thiết kế trang web và tạo tài liệu tham khảo cho tập thể lớp.',
+        'Quy trình đối chiếu & Liêm chính học thuật: Toàn bộ sự kiện lịch sử, nhân vật, mốc thời gian và luận điểm lý luận đều được các thành viên trong nhóm trực tiếp đối chiếu, rà soát và kiểm chứng với bản in Giáo trình Lịch sử Đảng Cộng sản Việt Nam (NXB Chính trị quốc gia Sự thật, 2021) cùng hệ thống văn kiện Đảng.',
+        'Xem chi tiết toàn văn phụ lục: Nhóm đã công khai toàn bộ bảng kê công cụ, mục đích chi tiết và danh mục nguồn trích dẫn tại mục "Minh bạch AI & Nguồn" trên thanh điều hướng.',
+      ],
+      groups: [
+        {
+          title: 'Quy trình 3 bước đảm bảo tính xác thực học thuật của nhóm',
+          points: [
+            'Bước 1 — Thu thập tài liệu: Sử dụng Giáo trình Lịch sử Đảng Cộng sản Việt Nam (2021) làm tài liệu gốc bắt buộc.',
+            'Bước 2 — Ứng dụng AI có kiểm soát: Dùng AI hỗ trợ lập trình giao diện web và dàn trang tài liệu học tập.',
+            'Bước 3 — Đối chiếu & Xác thực con người: Các thành viên nhóm trực tiếp rà soát từng dòng, sửa các điểm chưa chính xác và chịu hoàn toàn trách nhiệm học thuật.',
+          ],
+        },
+      ],
+    },
+    sources: [
+      {
+        label: 'Phụ lục Minh bạch AI & Danh mục nguồn dẫn',
+        url: '/appendix',
+        note: 'Xem toàn văn báo cáo minh bạch AI, cam kết liêm chính và danh mục tài liệu tham khảo chính thức',
+      },
+      {
+        label: 'Giáo trình Lịch sử Đảng Cộng sản Việt Nam (Khối không chuyên)',
+        url: 'https://www.nxbctqg.org.vn/giao-trinh-lich-su-dang-cong-san-viet-nam-danh-cho-bac-dai-hoc-he-khong-chuyen-ly-luan-chinh-tri-.html',
         note: 'Nhà xuất bản Chính trị quốc gia Sự thật, 2021, Chương 2, Mục I.2',
       },
     ],

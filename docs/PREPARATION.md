@@ -6,17 +6,15 @@
 - Kế hoạch phân bổ thời lượng dự kiến: 15 phút trình bày bài học (4 người trình bày), 10 phút thử thách trắc nghiệm "Giải mã kháng chiến" (1 phút giới thiệu/quét QR, khoảng 7 phút trả lời 10 câu hỏi, 2 phút giải thích và vinh danh; mỗi vòng tối đa 60 giây, chủ phòng chủ động điều phối), 20 phút trao đổi và phản biện. Lưu ý: Chưa có bằng chứng diễn tập thực tế 45 phút trên mạng lớp học thật; nhóm cần chủ động thử nghiệm trước buổi học.
 - Chuẩn bị trang phục lịch sự. Tất cả thành viên đều phải tham gia phát biểu; không cầm điện thoại đọc tài liệu.
 
-## Kế hoạch phân công 4 người trình bày (15 phút bài học)
+## Kế hoạch phân công 5 thành viên trình bày
 
-| Vai trò / Nhiệm vụ | Thành viên tự điền | Phạm vi nội dung | Thời lượng dự kiến | Căn cứ kiểm chứng |
+| Vai trò / Nhiệm vụ | Thành viên | Phạm vi nội dung | Thời lượng dự kiến | Căn cứ kiểm chứng |
 |---|---|---|---|---|
 | Người trình bày 1: Bối cảnh lịch sử | Thành viên 1 | Mục 1–2: Thái độ kiên trì hòa bình của ta, hành động khiêu khích bội ước của Pháp, Hội nghị Vạn Phúc (18–19/12), Lời kêu gọi Toàn quốc kháng chiến (19/12/1946), nổ súng mở đầu kháng chiến lúc 20h03, chiến đấu 60 ngày đêm bảo vệ Hà Nội và các đô thị | ~3 phút | Giáo trình 2021 & Biên niên sự kiện Tập 3 |
-| Người trình bày 2: Đường lối kháng chiến | Thành viên 2 | Mục 3–7: Tiến trình 1945–1947, các văn kiện cốt lõi, mục tiêu kháng chiến dân tộc & quốc tế, 4 trụ cột (Toàn dân, Toàn diện, Trường kỳ, Dựa vào sức mình là chính) và ý nghĩa lịch sử ngọn cờ dẫn đường | ~4 phút | Văn kiện Đảng 1946–1947 & Tác phẩm Kháng chiến nhất định thắng lợi |
-| Người trình bày 3: Xây dựng thực lực & Bước ngoặt | Thành viên 3 | Mục 8–10: Tổ chức kháng chiến trên 4 mặt (chính quyền & Đảng, quân sự & an ninh, kinh tế & văn hóa - giáo dục, ngoại giao & liên minh Đông Dương), Chiến dịch Việt Bắc 1947 (75 ngày đêm), Chiến dịch Biên giới 1950 (30 ngày đêm) và công tác uốn nắn cuối 1950 | ~5 phút | Báo Quân đội nhân dân, Biên niên Tập 3, Công an Thanh Hóa |
-| Người trình bày 4: Liên hệ thực tiễn & Thế hệ trẻ | Thành viên 4 | Mục 11–12: Vận dụng bài học "Dựa vào sức mình là chính", Chiến lược phát triển công nghiệp bán dẫn (QĐ 1018/QĐ-TTg ngày 21/9/2024), yêu cầu làm chủ KH-CN, quan điểm cá nhân & 4 trách nhiệm của thế hệ trẻ, kết luận và dẫn nhập game | ~3 phút | Quyết định số 1018/QĐ-TTg, Cổng TTĐT Chính phủ, Bộ KH&CN |
-| Điều phối trò chơi / Vinh danh | | Thử thách 10 câu hỏi trực tuyến trên màn chiếu / điện thoại | ~10 phút | Thử phòng trực tuyến dùng Convex |
-| Chuẩn bị phản biện & giải trình | | Chuẩn bị luận cứ, tài liệu nguồn phục vụ trả lời chất vấn | ~20 phút | Không đặt hộ câu hỏi phản biện |
-| Biên tập AI Usage / Xuất PDF | | Rà soát minh bạch AI, biên tập nội dung và xuất tài liệu | Hoàn thành trước buổi học | Nhóm tự ghi chỉnh sửa và ký tên |
+| Người trình bày 2: Đường lối kháng chiến | Thành viên 2 | Mục 3–7: Tiến trình 1945–1947, 5 văn kiện cốt lõi, mục tiêu kháng chiến, 4 trụ cột (Toàn dân, Toàn diện, Trường kỳ, Dựa vào sức mình là chính) và ý nghĩa lịch sử ngọn cờ dẫn đường | ~4 phút | Văn kiện Đảng 1946–1947 & Tác phẩm Kháng chiến nhất định thắng lợi |
+| Người trình bày 3: Xây dựng thực lực & 2 chiến dịch bước ngoặt | Thành viên 3 | Mục 8–9: Tổ chức kháng chiến trên 4 mặt (chính quyền & Đảng, quân sự & an ninh, kinh tế & văn hóa - giáo dục, ngoại giao & liên minh Đông Dương), Chiến dịch Việt Bắc 1947 (75 ngày đêm), Chiến dịch Biên giới 1950 (30 ngày đêm) | ~4 phút | Giáo trình 2021, Báo QĐND, Công an Thanh Hóa |
+| Người trình bày 4: Liên hệ thực tiễn & Thế hệ trẻ | Thành viên 4 | Mục 10–11: Vận dụng bài học "Dựa vào sức mình là chính", Chiến lược phát triển công nghiệp bán dẫn (QĐ 1018/QĐ-TTg ngày 21/9/2024), yêu cầu làm chủ KH-CN, quan điểm cá nhân & 4 trách nhiệm của thế hệ trẻ | ~3 phút | Quyết định số 1018/QĐ-TTg, Cổng TTĐT Chính phủ, Bộ KH&CN |
+| Người trình bày 5: Minh bạch AI & Quản trò tương tác | Thành viên 5 | Mục 12: Trình bày slide Minh bạch ứng dụng AI (công cụ AI, mục đích, quy trình đối chiếu giáo trình) & Điều phối hoạt động tương tác minigame | ~2 phút | Phụ lục Minh bạch AI & Nguồn dẫn |
 
 Có thể phân vai kiêm nhiệm tùy theo sĩ số thực tế của nhóm; không tự ý điền tên giả định hoặc tự đánh dấu đã hoàn thành khi chưa kiểm tra. Mỗi thành viên tham gia đánh giá theo biểu mẫu giảng viên cung cấp.
 
