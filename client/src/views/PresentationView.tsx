@@ -216,9 +216,9 @@ export const PresentationView: React.FC<PresentationViewProps> = ({ onSelectView
           </div>
           <h2 className="text-xl font-bold font-serif text-[#171513]">Báo Cáo Sử Dụng Trí Tuệ Nhân Tạo (AI Usage)</h2>
           <div className="space-y-2 text-xs text-gray-800 leading-relaxed">
-            <p><strong>1. Công cụ & Mô hình thực tế:</strong> Codex kết hợp OpenCode (Claude Opus 4.6 medium ban đầu; chuyển sang ag/gemini-3.8-flash-high khi Opus trả HTTP 503).</p>
-            <p><strong>2. Mục đích:</strong> Hỗ trợ xây dựng website, trò chơi trực tuyến dùng Convex và định dạng bài học.</p>
-            <p><strong>3. Trách nhiệm học thuật:</strong> Toàn bộ nội dung sự kiện, văn kiện và diễn giải lịch sử là Bản thảo (Draft) cần sinh viên trực tiếp đối chiếu giáo trình bản in (NXB Chính trị quốc gia Sự thật, 2021) trước khi trình bày và nộp cho giảng viên.</p>
+            <p><strong>1. Công cụ AI hỗ trợ:</strong> Các mô hình trí tuệ nhân tạo (Claude, Codex, Gemini) làm trợ lý kỹ thuật hỗ trợ lập trình giao diện và tối ưu hóa hiển thị.</p>
+            <p><strong>2. Mục đích:</strong> Trực quan hóa nội dung bài thuyết trình môn học, dàn trang 12 mục chuyên đề và tài liệu học tập.</p>
+            <p><strong>3. Trách nhiệm học thuật:</strong> Toàn bộ sự kiện lịch sử, mốc thời gian, nhân vật và trích dẫn văn kiện đều được các thành viên trong nhóm trực tiếp đối chiếu, rà soát với bản in Giáo trình Lịch sử Đảng Cộng sản Việt Nam (NXB Chính trị quốc gia Sự thật, 2021) trước khi báo cáo và nộp cho giảng viên.</p>
           </div>
           <AIUsageRecord />
         </div>

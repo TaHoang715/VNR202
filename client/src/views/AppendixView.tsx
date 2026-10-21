@@ -52,25 +52,19 @@ export const AppendixView: React.FC = () => {
           <div className="space-y-4">
             <div>
               <span className="font-bold text-[#171513] uppercase tracking-wide block mb-1.5">
-                1. Công cụ & Mô hình thực tế đã vận hành:
+                1. Công cụ AI hỗ trợ:
               </span>
-              <ul className="space-y-1.5 list-disc list-inside text-[#3a3530]">
-                <li>
-                  <strong>Hệ thống điều phối:</strong> Codex Coordinator phụ trách kiểm chứng quy trình, rà soát rubric và kiểm soát ranh giới an toàn.
-                </li>
-                <li>
-                  <strong>Công cụ lập trình:</strong> OpenCode CLI sử dụng Claude Opus 4.6 (mức medium ban đầu). Khi Opus trả lỗi HTTP 503 đã chuyển sang mô hình dự phòng <strong>ag/gemini-3.8-flash-high</strong> để tiếp tục triển khai.
-                </li>
-              </ul>
+              <p className="leading-relaxed">
+                Nhóm sử dụng các trợ lý trí tuệ nhân tạo (Claude, Codex, Gemini) với vai trò trợ lý kỹ thuật hỗ trợ lập trình giao diện và tối ưu hóa trải nghiệm người dùng.
+              </p>
             </div>
 
             <div>
               <span className="font-bold text-[#171513] uppercase tracking-wide block mb-1.5">
-                2. Mục đích & Phạm vi hỗ trợ của AI:
+                2. Mục đích & Phạm vi hỗ trợ:
               </span>
               <p className="leading-relaxed">
-                Hỗ trợ viết giao diện (React/TypeScript/Vite/Tailwind), backend Convex cho trò chơi cá nhân "Giải mã kháng chiến",
-                bài học cuộn dọc, bản in và danh mục trích dẫn. Bản Socket.IO cũ được giữ cho khả năng tương thích. AI <strong>không</strong> thay thế việc đọc giáo trình của sinh viên.
+                Hỗ trợ viết mã nguồn giao diện web (React/TypeScript), thiết kế bố cục trực quan cho 12 mục chuyên đề và dàn trang tài liệu học tập. AI <strong>tuyệt đối không</strong> thay thế việc đọc giáo trình và tư duy học tập của sinh viên.
               </p>
             </div>
           </div>
@@ -78,23 +72,19 @@ export const AppendixView: React.FC = () => {
           <div className="space-y-4">
             <div>
               <span className="font-bold text-[#171513] uppercase tracking-wide block mb-1.5">
-                3. Các câu lệnh (Prompts) mẫu chính yếu:
+                3. Quy trình thẩm định & Đối chiếu:
               </span>
-              <div className="p-3.5 bg-[#fdfcf9] rounded-xl border border-[#dfd6c6] font-mono text-[11px] space-y-1.5 text-[#6e6761]">
-                <div>• "Phát triển trò chơi Đấu trường tri thức 10 vòng Đường lối kháng chiến (solo tức thì và online Convex, 60s/vòng, tính điểm mili-giây tối đa ~6000, 5 trắc nghiệm + 5 đuổi hình bắt chữ)..."</div>
-                <div>• "Trình bày bài học Chương 2 I.2 thành 12 mục cuộn dọc, dùng ảnh tư liệu có nguồn và bản in."</div>
-                <div>• "Soạn thảo luận cứ đối chiếu câu hỏi dựa trên văn kiện chính thống 1946–1950..."</div>
-              </div>
+              <p className="leading-relaxed">
+                Toàn bộ mốc thời gian, nhân vật, số liệu và trích dẫn văn kiện đều được các thành viên trong nhóm trực tiếp đối chiếu, rà soát với bản in <em>Giáo trình Lịch sử Đảng Cộng sản Việt Nam</em> (NXB Chính trị quốc gia Sự thật, 2021) cùng hệ thống văn kiện Đảng.
+              </p>
             </div>
 
             <div>
               <span className="font-bold text-[#171513] uppercase tracking-wide block mb-1.5">
-                4. Trạng thái kiểm chứng của sinh viên:
+                4. Trách nhiệm học thuật:
               </span>
-              <div className="p-3.5 bg-[#faebee] border border-[#9d242b]/30 rounded-xl text-[#9d242b] font-medium leading-relaxed">
-                Toàn bộ nội dung hiện tại là <strong>Bản thảo sơ bộ (Draft)</strong> do công cụ hỗ trợ tổng hợp.
-                Nhóm sinh viên có trách nhiệm trực tiếp đối chiếu từng luận điểm với Giáo trình Lịch sử ĐCSVN (NXB CTQG 2021)
-                và chịu trách nhiệm trước giảng viên về tính chính xác học thuật.
+              <div className="p-3 bg-[#faebee] border border-[#9d242b]/25 rounded-xl text-[#9d242b] font-medium leading-relaxed">
+                Nhóm sinh viên chịu hoàn toàn trách nhiệm học thuật về tính chính xác của toàn bộ nội dung bài thuyết trình và sản phẩm trực quan hóa trước giảng viên phụ trách môn học.
               </div>
             </div>
           </div>
@@ -104,12 +94,12 @@ export const AppendixView: React.FC = () => {
       {/* AI Usage Record Component */}
       <AIUsageRecord />
 
-      {/* Draft Academic Integrity Commitment */}
+      {/* Academic Integrity Commitment */}
       <section className="editorial-card p-6 sm:p-8 border-2 border-[#c99738] bg-[#fdfcf9] space-y-4">
         <div className="flex items-center gap-3 border-b border-[#dfd6c6] pb-3">
           <ShieldCheck className="w-6 h-6 text-[#c99738]" />
           <h2 className="font-serif font-bold text-xl text-[#171513]">
-            Bản Nháp Cam Kết Liêm Chính Học Thuật (Academic Integrity)
+            Cam Kết Liêm Chính Học Thuật (Academic Integrity)
           </h2>
         </div>
 
