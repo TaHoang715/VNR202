@@ -20,7 +20,7 @@ const LESSON_TITLES = [
   'Khái quát bài học',
   'Bối cảnh lịch sử bùng nổ (12/1946)',
   'Hệ thống văn kiện hình thành đường lối',
-  'Mục tiêu & ý nghĩa lịch sử đường lối',
+  'Mục tiêu của cuộc kháng chiến',
   'Kháng chiến toàn dân (Trụ cột 1)',
   'Kháng chiến toàn diện (Trụ cột 2)',
   'Trường kỳ & dựa vào sức mình (Trụ cột 3 & 4)',

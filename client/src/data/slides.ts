@@ -42,7 +42,7 @@ export const SLIDES: SlideData[] = [
       heading: 'Bốn nội dung trọng tâm của chuyên đề',
       points: [
         'Phần I — Bối cảnh lịch sử bùng nổ cuộc kháng chiến toàn quốc (12/1946): Âm mưu, hành động bội ước của thực dân Pháp, quyết định lịch sử của Trung ương Đảng tại Vạn Phúc, Lời kêu gọi Toàn quốc kháng chiến và cuộc chiến đấu 60 ngày đêm bảo vệ Hà Nội cùng các đô thị.',
-        'Phần II — Đường lối kháng chiến toàn quốc của Đảng: Hệ thống văn kiện cốt lõi, mục tiêu kháng chiến, 4 trụ cột (Toàn dân, Toàn diện, Trường kỳ, Dựa vào sức mình là chính) và ý nghĩa lịch sử ngọn cờ dẫn đường.',
+        'Phần II — Đường lối kháng chiến toàn quốc của Đảng: Hệ thống văn kiện cốt lõi, mục tiêu kháng chiến, 4 trụ cột (Toàn dân, Toàn diện, Trường kỳ, Dựa vào sức mình là chính).',
         'Phần III — Quá trình chỉ đạo xây dựng thực lực và các thắng lợi quân sự tạo bước ngoặt (1947–1950): Tổ chức kháng chiến trên 4 mặt (chính quyền & Đảng, quân sự & an ninh, kinh tế & văn hóa - giáo dục, ngoại giao & liên minh Đông Dương) và 2 chiến dịch lớn (Việt Bắc 1947, Biên giới 1950).',
         'Phần IV — Liên hệ thực tiễn, Trách nhiệm thế hệ trẻ & Minh bạch học thuật: Vận dụng bài học "Dựa vào sức mình là chính", Chiến lược phát triển công nghiệp bán dẫn (QĐ 1018/QĐ-TTg), làm chủ khoa học công nghệ, trách nhiệm của thế hệ trẻ và báo cáo minh bạch ứng dụng AI.',
       ],
@@ -121,7 +121,7 @@ export const SLIDES: SlideData[] = [
       heading: 'Sự hình thành và phát triển của đường lối',
       points: [
         'Đường lối kháng chiến chống thực dân Pháp của Đảng không phải ra đời ngẫu nhiên mà được hình thành, bổ sung và phát triển qua thực tiễn cách mạng Việt Nam trong giai đoạn 1945 – 1947.',
-        'Hệ thống lý luận đường lối được thể hiện tập trung qua các văn kiện quan trọng của Đảng, các Lời kêu gọi, bài viết, bài nói của Chủ tịch Hồ Chí Minh và Tổng Bí thư Trường Chinh.',
+        'Hệ thống lý luận đường lối được thể hiện tập trung qua các văn kiện quan trọng của Đảng, các Lời kêu gọi, bài viết, bài nói của Chủ tịch Hồ Chí Minh và đồng chí Trường Chinh.',
       ],
       groups: [
         {
@@ -131,7 +131,7 @@ export const SLIDES: SlideData[] = [
             'Chỉ thị Tình hình và chủ trương (ngày 3/3/1946) & Chỉ thị Hòa để tiến (ngày 9/3/1946): Tạm thời hòa hoãn với Pháp để đuổi quân Tưởng Giới Thạch về nước, tranh thủ thời gian củng cố thực lực.',
             'Chỉ thị Toàn dân kháng chiến của Trung ương Đảng (ngày 12/12/1946): Đề ra những đường lối cơ bản về cuộc kháng chiến toàn dân, toàn diện.',
             'Lời kêu gọi Toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh (ngày 19/12/1946): Khẳng định ý chí sắt đá "thà hy sinh tất cả chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ", lời kêu gọi toàn dân đứng lên đánh giặc.',
-            'Tác phẩm Kháng chiến nhất định thắng lợi của Tổng Bí thư Trường Chinh (xuất bản tháng 8/1947): Tác phẩm lý luận hoàn chỉnh, giải thích rõ ràng, chi tiết về tính chất, mục tiêu, phương châm và các giai đoạn phát triển của cuộc kháng chiến.',
+            'Tác phẩm Kháng chiến nhất định thắng lợi của đồng chí Trường Chinh (xuất bản tháng 8/1947): Tác phẩm lý luận hoàn chỉnh, giải thích rõ ràng, chi tiết về tính chất, mục tiêu, phương châm và các giai đoạn phát triển của cuộc kháng chiến.',
           ],
         },
       ],
@@ -154,24 +154,15 @@ export const SLIDES: SlideData[] = [
     id: 4,
     part: 2,
     partTitle: 'Đường lối kháng chiến',
-    title: 'MỤC TIÊU VÀ Ý NGHĨA LỊCH SỬ CỦA ĐƯỜNG LỐI KHÁNG CHIẾN',
-    subtitle: 'Mục tiêu dân tộc, dân chủ, hòa bình và ngọn cờ dẫn đường cho toàn dân tộc',
-    section: 'Đường lối kháng chiến',
-    suggestedDurationSeconds: 60,
+    title: 'MỤC TIÊU CỦA CUỘC KHÁNG CHIẾN',
+    subtitle: 'Mục tiêu dân tộc, dân chủ và hòa bình',
+    section: 'Mục tiêu kháng chiến',
+    suggestedDurationSeconds: 45,
     content: {
       heading: 'Mục tiêu của cuộc kháng chiến',
       points: [
         'Mục tiêu dân tộc: Đánh đổ thực dân Pháp xâm lược, đập tan hoàn toàn ách thống trị thực dân, giành nền độc lập, tự do và thống nhất hoàn toàn cho Tổ quốc.',
         'Mục tiêu dân chủ và hòa bình: Bảo vệ chế độ dân chủ cộng hòa, vì nền tự do dân chủ của nhân dân và góp phần tích cực bảo vệ hòa bình, an ninh thế giới.',
-      ],
-      groups: [
-        {
-          title: 'Ý nghĩa lịch sử của đường lối kháng chiến',
-          points: [
-            'Ngọn cờ dẫn đường cho toàn dân tộc: Đường lối kháng chiến toàn quốc là sự kết tinh tri thức cách mạng và kinh nghiệm thực tiễn của Đảng, trở thành ngọn cờ dẫn đường, động viên toàn Đảng, toàn quân, toàn dân ta tiến lên.',
-            'Nhân tố quyết định thắng lợi: Đường lối nhận được sự ủng hộ, hưởng ứng tuyệt đối của nhân dân trong suốt cuộc kháng chiến, trở thành nhân tố quyết định hàng đầu dẫn đến thắng lợi của cuộc kháng chiến chống thực dân Pháp.',
-          ],
-        },
       ],
     },
     sources: [
