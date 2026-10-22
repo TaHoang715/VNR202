@@ -21,8 +21,11 @@ export interface SlideData {
     };
     videoEmbed?: {
       title: string;
-      youtubeId: string;
+      embedUrl: string;
+      originalUrl: string;
       caption: string;
+      badge?: string;
+      youtubeId?: string;
     };
   };
   sources: {
@@ -94,16 +97,23 @@ export const SLIDES: SlideData[] = [
         source: 'Chủ tịch Hồ Chí Minh — Lời kêu gọi toàn quốc kháng chiến (19/12/1946)',
       },
       videoEmbed: {
-        title: 'Tư liệu lịch sử: Toàn văn Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)',
-        youtubeId: 'RzTxaGZ4bTw',
-        caption: 'Bản ghi âm và tư liệu hình ảnh giọng đọc của Chủ tịch Hồ Chí Minh phát động Toàn quốc kháng chiến đêm 19/12/1946.',
+        title: 'Phim tư liệu: Ngày toàn quốc kháng chiến (19/12/1946)',
+        embedUrl: 'https://drive.google.com/file/d/1kZDepWjSvpWesJY_PY6RfiDzkN04-9uN/preview',
+        originalUrl: 'https://www.youtube.com/watch?v=RyLurrERAhs',
+        caption: 'Tư liệu lịch sử tái hiện ngày Toàn quốc kháng chiến, thời khắc pháo đài Láng nổ súng phát lệnh và Lời kêu gọi Toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh.',
+        badge: 'Tư liệu lịch sử 19/12/1946',
       },
     },
     sources: [
       {
-        label: 'Tư liệu âm thanh & hình ảnh: Lời kêu gọi Toàn quốc kháng chiến (YouTube)',
-        url: 'https://www.youtube.com/watch?v=RzTxaGZ4bTw',
-        note: 'Bản ghi âm toàn văn giọng đọc của Chủ tịch Hồ Chí Minh đêm 19/12/1946',
+        label: 'Video tư liệu gốc: Ngày toàn quốc kháng chiến 19/12/1946 (YouTube)',
+        url: 'https://www.youtube.com/watch?v=RyLurrERAhs',
+        note: 'Tư liệu truyền hình lịch sử tái hiện ngày Toàn quốc kháng chiến',
+      },
+      {
+        label: 'Bản lưu trữ video bài giảng (Google Drive)',
+        url: 'https://drive.google.com/file/d/1kZDepWjSvpWesJY_PY6RfiDzkN04-9uN/view?usp=sharing',
+        note: 'Bản video lưu trữ phục vụ bài thuyết trình VNR202',
       },
       {
         label: 'Lịch sử biên niên Đảng Cộng sản Việt Nam (Tập 3)',
