@@ -150,7 +150,7 @@ export const SLIDES: SlideData[] = [
             'Chỉ thị Tình hình và chủ trương (ngày 3/3/1946) & Chỉ thị Hòa để tiến (ngày 9/3/1946): Tạm thời hòa hoãn với Pháp để đuổi quân Tưởng Giới Thạch về nước, tranh thủ thời gian củng cố thực lực.',
             'Chỉ thị Toàn dân kháng chiến của Trung ương Đảng (ngày 12/12/1946): Đề ra những đường lối cơ bản về cuộc kháng chiến toàn dân, toàn diện.',
             'Lời kêu gọi Toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh (ngày 19/12/1946): Khẳng định ý chí sắt đá "thà hy sinh tất cả chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ", lời kêu gọi toàn dân đứng lên đánh giặc.',
-            'Tác phẩm Kháng chiến nhất định thắng lợi của đồng chí Trường Chinh (xuất bản tháng 8/1947): Tác phẩm lý luận hoàn chỉnh, giải thích rõ ràng, chi tiết về tính chất, mục tiêu, phương châm và các giai đoạn phát triển của cuộc kháng chiến.',
+            'Tác phẩm Kháng chiến nhất định thắng lợi của đồng chí Trường Chinh (tháng 8/1947): Tác phẩm lý luận hoàn chỉnh, giải thích rõ ràng, chi tiết về tính chất, mục tiêu, phương châm và các giai đoạn phát triển của cuộc kháng chiến.',
           ],
         },
       ],
