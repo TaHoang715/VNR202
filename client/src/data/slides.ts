@@ -442,7 +442,7 @@ export const SLIDES: SlideData[] = [
         {
           title: '2. Từ thắng lợi lịch sử đến yêu cầu làm chủ khoa học và công nghệ',
           points: [
-            'Liên hệ lịch sử: Trong kháng chiến 1945–1950, đường lối kháng chiến toàn dân, toàn diện, trường kỳ, dựa vào sức mình là chính đã định hướng cho toàn dân vượt qua khó khăn. Chiến thắng Việt Bắc Thu – Đông năm 1947 góp phần làm thất bại chiến lược đánh nhanh, thắng nhanh của Pháp; Chiến dịch Biên giới năm 1950 giúp quân ta giành thế chủ động trên chiến trường chính Bắc Bộ.',
+            'Liên hệ lịch sử: Trong kháng chiến 1946–1950, đường lối kháng chiến toàn dân, toàn diện, trường kỳ, dựa vào sức mình là chính đã định hướng cho toàn dân vượt qua khó khăn. Chiến thắng Việt Bắc Thu – Đông năm 1947 góp phần làm thất bại chiến lược đánh nhanh, thắng nhanh của Pháp; Chiến dịch Biên giới năm 1950 giúp quân ta giành thế chủ động trên chiến trường chính Bắc Bộ.',
             'Bài học rút ra: Những thắng lợi này cho thấy tầm quan trọng của việc chủ động xây dựng lực lượng, phát huy sức mạnh toàn dân và từng bước nâng cao năng lực của bản thân.',
             'Vận dụng hiện nay: Trong thời bình, tinh thần chủ động và tự cường cần được vận dụng vào phát triển khoa học, công nghệ, đổi mới sáng tạo và chuyển đổi số.',
             'Ví dụ thực tế: Việt Nam thúc đẩy phát triển công nghiệp bán dẫn và chuyển đổi số. Đây là những lĩnh vực đòi hỏi nguồn nhân lực có trình độ, năng lực nghiên cứu và khả năng ứng dụng công nghệ vào thực tế.',
